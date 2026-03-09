@@ -178,12 +178,13 @@ export default function SistemasIngresarPage() {
     setSaving(true)
     const payload = { fecha:selectedDate, periodo:getPeriodo(selectedDate), ...form, ingresado_por:'sistemas', updated_at:new Date().toISOString() }
     let error
-    if (mode === 'edit' && existingRecord)
-      ;({ error } = await supabase.from('sistemas_diario').update(payload).eq('id', existingRecord.id))
-    else
-      ;({ error } = await supabase.from('sistemas_diario').insert(payload))
+    if (mode === 'edit' && existingRecord) {
+      ({ error } = await supabase.from('sistemas_diario').update(payload).eq('id', existingRecord.id))
+    } else {
+      ({ error } = await supabase.from('sistemas_diario').insert(payload))
     setSaving(false)
-    if (!error) { setSaved(true); setTimeout(()=>setSaved(false), 3000) }
+    if (!error) { setSaved(true)
+    }; setTimeout(()=>setSaved(false), 3000) }
     else alert('Error: ' + error.message)
   }
 
@@ -207,9 +208,9 @@ export default function SistemasIngresarPage() {
       ingresado_por:'sistemas', updated_at:new Date().toISOString(),
     }
     let error
-    if (existingGa4)
+    if (existingGa4) {
       ;({ error } = await supabase.from('ga4_metrics').update(payload).eq('id', existingGa4.id))
-    else {
+    } else {
       const { data, error:err } = await supabase.from('ga4_metrics').insert(payload).select('id').single()
       error = err; if (data) setExistingGa4({ id:data.id })
     }

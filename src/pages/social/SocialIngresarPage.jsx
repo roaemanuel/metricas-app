@@ -71,9 +71,9 @@ export default function SocialIngresarPage() {
       updated_at: new Date().toISOString(),
     }
     let error
-    if (existing)
+    if (existing) {
       ;({ error } = await supabase.from('social_media_metrics').update(payload).eq('id', existing.id))
-    else {
+    } else {
       const { data, error: err } = await supabase.from('social_media_metrics').insert(payload).select('id').single()
       error = err; if (data) setExisting({ id: data.id })
     }

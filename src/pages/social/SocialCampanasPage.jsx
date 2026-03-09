@@ -232,13 +232,14 @@ export default function SocialCampanasPage() {
   }
 
   async function handleSave(payload) {
-    let error
-    if (editing)
-      ;({ error } = await supabase.from('campanas_publicitarias').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', editing.id))
-    else
-      ;({ error } = await supabase.from('campanas_publicitarias').insert({ ...payload, ingresado_por: 'social' }))
-    if (!error) { setView('list'); setEditing(null); loadCampanas() }
-    else alert('Error: ' + error.message)
+    let result
+    if (editing) {
+      result = await supabase.from('campanas_publicitarias').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', editing.id)
+    } else {
+      result = await supabase.from('campanas_publicitarias').insert({ ...payload, ingresado_por: 'social' })
+    }
+    if (!result.error) { setView('list'); setEditing(null); loadCampanas() }
+    else alert('Error: ' + result.error.message)
   }
 
   async function handleDelete(id) {

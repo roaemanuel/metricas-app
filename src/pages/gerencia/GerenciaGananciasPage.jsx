@@ -26,8 +26,8 @@ function detectColumns(headers) {
   const find = (...keywords) => h.findIndex(x => keywords.some(k => x.includes(k)))
   return {
     nombre:   find('nombre', 'producto', 'estrategia', 'descripcion', 'item', 'concepto'),
-    ingresos: find('ingreso', 'venta', 'total', 'monto', 'precio'),
-    unidades: find('unidad', 'cantidad', 'qty', 'cant'),
+    ingresos_generados: find('ingreso', 'venta', 'total', 'monto', 'precio'),
+    unidades_vendidas: find('unidad', 'cantidad', 'qty', 'cant'),
     periodo:  find('mes', 'periodo', 'fecha', 'month'),
   }
 }
@@ -93,8 +93,8 @@ export default function GerenciaGananciasPage() {
     const toInsert = rawData.map(row => ({
       periodo,
       nombre_estrategia: colMap.nombre >= 0 ? String(row[colMap.nombre] || '').trim() : 'Sin nombre',
-      ingresos:  colMap.ingresos >= 0 ? parseMoney(row[colMap.ingresos]) : 0,
-      unidades:  colMap.unidades >= 0 ? parseInt(row[colMap.unidades]) || null : null,
+      ingresos_generados:  colMap.ingresos_generados >= 0 ? parseMoney(row[colMap.ingresos_generados]) : 0,
+      unidades_vendidas:  colMap.unidades_vendidas >= 0 ? parseInt(row[colMap.unidades_vendidas]) || null : null,
       ingresado_por: 'gerencia',
     })).filter(r => r.nombre_estrategia && r.nombre_estrategia !== 'Sin nombre')
 
@@ -120,8 +120,8 @@ export default function GerenciaGananciasPage() {
     loadData()
   }
 
-  const totalIngresos = rows.reduce((s, r) => s + (r.ingresos || 0), 0)
-  const totalUnidades = rows.reduce((s, r) => s + (r.unidades || 0), 0)
+  const totalIngresos = rows.reduce((s, r) => s + (r.ingresos_generados || 0), 0)
+  const totalUnidades = rows.reduce((s, r) => s + (r.unidades_vendidas || 0), 0)
 
   return (
     <div className="animate-fadeIn">
@@ -313,12 +313,12 @@ export default function GerenciaGananciasPage() {
                 </thead>
                 <tbody>
                   {rows.map((r, i) => {
-                    const pct = totalIngresos > 0 ? (r.ingresos / totalIngresos * 100) : 0
+                    const pct = totalIngresos > 0 ? (r.ingresos_generados / totalIngresos * 100) : 0
                     return (
                       <tr key={r.id} style={{ borderTop:'1px solid var(--border)',background: i%2===0?'transparent':'var(--bg-elevated)' }}>
                         <td style={{ padding:'11px 16px',color:'var(--text-primary)',fontWeight:500 }}>{r.nombre_estrategia}</td>
-                        <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',fontWeight:700,color:'#10b981' }}>{formatMoney(r.ingresos)}</td>
-                        <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',color:'var(--text-secondary)' }}>{r.unidades ?? '—'}</td>
+                        <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',fontWeight:700,color:'#10b981' }}>{formatMoney(r.ingresos_generados)}</td>
+                        <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',color:'var(--text-secondary)' }}>{r.unidades_vendidas ?? '—'}</td>
                         <td style={{ padding:'11px 16px', minWidth:120 }}>
                           <div style={{ display:'flex',alignItems:'center',gap:8 }}>
                             <div style={{ flex:1,height:5,background:'var(--bg-base)',borderRadius:99,overflow:'hidden' }}>
