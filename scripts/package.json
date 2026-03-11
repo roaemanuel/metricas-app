@@ -1,0 +1,15 @@
+{
+  "name": "metricas-scripts",
+  "version": "1.0.0",
+  "description": "Scripts de sincronización automática para MetricHub",
+  "main": "sync-ga4.js",
+  "scripts": {
+    "sync": "node sync-ga4.js",
+    "sync:all": "node sync-ga4.js $(date +%Y) all"
+  },
+  "dependencies": {
+    "@google-analytics/data": "^4.6.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.3.1"
+  }
+}
