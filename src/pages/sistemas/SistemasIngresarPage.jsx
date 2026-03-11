@@ -122,6 +122,8 @@ export default function SistemasIngresarPage() {
   const [saved, setSaved]                     = useState(false)
   const [activeTab, setActiveTab]             = useState('diario')
   const [newKw, setNewKw]                     = useState({ keyword:'', posicion:'', clics:'', impresiones:'' })
+  const [syncingGa4, setSyncingGa4]           = useState(false)
+  const [syncMsg, setSyncMsg]                 = useState('')
 
   useEffect(() => { checkDayData(selectedDate) }, [selectedDate])
 
@@ -153,6 +155,26 @@ export default function SistemasIngresarPage() {
     setLoading(false)
   }
 
+  async function loadGa4(periodo) {
+    const { data: ga4data } = await supabase.from('ga4_metrics').select('*').eq('periodo', periodo).maybeSingle()
+    if (ga4data) {
+      setExistingGa4(ga4data)
+      setGa4({
+        sesiones:              ga4data.sesiones ?? '',
+        usuarios_activos:      ga4data.usuarios_activos ?? '',
+        pageviews:             ga4data.pageviews ?? '',
+        tasa_rebote:           ga4data.tasa_rebote ?? '',
+        duracion_promedio_seg: ga4data.duracion_promedio_seg ?? '',
+        trafico_organico:      ga4data.trafico_organico ?? '',
+        trafico_directo:       ga4data.trafico_directo ?? '',
+        trafico_social:        ga4data.trafico_social ?? '',
+        trafico_referido:      ga4data.trafico_referido ?? '',
+        trafico_email:         ga4data.trafico_email ?? '',
+        seo_keywords:          ga4data.seo_keywords ?? [],
+      })
+    }
+  }
+
   function handleEditExisting() {
     const r = existingRecord
     setForm({
@@ -179,13 +201,17 @@ export default function SistemasIngresarPage() {
     const payload = { fecha:selectedDate, periodo:getPeriodo(selectedDate), ...form, ingresado_por:'sistemas', updated_at:new Date().toISOString() }
     let error
     if (mode === 'edit' && existingRecord) {
-      ({ error } = await supabase.from('sistemas_diario').update(payload).eq('id', existingRecord.id))
+      ;({ error } = await supabase.from('sistemas_diario').update(payload).eq('id', existingRecord.id))
     } else {
-      ({ error } = await supabase.from('sistemas_diario').insert(payload))
+      ;({ error } = await supabase.from('sistemas_diario').insert(payload))
+    }
     setSaving(false)
-    if (!error) { setSaved(true)
-    }; setTimeout(()=>setSaved(false), 3000) }
-    else alert('Error: ' + error.message)
+    if (!error) {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } else {
+      alert('Error: ' + error.message)
+    }
   }
 
   async function handleSaveGA4() {
@@ -212,11 +238,16 @@ export default function SistemasIngresarPage() {
       ;({ error } = await supabase.from('ga4_metrics').update(payload).eq('id', existingGa4.id))
     } else {
       const { data, error:err } = await supabase.from('ga4_metrics').insert(payload).select('id').single()
-      error = err; if (data) setExistingGa4({ id:data.id })
+      error = err
+      if (data) { setExistingGa4({ id:data.id }) }
     }
     setSaving(false)
-    if (!error) { setSaved(true); setTimeout(()=>setSaved(false), 3000) }
-    else alert('Error GA4: ' + error.message)
+    if (!error) {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } else {
+      alert('Error GA4: ' + error.message)
+    }
   }
 
   const inputSt = { width:'100%', padding:'9px 12px', fontSize:'0.88rem', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:8, color:'var(--text-primary)', boxSizing:'border-box' }
@@ -267,7 +298,6 @@ export default function SistemasIngresarPage() {
           {activeTab==='diario' && (mode==='edit'||mode==='new') && (
             <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
 
-              {/* Incidencias — solo cantidad */}
               <div style={{ background:'var(--bg-surface)', border:`1px solid ${color}33`, borderRadius:16, padding:'24px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
                   <span style={{ fontSize:20 }}>🔧</span>
@@ -276,7 +306,6 @@ export default function SistemasIngresarPage() {
                     <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', marginTop:2 }}>Cantidad total de incidencias que se resolvieron hoy</div>
                   </div>
                 </div>
-                {/* Big counter centrado */}
                 <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:16 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:20 }}>
                     <button onClick={()=>setForm(f=>({...f, incidencias_resueltas:Math.max(0,f.incidencias_resueltas-1)}))} style={{
@@ -320,7 +349,6 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              {/* Imágenes — por separado */}
               <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'24px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
                   <span style={{ fontSize:20 }}>🖼️</span>
@@ -347,7 +375,6 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              {/* Notas */}
               <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
                   <span style={{ fontSize:18 }}>📝</span>
@@ -380,7 +407,6 @@ export default function SistemasIngresarPage() {
           {/* ── TAB: GA4 ── */}
           {activeTab==='ga4' && (
             <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
-              {/* Info banner */}
               <div style={{
                 background:'var(--bg-elevated)', border:'1px solid var(--border)',
                 borderRadius:10, padding:'12px 16px',
@@ -442,7 +468,6 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              {/* Métricas principales */}
               <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, overflow:'hidden' }}>
                 <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
                   <span style={{ fontSize:18 }}>📊</span>
@@ -465,7 +490,6 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              {/* Fuentes de tráfico */}
               <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, overflow:'hidden' }}>
                 <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
                   <span style={{ fontSize:18 }}>🔀</span>
@@ -488,7 +512,6 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              {/* SEO Keywords */}
               <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, overflow:'hidden' }}>
                 <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
                   <span style={{ fontSize:18 }}>🔍</span>
