@@ -1,482 +1,220 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
-const FLYER_TYPES = [
-  { key: 'flyers_storie',    label: 'Storie',           emoji: '📱' },
-  { key: 'flyers_efemeride', label: 'Efeméride',        emoji: '📅' },
-  { key: 'flyers_promo',     label: 'Promo / Oferta',   emoji: '🏷️' },
-  { key: 'flyers_cumple',    label: 'Cumpleaños',       emoji: '🎂' },
-  { key: 'flyers_otros',     label: 'Otros',            emoji: '📄' },
-]
+const color = '#06b6d4'
 
-const EMPTY_FORM = {
-  flyers_storie: 0, flyers_efemeride: 0,
-  flyers_promo: 0, flyers_cumple: 0, flyers_otros: 0,
-  etiquetas_custom: [],
-  colaboracion_video: false, colaboracion_video_desc: '',
-  fotos_producto_subidas: 0, notas: '',
-}
-
-function getPeriodo(date) {
-  const d = new Date(date)
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`
-}
 function todayISO() {
   const n = new Date()
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`
 }
-function formatDateDisplay(iso) {
-  const [y,m,d] = iso.split('-')
-  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-  return `${d} de ${months[parseInt(m)-1]} ${y}`
-}
 
-function Counter({ value, onChange, color }) {
-  return (
-    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-      <button onClick={() => onChange(Math.max(0, value-1))} style={{
-        width:32, height:32, borderRadius:8,
-        background:'var(--bg-elevated)', border:'1px solid var(--border)',
-        color:'var(--text-secondary)', fontSize:'1.1rem', fontWeight:700,
-        display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
-      }}
-        onMouseEnter={e=>e.currentTarget.style.borderColor=color+'88'}
-        onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}
-      >−</button>
-      <span style={{
-        fontFamily:'var(--font-mono)', fontSize:'1.3rem', fontWeight:600,
-        color: value>0 ? color : 'var(--text-muted)',
-        minWidth:32, textAlign:'center', transition:'color 0.15s',
-      }}>{value}</span>
-      <button onClick={() => onChange(value+1)} style={{
-        width:32, height:32, borderRadius:8,
-        background: value>0 ? color+'22' : 'var(--bg-elevated)',
-        border:`1px solid ${value>0 ? color+'66' : 'var(--border)'}`,
-        color: value>0 ? color : 'var(--text-secondary)',
-        fontSize:'1.1rem', fontWeight:700,
-        display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
-        transition:'all 0.15s',
-      }}
-        onMouseEnter={e=>{ e.currentTarget.style.background=color+'33'; e.currentTarget.style.borderColor=color }}
-        onMouseLeave={e=>{ e.currentTarget.style.background=value>0?color+'22':'var(--bg-elevated)'; e.currentTarget.style.borderColor=value>0?color+'66':'var(--border)' }}
-      >+</button>
-    </div>
-  )
-}
-
-// Modal de confirmación cuando ya existe registro del día
-function ExistingRecordModal({ date, onEdit, onNew, onCancel }) {
-  const color = '#0eb8d4'
-  return (
-    <div style={{
-      position:'fixed', inset:0,
-      background:'rgba(7,8,15,0.88)', backdropFilter:'blur(12px)',
-      display:'flex', alignItems:'center', justifyContent:'center',
-      zIndex:200, animation:'fadeIn 0.2s ease',
-    }}>
-      <div style={{
-        background:'var(--bg-surface)',
-        border:`1px solid ${color}44`,
-        borderRadius:20, padding:'36px 32px',
-        width:'100%', maxWidth:400,
-        boxShadow:`0 0 60px ${color}18`,
-        animation:'fadeUp 0.3s ease',
-        textAlign:'center',
-      }}>
-        <div style={{ fontSize:36, marginBottom:16 }}>📋</div>
-        <h2 style={{ fontSize:'1.1rem', fontWeight:800, letterSpacing:'-0.3px', marginBottom:8 }}>
-          Ya hay un registro para hoy
-        </h2>
-        <p style={{ color:'var(--text-secondary)', fontSize:'0.85rem', lineHeight:1.6, marginBottom:28 }}>
-          El <strong style={{color:'var(--text-primary)'}}>{formatDateDisplay(date)}</strong> ya tiene datos cargados.
-          ¿Querés editarlos o agregar un nuevo registro adicional?
-        </p>
-        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-          <button onClick={onEdit} style={{
-            padding:'13px', background:color,
-            border:'none', borderRadius:10,
-            color:'#fff', fontSize:'0.9rem', fontWeight:700,
-            cursor:'pointer', boxShadow:`0 4px 16px ${color}44`,
-          }}>
-            ✎ Editar el registro existente
-          </button>
-          <button onClick={onNew} style={{
-            padding:'13px',
-            background:'var(--bg-elevated)',
-            border:'1px solid var(--border-bright)',
-            borderRadius:10, color:'var(--text-primary)',
-            fontSize:'0.9rem', fontWeight:600, cursor:'pointer',
-          }}>
-            ✚ Agregar registro adicional del día
-          </button>
-          <button onClick={onCancel} style={{
-            padding:'10px', background:'transparent',
-            border:'none', color:'var(--text-muted)',
-            fontSize:'0.8rem', cursor:'pointer', fontFamily:'var(--font-mono)',
-          }}>
-            ← Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-  )
+const EMPTY = {
+  piezas_realizadas: '',
+  videos_editados: '',
+  solicitudes_pendientes: '',
+  notas: '',
 }
 
 export default function DisenoIngresarPage() {
-  const color = '#0eb8d4'
-  const today = todayISO()
 
-  const [selectedDate, setSelectedDate] = useState(today)
-  const [form, setForm] = useState({ ...EMPTY_FORM })
-  const [existingRecord, setExistingRecord] = useState(null) // full record if exists
-  const [mode, setMode] = useState(null) // null | 'ask' | 'edit' | 'new'
+  const [selectedDate, setSelectedDate] = useState(todayISO())
+  const [form, setForm] = useState({ ...EMPTY })
+  const [existing, setExisting] = useState(null)
+
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [newTag, setNewTag] = useState('')
 
-  useEffect(() => { checkDayData(selectedDate) }, [selectedDate])
+  useEffect(() => {
+    loadDay(selectedDate)
+  }, [selectedDate])
 
-  async function checkDayData(date) {
+  async function loadDay(date) {
     setLoading(true)
     setSaved(false)
-    setMode(null)
-    const { data } = await supabase
+
+    const { data, error } = await supabase
       .from('diseno_grafico_diario')
       .select('*')
       .eq('fecha', date)
+      .limit(1)
       .maybeSingle()
 
-    if (data) {
-      setExistingRecord(data)
-      setMode('ask') // show the modal
-    } else {
-      setExistingRecord(null)
-      setForm({ ...EMPTY_FORM })
-      setMode('new')
+    if (error) {
+      alert('Error cargando datos: ' + error.message)
+      setLoading(false)
+      return
     }
+
+    if (data) {
+      setExisting(data)
+      setForm({
+        piezas_realizadas: data.piezas_realizadas ?? '',
+        videos_editados: data.videos_editados ?? '',
+        solicitudes_pendientes: data.solicitudes_pendientes ?? '',
+        notas: data.notas ?? '',
+      })
+    } else {
+      setExisting(null)
+      setForm({ ...EMPTY })
+    }
+
     setLoading(false)
   }
 
-  function handleEditExisting() {
-    // Load existing data into form for editing
-    const r = existingRecord
-    setForm({
-      flyers_storie:           r.flyers_storie ?? 0,
-      flyers_efemeride:        r.flyers_efemeride ?? 0,
-      flyers_promo:            r.flyers_promo ?? 0,
-      flyers_cumple:           r.flyers_cumple ?? 0,
-      flyers_otros:            r.flyers_otros ?? 0,
-      etiquetas_custom:        r.etiquetas_custom ?? [],
-      colaboracion_video:      r.colaboracion_video ?? false,
-      colaboracion_video_desc: r.colaboracion_video_desc ?? '',
-      fotos_producto_subidas:  r.fotos_producto_subidas ?? 0,
-      notas:                   r.notas ?? '',
-    })
-    setMode('edit')
-  }
-
-  function handleAddNew() {
-    setForm({ ...EMPTY_FORM })
-    setMode('new')
-  }
-
-  function setField(key, value) {
-    setForm(f => ({ ...f, [key]: value }))
-  }
-
-  function addTag() {
-    const tag = newTag.trim()
-    if (!tag || form.etiquetas_custom.includes(tag)) return
-    setField('etiquetas_custom', [...form.etiquetas_custom, tag])
-    setNewTag('')
-  }
-
-  function removeTag(tag) {
-    setField('etiquetas_custom', form.etiquetas_custom.filter(t => t !== tag))
+  function num(v) {
+    return v !== '' && v !== null && v !== undefined ? parseInt(v) : null
   }
 
   async function handleSave() {
+
+    if (
+      !form.piezas_realizadas &&
+      !form.videos_editados &&
+      !form.solicitudes_pendientes &&
+      !form.notas.trim()
+    ) {
+      alert('Debes ingresar al menos un dato')
+      return
+    }
+
     setSaving(true)
+
     const payload = {
-      fecha:   selectedDate,
-      periodo: getPeriodo(selectedDate),
-      ...form,
+      fecha: selectedDate,
+      piezas_realizadas: num(form.piezas_realizadas),
+      videos_editados: num(form.videos_editados),
+      solicitudes_pendientes: num(form.solicitudes_pendientes),
+      notas: form.notas.trim(),
       ingresado_por: 'diseno',
       updated_at: new Date().toISOString(),
     }
 
     let error
-    if (mode === 'edit' && existingRecord) {
+
+    if (existing) {
       ;({ error } = await supabase
         .from('diseno_grafico_diario')
         .update(payload)
-        .eq('id', existingRecord.id))
+        .eq('id', existing.id))
     } else {
-      // new insert (can have multiple per day with 'new' mode)
       ;({ error } = await supabase
         .from('diseno_grafico_diario')
-        .insert({ ...payload, fecha: selectedDate }))
+        .insert(payload))
     }
 
     setSaving(false)
-    if (!error) {
-      setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
-      // Reload to reflect new state
-      if (mode === 'new') checkDayData(selectedDate)
-    } else {
-      alert('Error al guardar: ' + error.message)
+
+    if (error) {
+      alert('Error guardando: ' + error.message)
+      return
     }
+
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
+
+    loadDay(selectedDate)
   }
 
-  const totalFlyers = FLYER_TYPES.reduce((s, t) => s + (form[t.key] || 0), 0)
+  const inp = {
+    width: '100%',
+    padding: '10px 13px',
+    fontSize: '1rem',
+    background: 'var(--bg-elevated)',
+    border: '1px solid var(--border)',
+    borderRadius: 10,
+    color: 'var(--text-primary)',
+    boxSizing: 'border-box',
+    fontFamily: 'var(--font-mono)',
+    fontWeight: 600,
+  }
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
-      <div style={{ marginBottom:28 }}>
-        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
-          <div>
-            <h1 style={{ fontSize:'1.6rem', fontWeight:800, letterSpacing:'-0.8px', marginBottom:4 }}>
-              Registro diario
-            </h1>
-            <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>
-              Diseño Gráfico · {formatDateDisplay(selectedDate)}
-              {mode === 'edit' && (
-                <span style={{
-                  marginLeft:10, fontSize:'0.72rem',
-                  background:color+'20', color,
-                  border:`1px solid ${color}44`,
-                  borderRadius:99, padding:'2px 10px', fontWeight:600,
-                }}>✎ Editando registro existente</span>
-              )}
-              {mode === 'new' && existingRecord && (
-                <span style={{
-                  marginLeft:10, fontSize:'0.72rem',
-                  background:'#f59e0b20', color:'#f59e0b',
-                  border:'1px solid #f59e0b44',
-                  borderRadius:99, padding:'2px 10px', fontWeight:600,
-                }}>✚ Nuevo registro adicional</span>
-              )}
-            </p>
-          </div>
-          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <span style={{ fontSize:'0.75rem', color:'var(--text-muted)', fontFamily:'var(--font-mono)' }}>Fecha:</span>
-            <input
-              type="date" value={selectedDate} max={today}
-              onChange={e => setSelectedDate(e.target.value)}
-              style={{
-                padding:'8px 12px', fontSize:'0.85rem',
-                background:'var(--bg-elevated)', border:'1px solid var(--border)',
-                borderRadius:8, color:'var(--text-primary)', fontFamily:'var(--font-mono)',
-              }}
-            />
-          </div>
-        </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 800 }}>Registro Diseño Gráfico</h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          Solo se permite <strong>un registro por día</strong>
+        </p>
       </div>
 
-      {/* Modal */}
-      {mode === 'ask' && !loading && (
-        <ExistingRecordModal
-          date={selectedDate}
-          onEdit={handleEditExisting}
-          onNew={handleAddNew}
-          onCancel={() => setSelectedDate(today)}
+      <div style={{
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 14,
+        padding: '20px 24px',
+        marginBottom: 18,
+      }}>
+        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+          FECHA
+        </label>
+
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={e => setSelectedDate(e.target.value)}
+          style={{ ...inp, marginTop: 6 }}
         />
-      )}
+      </div>
 
       {loading ? (
-        <div style={{ display:'flex', justifyContent:'center', padding:60 }}>
-          <div style={{
-            width:28, height:28, borderRadius:'50%',
-            border:'2px solid var(--border-bright)', borderTopColor:color,
-            animation:'spin 0.8s linear infinite',
-          }} />
-        </div>
-      ) : (mode === 'edit' || mode === 'new') && (
-        <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+        <div style={{ padding: 40, textAlign: 'center' }}>Cargando…</div>
+      ) : (
+        <div style={{ display: 'grid', gap: 14 }}>
 
-          {/* FLYERS */}
-          <div style={{
-            background:'var(--bg-surface)', border:`1px solid ${color}33`,
-            borderRadius:16, overflow:'hidden',
-          }}>
-            <div style={{
-              padding:'16px 24px', borderBottom:'1px solid var(--border)',
-              display:'flex', alignItems:'center', justifyContent:'space-between',
-            }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontSize:18 }}>🎨</span>
-                <span style={{ fontWeight:700, fontSize:'0.95rem' }}>Flyers creados hoy</span>
-              </div>
-              <div style={{
-                fontFamily:'var(--font-mono)', fontSize:'1.1rem', fontWeight:600,
-                color: totalFlyers>0 ? color : 'var(--text-muted)',
-              }}>Total: {totalFlyers}</div>
-            </div>
-            <div style={{ padding:'20px 24px', display:'flex', flexDirection:'column', gap:12 }}>
-              {FLYER_TYPES.map(type => (
-                <div key={type.key} style={{
-                  display:'flex', alignItems:'center', justifyContent:'space-between',
-                  padding:'12px 16px',
-                  background: form[type.key]>0 ? color+'0a' : 'var(--bg-elevated)',
-                  border:`1px solid ${form[type.key]>0 ? color+'33' : 'var(--border)'}`,
-                  borderRadius:10, transition:'all 0.15s',
-                }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                    <span style={{ fontSize:18 }}>{type.emoji}</span>
-                    <span style={{
-                      fontSize:'0.88rem', fontWeight:500,
-                      color: form[type.key]>0 ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    }}>{type.label}</span>
-                  </div>
-                  <Counter value={form[type.key]} onChange={v=>setField(type.key,v)} color={color} />
-                </div>
-              ))}
+          <input
+            type="number"
+            placeholder="Piezas realizadas"
+            value={form.piezas_realizadas}
+            onChange={e => setForm(f => ({ ...f, piezas_realizadas: e.target.value }))}
+            style={inp}
+          />
 
-              {/* Custom tags */}
-              <div style={{
-                padding:'14px 16px', background:'var(--bg-elevated)',
-                border:'1px dashed var(--border-bright)', borderRadius:10,
-              }}>
-                <div style={{ fontSize:'0.78rem', color:'var(--text-muted)', marginBottom:10, fontWeight:600 }}>
-                  Etiquetas personalizadas
-                </div>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom: form.etiquetas_custom.length>0?10:0 }}>
-                  {form.etiquetas_custom.map(tag => (
-                    <span key={tag} style={{
-                      display:'inline-flex', alignItems:'center', gap:6,
-                      background:color+'20', color, border:`1px solid ${color}44`,
-                      borderRadius:99, padding:'4px 12px', fontSize:'0.78rem', fontWeight:600,
-                    }}>
-                      {tag}
-                      <button onClick={()=>removeTag(tag)} style={{ background:'none', border:'none', color, cursor:'pointer', fontSize:'0.75rem', padding:0, lineHeight:1 }}>✕</button>
-                    </span>
-                  ))}
-                </div>
-                <div style={{ display:'flex', gap:8 }}>
-                  <input
-                    value={newTag} onChange={e=>setNewTag(e.target.value)}
-                    onKeyDown={e=>e.key==='Enter'&&addTag()}
-                    placeholder="Nueva etiqueta… (Enter para agregar)"
-                    style={{ flex:1, padding:'8px 12px', fontSize:'0.82rem', background:'var(--bg-base)', border:'1px solid var(--border)', borderRadius:8, color:'var(--text-primary)' }}
-                  />
-                  <button onClick={addTag} disabled={!newTag.trim()} style={{
-                    padding:'8px 14px',
-                    background:newTag.trim()?color:'var(--bg-elevated)',
-                    border:'none', borderRadius:8,
-                    color:newTag.trim()?'#fff':'var(--text-muted)',
-                    fontSize:'0.82rem', fontWeight:600, cursor:'pointer',
-                  }}>+ Agregar</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <input
+            type="number"
+            placeholder="Videos editados"
+            value={form.videos_editados}
+            onChange={e => setForm(f => ({ ...f, videos_editados: e.target.value }))}
+            style={inp}
+          />
 
-          {/* COLABORACIÓN VIDEO */}
-          <div style={{
-            background:'var(--bg-surface)',
-            border:`1px solid ${form.colaboracion_video ? color+'55' : 'var(--border)'}`,
-            borderRadius:16, padding:'20px 24px', transition:'border-color 0.2s',
-          }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:form.colaboracion_video?16:0 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontSize:18 }}>🎬</span>
-                <div>
-                  <div style={{ fontWeight:700, fontSize:'0.95rem' }}>Colaboración en video</div>
-                  <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', marginTop:2 }}>¿Participaste en creación de contenido de video hoy?</div>
-                </div>
-              </div>
-              <button
-                onClick={()=>setField('colaboracion_video',!form.colaboracion_video)}
-                style={{
-                  width:52, height:28, borderRadius:99,
-                  background:form.colaboracion_video?color:'var(--bg-elevated)',
-                  border:`1px solid ${form.colaboracion_video?color:'var(--border-bright)'}`,
-                  position:'relative', cursor:'pointer', transition:'all 0.2s', flexShrink:0,
-                }}
-              >
-                <div style={{
-                  position:'absolute', top:3,
-                  left:form.colaboracion_video?26:3,
-                  width:20, height:20, borderRadius:'50%',
-                  background:'#fff', transition:'left 0.2s',
-                  boxShadow:'0 1px 4px rgba(0,0,0,0.3)',
-                }} />
-              </button>
-            </div>
-            {form.colaboracion_video && (
-              <textarea
-                value={form.colaboracion_video_desc}
-                onChange={e=>setField('colaboracion_video_desc',e.target.value)}
-                placeholder="Describí brevemente la colaboración…"
-                rows={2}
-                style={{
-                  width:'100%', padding:'10px 14px', fontSize:'0.85rem', lineHeight:1.5,
-                  background:'var(--bg-elevated)', border:`1px solid ${color}33`,
-                  borderRadius:8, color:'var(--text-primary)', resize:'vertical', boxSizing:'border-box',
-                }}
-              />
-            )}
-          </div>
+          <input
+            type="number"
+            placeholder="Solicitudes pendientes"
+            value={form.solicitudes_pendientes}
+            onChange={e => setForm(f => ({ ...f, solicitudes_pendientes: e.target.value }))}
+            style={inp}
+          />
 
-          {/* FOTOS */}
-          <div style={{
-            background:'var(--bg-surface)',
-            border:`1px solid ${form.fotos_producto_subidas>0 ? color+'44' : 'var(--border)'}`,
-            borderRadius:16, padding:'20px 24px',
-          }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontSize:18 }}>📸</span>
-                <div>
-                  <div style={{ fontWeight:700, fontSize:'0.95rem' }}>Fotos de producto</div>
-                  <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', marginTop:2 }}>Fotos tomadas y subidas a la nube hoy</div>
-                </div>
-              </div>
-              <Counter value={form.fotos_producto_subidas} onChange={v=>setField('fotos_producto_subidas',v)} color={color} />
-            </div>
-          </div>
+          <textarea
+            rows={3}
+            placeholder="Notas"
+            value={form.notas}
+            onChange={e => setForm(f => ({ ...f, notas: e.target.value }))}
+            style={{ ...inp, resize: 'none', fontFamily: 'inherit' }}
+          />
 
-          {/* NOTAS */}
-          <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
-              <span style={{ fontSize:18 }}>📝</span>
-              <span style={{ fontWeight:700, fontSize:'0.95rem' }}>Notas del día</span>
-              <span style={{ fontSize:'0.72rem', color:'var(--text-muted)' }}>(opcional)</span>
-            </div>
-            <textarea
-              value={form.notas} onChange={e=>setField('notas',e.target.value)}
-              placeholder="Observaciones del día…" rows={2}
-              style={{
-                width:'100%', padding:'10px 14px', fontSize:'0.85rem', lineHeight:1.5,
-                background:'var(--bg-elevated)', border:'1px solid var(--border)',
-                borderRadius:8, color:'var(--text-primary)', resize:'vertical', boxSizing:'border-box',
-              }}
-            />
-          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              padding: '13px 28px',
+              background: saved ? '#059669' : `linear-gradient(135deg, ${color}, #0891b2)`,
+              border: 'none',
+              borderRadius: 12,
+              color: '#fff',
+              fontWeight: 700,
+              cursor: 'pointer',
+              marginTop: 10,
+            }}
+          >
+            {saving ? 'Guardando…' : saved ? '✓ Guardado' : existing ? 'Actualizar registro' : 'Guardar registro'}
+          </button>
 
-          {/* SAVE */}
-          <div style={{ display:'flex', justifyContent:'flex-end', paddingBottom:8 }}>
-            <button
-              onClick={handleSave} disabled={saving}
-              style={{
-                padding:'14px 36px',
-                background: saved ? '#059669' : `linear-gradient(135deg, ${color}, #0891b2)`,
-                border:'none', borderRadius:12, color:'#fff',
-                fontSize:'0.95rem', fontWeight:700, cursor:'pointer',
-                boxShadow: saved ? '0 4px 20px #05966944' : `0 4px 20px ${color}44`,
-                transition:'all 0.2s', letterSpacing:'0.02em',
-              }}
-              onMouseEnter={e=>!saving&&(e.currentTarget.style.transform='translateY(-2px)')}
-              onMouseLeave={e=>(e.currentTarget.style.transform='translateY(0)')}
-            >
-              {saving ? 'Guardando…' : saved ? '✓ Guardado' : mode==='edit' ? '✎ Actualizar registro' : '✚ Guardar registro del día'}
-            </button>
-          </div>
         </div>
       )}
+
     </div>
   )
 }
