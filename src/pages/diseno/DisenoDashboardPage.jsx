@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 
@@ -6,11 +6,13 @@ const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
 const FLYER_TYPES = [
-  { key: 'flyers_storie',   label: 'Stories',            emoji: '📱', color: '#f0436a' },
-  { key: 'flyers_efemeride',label: 'Efemérides',         emoji: '📅', color: '#f59e0b' },
-  { key: 'flyers_promo',    label: 'Promos / Ofertas',   emoji: '🏷️', color: '#10b981' },
-  { key: 'flyers_cumple',   label: 'Cumpleaños',          emoji: '🎂', color: '#f59e0b' },
-  { key: 'flyers_otros',    label: 'Otros',              emoji: '📄', color: '#6b7280' },
+  { key: 'flyers_storie',      label: 'Stories',                  emoji: '📱', color: '#f0436a' },
+  { key: 'flyers_efemeride',   label: 'Efemérides',               emoji: '📅', color: '#f59e0b' },
+  { key: 'flyers_reposicion',  label: 'Reposición de inventario', emoji: '📦', color: '#6366f1' },
+  { key: 'flyers_descuento',   label: 'Descuentos',               emoji: '🏷️', color: '#10b981' },
+  { key: 'flyers_promocion',   label: 'Promociones',              emoji: '📣', color: '#06b6d4' },
+  { key: 'flyers_cumple',      label: 'Cumpleaños',               emoji: '🎂', color: '#f97316' },
+  { key: 'flyers_otros',       label: 'Otros',                    emoji: '📄', color: '#6b7280' },
 ]
 
 function StatCard({ label, value, unit = '', icon, color, sub, delay = 0 }) {
@@ -64,12 +66,59 @@ function BarChart({ data, color }) {
   )
 }
 
+function aggregateRecordsByDate(records) {
+  const map = new Map()
+
+  records.forEach(r => {
+    const dateKey = r.fecha
+    if (!dateKey) return
+
+    if (!map.has(dateKey)) {
+      map.set(dateKey, {
+        fecha: dateKey,
+        notas: [],
+        etiquetas_custom: [],
+        colaboracion_video: false,
+        fotos_producto_subidas: 0,
+        registros_count: 0,
+        ...Object.fromEntries(FLYER_TYPES.map(t => [t.key, 0])),
+      })
+    }
+
+    const entry = map.get(dateKey)
+
+    FLYER_TYPES.forEach(t => {
+      entry[t.key] += r[t.key] || 0
+    })
+
+    entry.fotos_producto_subidas += r.fotos_producto_subidas || 0
+    entry.colaboracion_video = entry.colaboracion_video || !!r.colaboracion_video
+    entry.registros_count += 1
+
+    if (Array.isArray(r.etiquetas_custom)) {
+      entry.etiquetas_custom.push(...r.etiquetas_custom)
+    }
+
+    if (r.notas?.trim()) {
+      entry.notas.push(r.notas.trim())
+    }
+  })
+
+  return Array.from(map.values())
+    .map(item => ({
+      ...item,
+      etiquetas_custom: [...new Set(item.etiquetas_custom)],
+      notas: item.notas.join(' | '),
+    }))
+    .sort((a, b) => (a.fecha > b.fecha ? 1 : -1))
+}
+
 export default function DisenoDashboardPage() {
   const color = '#0eb8d4'
   const navigate = useNavigate()
   const now = new Date()
 
-  const [year, setYear]   = useState(now.getFullYear())
+  const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [records, setRecords] = useState([])
   const [loading, setLoading] = useState(true)
@@ -85,37 +134,43 @@ export default function DisenoDashboardPage() {
       .select('*')
       .eq('periodo', periodo)
       .order('fecha', { ascending: true })
+      .order('updated_at', { ascending: true })
+
     setRecords(data || [])
     setLoading(false)
   }
 
-  // Aggregate totals
+  const recordsByDay = useMemo(() => aggregateRecordsByDate(records), [records])
+
   const totals = records.reduce((acc, r) => {
     FLYER_TYPES.forEach(t => { acc[t.key] = (acc[t.key] || 0) + (r[t.key] || 0) })
     acc.fotos += r.fotos_producto_subidas || 0
-    acc.videos += r.colaboracion_video ? 1 : 0
-    acc.dias_registrados += 1
     return acc
-  }, { fotos: 0, videos: 0, dias_registrados: 0, ...Object.fromEntries(FLYER_TYPES.map(t => [t.key, 0])) })
+  }, {
+    fotos: 0,
+    ...Object.fromEntries(FLYER_TYPES.map(t => [t.key, 0])),
+  })
 
+  const diasRegistrados = recordsByDay.length
+  const diasConVideo = recordsByDay.filter(r => r.colaboracion_video).length
   const totalFlyers = FLYER_TYPES.reduce((s, t) => s + totals[t.key], 0)
 
-  // Build daily chart data for the month
   const daysInMonth = new Date(year, month + 1, 0).getDate()
+
   const chartData = Array.from({ length: daysInMonth }, (_, i) => {
     const dayStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`
-    const rec = records.find(r => r.fecha === dayStr)
+    const rec = recordsByDay.find(r => r.fecha === dayStr)
     const val = rec ? FLYER_TYPES.reduce((s, t) => s + (rec[t.key] || 0), 0) : 0
     return { label: String(i + 1), value: val }
   })
 
-  // All custom tags used this month
   const allTags = [...new Set(records.flatMap(r => r.etiquetas_custom || []))]
 
   function prevMonth() {
     if (month === 0) { setYear(y => y - 1); setMonth(11) }
     else setMonth(m => m - 1)
   }
+
   function nextMonth() {
     const today = new Date()
     if (year === today.getFullYear() && month === today.getMonth()) return
@@ -127,7 +182,6 @@ export default function DisenoDashboardPage() {
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 4 }}>
@@ -137,23 +191,26 @@ export default function DisenoDashboardPage() {
             Resumen mensual de producción
           </p>
         </div>
+
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {/* Month navigator */}
           <button onClick={prevMonth} style={{
             width: 34, height: 34, borderRadius: 8,
             background: 'var(--bg-elevated)', border: '1px solid var(--border)',
             color: 'var(--text-secondary)', fontSize: '1rem', cursor: 'pointer',
           }}>‹</button>
+
           <span style={{
             fontFamily: 'var(--font-mono)', fontSize: '0.82rem',
             color: 'var(--text-primary)', minWidth: 130, textAlign: 'center',
           }}>{MONTHS_ES[month]} {year}</span>
+
           <button onClick={nextMonth} disabled={isCurrentMonth} style={{
             width: 34, height: 34, borderRadius: 8,
             background: 'var(--bg-elevated)', border: '1px solid var(--border)',
             color: isCurrentMonth ? 'var(--text-muted)' : 'var(--text-secondary)',
             fontSize: '1rem', cursor: isCurrentMonth ? 'not-allowed' : 'pointer',
           }}>›</button>
+
           <button
             onClick={() => navigate('/dashboard/diseno/ingresar')}
             style={{
@@ -196,22 +253,37 @@ export default function DisenoDashboardPage() {
         </div>
       ) : (
         <>
-          {/* KPI Cards */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
             gap: 12, marginBottom: 20,
           }}>
-            <StatCard label="Flyers totales" value={totalFlyers} icon="🎨" color={color} delay={0}
-              sub={`${totals.dias_registrados} día${totals.dias_registrados !== 1 ? 's' : ''} registrado${totals.dias_registrados !== 1 ? 's' : ''}`} />
+            <StatCard
+              label="Flyers totales"
+              value={totalFlyers}
+              icon="🎨"
+              color={color}
+              delay={0}
+              sub={`${diasRegistrados} día${diasRegistrados !== 1 ? 's' : ''} registrado${diasRegistrados !== 1 ? 's' : ''}`}
+            />
             <StatCard label="Fotos de producto" value={totals.fotos} icon="📸" color="#a78bfa" delay={0.05} />
-            <StatCard label="Colabs. en video" value={totals.videos} icon="🎬" color="#f59e0b" delay={0.1}
-              sub="días con colaboración" />
-            <StatCard label="Días sin registro" value={daysInMonth - totals.dias_registrados} icon="📋"
-              color={daysInMonth - totals.dias_registrados > 5 ? '#f0436a' : '#64748b'} delay={0.15} />
+            <StatCard
+              label="Colabs. en video"
+              value={diasConVideo}
+              icon="🎬"
+              color="#f59e0b"
+              delay={0.1}
+              sub="días con colaboración"
+            />
+            <StatCard
+              label="Días sin registro"
+              value={daysInMonth - diasRegistrados}
+              icon="📋"
+              color={daysInMonth - diasRegistrados > 5 ? '#f0436a' : '#64748b'}
+              delay={0.15}
+            />
           </div>
 
-          {/* Daily production chart */}
           <div style={{
             background: 'var(--bg-surface)',
             border: '1px solid var(--border)',
@@ -224,7 +296,6 @@ export default function DisenoDashboardPage() {
             <BarChart data={chartData} color={color} />
           </div>
 
-          {/* Breakdown by type */}
           <div style={{
             background: 'var(--bg-surface)',
             border: '1px solid var(--border)',
@@ -252,7 +323,8 @@ export default function DisenoDashboardPage() {
                     </div>
                     <div style={{ height: 5, background: 'var(--bg-elevated)', borderRadius: 99, overflow: 'hidden' }}>
                       <div style={{
-                        height: '100%', width: `${pct}%`,
+                        height: '100%',
+                        width: `${pct}%`,
                         background: type.color,
                         borderRadius: 99,
                         transition: 'width 0.6s ease',
@@ -265,7 +337,6 @@ export default function DisenoDashboardPage() {
             </div>
           </div>
 
-          {/* Custom tags */}
           {allTags.length > 0 && (
             <div style={{
               background: 'var(--bg-surface)',
@@ -279,17 +350,19 @@ export default function DisenoDashboardPage() {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {allTags.map(tag => (
                   <span key={tag} style={{
-                    background: color + '18', color,
+                    background: color + '18',
+                    color,
                     border: `1px solid ${color}33`,
-                    borderRadius: 99, padding: '4px 14px',
-                    fontSize: '0.78rem', fontWeight: 600,
+                    borderRadius: 99,
+                    padding: '4px 14px',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
                   }}>{tag}</span>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Day-by-day log */}
           <div style={{
             background: 'var(--bg-surface)',
             border: '1px solid var(--border)',
@@ -300,45 +373,90 @@ export default function DisenoDashboardPage() {
               borderBottom: '1px solid var(--border)',
               fontSize: '0.8rem', fontWeight: 700,
               color: 'var(--text-secondary)', letterSpacing: '0.05em',
-            }}>REGISTROS DEL MES ({records.length})</div>
+            }}>
+              REGISTROS DEL MES ({recordsByDay.length} día{recordsByDay.length !== 1 ? 's' : ''})
+            </div>
+
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                 <thead>
                   <tr style={{ background: 'var(--bg-elevated)' }}>
-                    {['Fecha','Stories','Efem.','Promo','Feed','Banner','Otros','Fotos','Video','Notas'].map(h => (
+                    {[
+                      'Fecha',
+                      'Stories',
+                      'Efem.',
+                      'Reposición',
+                      'Descuentos',
+                      'Promociones',
+                      'Cumple',
+                      'Otros',
+                      'Fotos',
+                      'Video',
+                      'Notas'
+                    ].map(h => (
                       <th key={h} style={{
-                        padding: '10px 14px', textAlign: 'left',
-                        color: 'var(--text-muted)', fontWeight: 600,
-                        fontSize: '0.72rem', letterSpacing: '0.05em',
+                        padding: '10px 14px',
+                        textAlign: 'left',
+                        color: 'var(--text-muted)',
+                        fontWeight: 600,
+                        fontSize: '0.72rem',
+                        letterSpacing: '0.05em',
                         whiteSpace: 'nowrap',
                       }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
+
                 <tbody>
-                  {records.map((r, i) => (
-                    <tr key={r.id} style={{
+                  {recordsByDay.map((r, i) => (
+                    <tr key={r.fecha} style={{
                       borderTop: '1px solid var(--border)',
                       background: i % 2 === 0 ? 'transparent' : 'var(--bg-elevated)',
                     }}>
-                      <td style={{ padding: '10px 14px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                      <td style={{
+                        padding: '10px 14px',
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-secondary)',
+                        whiteSpace: 'nowrap',
+                      }}>
                         {r.fecha?.slice(5)}
                       </td>
+
                       {FLYER_TYPES.map(t => (
                         <td key={t.key} style={{
-                          padding: '10px 14px', textAlign: 'center',
+                          padding: '10px 14px',
+                          textAlign: 'center',
                           fontFamily: 'var(--font-mono)',
                           color: r[t.key] > 0 ? 'var(--text-primary)' : 'var(--text-muted)',
                           fontWeight: r[t.key] > 0 ? 600 : 400,
-                        }}>{r[t.key] || 0}</td>
+                        }}>
+                          {r[t.key] || 0}
+                        </td>
                       ))}
-                      <td style={{ padding: '10px 14px', textAlign: 'center', fontFamily: 'var(--font-mono)', color: r.fotos_producto_subidas > 0 ? '#a78bfa' : 'var(--text-muted)' }}>
+
+                      <td style={{
+                        padding: '10px 14px',
+                        textAlign: 'center',
+                        fontFamily: 'var(--font-mono)',
+                        color: r.fotos_producto_subidas > 0 ? '#a78bfa' : 'var(--text-muted)',
+                      }}>
                         {r.fotos_producto_subidas || 0}
                       </td>
+
                       <td style={{ padding: '10px 14px', textAlign: 'center' }}>
-                        {r.colaboracion_video ? <span style={{ color: '#f59e0b' }}>✓</span> : <span style={{ color: 'var(--border-bright)' }}>—</span>}
+                        {r.colaboracion_video
+                          ? <span style={{ color: '#f59e0b' }}>✓</span>
+                          : <span style={{ color: 'var(--border-bright)' }}>—</span>}
                       </td>
-                      <td style={{ padding: '10px 14px', color: 'var(--text-muted)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+
+                      <td style={{
+                        padding: '10px 14px',
+                        color: 'var(--text-muted)',
+                        maxWidth: 280,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}>
                         {r.notas || '—'}
                       </td>
                     </tr>
