@@ -5,56 +5,64 @@
 }
 
 :root {
-  --bg-gradient: linear-gradient(135deg, #02091c 0%, #0d2959 100%);
-  --bg-base:       #07080f;
-  --bg-surface:    #0e0f1a;
-  --bg-elevated:   #151623;
-  --bg-hover:      #1c1e30;
-  --border:        rgba(255,255,255,0.07);
-  --border-bright: rgba(255,255,255,0.14);
+  /* Google Material 3 Dark Palette */
+  --bg-gradient: #0f1115; /* Clean solid base */
+  --bg-base:       #0f1115;
+  --bg-surface:    #16191f;
+  --bg-elevated:   #22262d;
+  --bg-hover:      #2b3038;
+  --border:        rgba(255,255,255,0.06);
+  --border-bright: rgba(255,255,255,0.12);
 
-  --text-primary:  #f0f1f8;
-  --text-secondary:#8b90b8;
-  --text-muted:    #4a4f72;
+  --text-primary:  #e3e3e3;
+  --text-secondary:#a0aab5;
+  --text-muted:    #747d88;
 
-  --accent:        #005cf0; /* Azul eléctrico náutico */
-  --accent-glow:   rgba(0, 92, 240, 0.4);
+  --accent:        #A8C7FA; /* Material 3 Primary Dark */
+  --accent-secondary: #004a77;
+  --accent-glow:   rgba(168, 199, 250, 0.15);
 
-  --social-color:  #f0436a;
-  --diseno-color:  #0eb8d4;
-  --sistemas-color:#f5c518;
-  --gerencia-color:#9b59f7;
+  --social-color:  #ff897d; /* Material adjusted */
+  --diseno-color:  #4fd8eb;
+  --sistemas-color:#fbd04e;
+  --gerencia-color:#d0bcff;
 
-  --glass-bg:      rgba(14, 15, 26, 0.55);
+  --glass-bg:      rgba(22, 25, 31, 0.65);
   --glass-border:  rgba(255, 255, 255, 0.08);
+  --glass-shadow:  rgba(0, 0, 0, 0.4);
 
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 
-  --font-display: 'Syne', sans-serif;
+  /* Switch display font to a clean Geometry/Grotesque like Inter/Roboto. 
+     Using system sans-serif for optimal Google UI feel if custom font fails. */
+  --font-display: 'Inter', 'Roboto', 'Syne', system-ui, sans-serif;
   --font-mono:    'DM Mono', monospace;
 }
 
 :root[data-theme="light"] {
-  --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); /* azul cielo */
-  --bg-base:       #f8fafc;
+  /* Google Material 3 Light Palette */
+  --bg-gradient: #f3f6fc;
+  --bg-base:       #f3f6fc;
   --bg-surface:    #ffffff;
-  --bg-elevated:   #f1f5f9;
-  --bg-hover:      #e2e8f0;
-  --border:        rgba(0,0,0,0.1);
-  --border-bright: rgba(0,0,0,0.18);
+  --bg-elevated:   #e9eef6;
+  --bg-hover:      #dce4ef;
+  --border:        rgba(0,0,0,0.08);
+  --border-bright: rgba(0,0,0,0.15);
 
-  --text-primary:  #0f172a;
-  --text-secondary:#334155;
-  --text-muted:    #64748b;
+  --text-primary:  #1f1f1f;
+  --text-secondary:#5e6368;
+  --text-muted:    #82888e;
 
-  --accent:        #0052cc;
-  --accent-glow:   rgba(0, 82, 204, 0.25);
+  --accent:        #0B57D0; /* Material 3 Primary Light */
+  --accent-secondary: #d3e3fd;
+  --accent-glow:   rgba(11, 87, 208, 0.15);
 
-  --glass-bg:      rgba(255, 255, 255, 0.65);
-  --glass-border:  rgba(0, 0, 0, 0.1);
+  --glass-bg:      rgba(255, 255, 255, 0.75);
+  --glass-border:  rgba(255, 255, 255, 0.6);
+  --glass-shadow:  rgba(0, 0, 0, 0.05);
 }
 
 html, body, #root {
@@ -64,22 +72,29 @@ html, body, #root {
 
 body {
   background: var(--bg-base);
-  background-image: var(--bg-gradient);
-  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  transition: background-color 0.4s, color 0.4s;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+/* Elegante panel de vidrio esmerilado - Google style */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(28px) saturate(1.2);
+  -webkit-backdrop-filter: blur(28px) saturate(1.2);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 30px var(--glass-shadow);
   transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+
+/* Base shape animation for backgrounds */
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(30px, -50px) scale(1.1); }
+  66%  { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
 /* Scrollbar */

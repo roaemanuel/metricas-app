@@ -49,7 +49,27 @@ export default function DashboardLayout() {
       display: 'flex',
       minHeight: '100vh',
       background: 'transparent',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
+      {/* Dynamic Background Orbs for Glass Refraction */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none' }}>
+        <div style={{
+          position: 'absolute', top: '-10%', left: '-10%', width: '40vw', height: '40vw',
+          background: 'var(--accent-glow)', filter: 'blur(100px)', borderRadius: '50%',
+          animation: 'drift 15s ease-in-out infinite alternate',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '-20%', right: '-10%', width: '50vw', height: '50vw',
+          background: 'var(--accent)', opacity: 0.08, filter: 'blur(120px)', borderRadius: '50%',
+          animation: 'drift 20s ease-in-out infinite alternate-reverse',
+        }} />
+        <div style={{
+          position: 'absolute', top: '30%', left: '40%', width: '30vw', height: '30vw',
+          background: 'var(--social-color)', opacity: 0.05, filter: 'blur(90px)', borderRadius: '50%',
+          animation: 'drift 18s ease-in-out infinite alternate',
+        }} />
+      </div>
       {/* Sidebar */}
       <aside className="glass-panel" style={{
         width: 220,

@@ -41,24 +41,28 @@ export default function LoginPage() {
 
       {/* Background grid */}
       <div style={{
-        position: 'absolute', inset: 0, opacity: 0.04,
+        position: 'absolute', inset: 0, opacity: 0.06,
         backgroundImage: `
-          linear-gradient(rgba(91,106,247,0.8) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(91,106,247,0.8) 1px, transparent 1px)
+          linear-gradient(var(--text-secondary) 1px, transparent 1px),
+          linear-gradient(90deg, var(--text-secondary) 1px, transparent 1px)
         `,
         backgroundSize: '48px 48px',
+        zIndex: -2,
       }} />
 
-      {/* Glow orb */}
-      <div style={{
-        position: 'absolute',
-        width: 600, height: 600,
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(91,106,247,0.12) 0%, transparent 70%)',
-        top: '50%', left: '50%',
-        transform: 'translate(-50%, -50%)',
-        pointerEvents: 'none',
-      }} />
+      {/* Dynamic Glow Orbs for Glass Refraction */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: -1, pointerEvents: 'none' }}>
+        <div style={{
+          position: 'absolute', top: '10%', left: '15%', width: 400, height: 400,
+          background: 'var(--accent-glow)', filter: 'blur(80px)', borderRadius: '50%',
+          animation: 'drift 12s ease-in-out infinite alternate',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '10%', right: '15%', width: 500, height: 500,
+          background: 'var(--accent)', opacity: 0.1, filter: 'blur(100px)', borderRadius: '50%',
+          animation: 'drift 18s ease-in-out infinite alternate-reverse',
+        }} />
+      </div>
 
       <div
         className="animate-fadeUp"
