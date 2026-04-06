@@ -13,10 +13,11 @@ function StatCard({ label, value, unit='', icon, c, sub, delay=0 }) {
       animationDelay:`${delay}s`,
       background:'var(--bg-surface)', border:'1px solid var(--border)',
       borderRadius:14, padding:'20px 22px', position:'relative', overflow:'hidden',
+      boxShadow: '0 4px 20px var(--glass-shadow)',
     }}>
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:c, opacity:0.7 }} />
+      <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:c, opacity:0.9 }} />
       <div style={{ fontSize:22, marginBottom:10 }}>{icon}</div>
-      <div style={{ fontFamily:'var(--font-mono)', fontSize:'2rem', fontWeight:600, color:c, letterSpacing:'-1px', lineHeight:1, marginBottom:6 }}>
+      <div style={{ fontFamily:'var(--font-mono)', fontSize:'2rem', fontWeight:700, color: 'var(--text-primary)', letterSpacing:'-1px', lineHeight:1, marginBottom:6 }}>
         {value}<span style={{ fontSize:'1rem', marginLeft:3 }}>{unit}</span>
       </div>
       <div style={{ fontSize:'0.8rem', color:'var(--text-secondary)' }}>{label}</div>
@@ -104,10 +105,10 @@ export default function SistemasDashboardPage() {
             disabled={isCurrentMonth}
             style={{ width:34, height:34, borderRadius:8, background:'var(--bg-elevated)', border:'1px solid var(--border)', color:isCurrentMonth?'var(--text-muted)':'var(--text-secondary)', fontSize:'1rem', cursor:isCurrentMonth?'not-allowed':'pointer' }}>›</button>
           <button onClick={() => navigate('/dashboard/sistemas/ingresar')} style={{
-            padding:'8px 18px', marginLeft:8, background:color,
-            border:'none', borderRadius:8, color:'#000',
+            padding:'8px 18px', marginLeft:8, background: 'var(--accent)',
+            border:'none', borderRadius:8, color:'#fff',
             fontSize:'0.82rem', fontWeight:700, cursor:'pointer',
-            boxShadow:`0 2px 12px ${color}44`,
+            boxShadow:'0 2px 12px var(--accent-glow)',
           }}>✚ Registrar hoy</button>
         </div>
       </div>
@@ -139,13 +140,13 @@ export default function SistemasDashboardPage() {
           {/* Chart row */}
           <div style={{ display:'grid', gridTemplateColumns: ga4data ? '1fr 1fr' : '1fr', gap:14, marginBottom:14 }}>
             {records.length > 0 && (
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px' }}>
+              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
                 <div style={{ fontSize:'0.78rem', fontWeight:700, color:'var(--text-secondary)', marginBottom:14, letterSpacing:'0.05em' }}>INCIDENCIAS DIARIAS</div>
                 <MiniBar data={chartData} c={color} />
               </div>
             )}
             {ga4data && (
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px' }}>
+              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
                 <div style={{ fontSize:'0.78rem', fontWeight:700, color:'var(--text-secondary)', marginBottom:14, letterSpacing:'0.05em' }}>
                   GOOGLE ANALYTICS — {MONTHS_ES[month].toUpperCase()} {year}
                 </div>
@@ -167,7 +168,7 @@ export default function SistemasDashboardPage() {
 
           {/* Fuentes de tráfico */}
           {ga4data && traficoTotal > 0 && (
-            <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px', marginBottom:14 }}>
+            <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px', marginBottom:14, boxShadow: '0 4px 16px var(--glass-shadow)' }}>
               <div style={{ fontSize:'0.78rem', fontWeight:700, color:'var(--text-secondary)', marginBottom:14, letterSpacing:'0.05em' }}>FUENTES DE TRÁFICO</div>
               <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
                 {[
@@ -199,7 +200,7 @@ export default function SistemasDashboardPage() {
 
           {/* SEO Keywords */}
           {ga4data?.seo_keywords?.length > 0 && (
-            <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:14 }}>
+            <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:14, boxShadow: '0 4px 16px var(--glass-shadow)' }}>
               <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', fontSize:'0.78rem', fontWeight:700, color:'var(--text-secondary)', letterSpacing:'0.05em' }}>
                 SEO KEYWORDS — TOP POSICIONES
               </div>
@@ -225,7 +226,7 @@ export default function SistemasDashboardPage() {
 
           {/* Log diario */}
           {records.length > 0 && (
-            <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden' }}>
+            <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
               <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', fontSize:'0.78rem', fontWeight:700, color:'var(--text-secondary)', letterSpacing:'0.05em' }}>
                 REGISTROS DEL MES ({records.length})
               </div>

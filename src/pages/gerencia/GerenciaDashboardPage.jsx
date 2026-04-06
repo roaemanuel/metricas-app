@@ -32,11 +32,12 @@ function KpiCard({ label, value, sub, accent, icon, delay = 0 }) {
       animationDelay: `${delay}s`,
       background: 'var(--bg-surface)', border: '1px solid var(--border)',
       borderRadius: 14, padding: '18px 20px', position: 'relative', overflow: 'hidden',
+      boxShadow: '0 4px 20px var(--glass-shadow)',
     }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: accent, opacity: 0.8 }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: accent, opacity: 0.9 }} />
       <div style={{ position: 'absolute', bottom: -20, right: -10, fontSize: 52, opacity: 0.05, userSelect: 'none', lineHeight: 1 }}>{icon}</div>
       <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 10 }}>{label}</div>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 600, color: accent, letterSpacing: '-1px', lineHeight: 1, marginBottom: 4 }}>{value}</div>
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-1px', lineHeight: 1, marginBottom: 4 }}>{value}</div>
       {sub && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{sub}</div>}
     </div>
   )
@@ -44,7 +45,7 @@ function KpiCard({ label, value, sub, accent, icon, delay = 0 }) {
 
 function AreaSection({ title, accent, icon, children, to, navigate }) {
   return (
-    <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden' }}>
+    <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden', boxShadow: '0 4px 20px var(--glass-shadow)' }}>
       <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-elevated)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: accent, boxShadow: `0 0 8px ${accent}` }} />
@@ -67,7 +68,7 @@ function MetricRow({ label, value, accent, bar, total }) {
     <div style={{ marginBottom: 12 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
         <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{label}</span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 600, color: accent || 'var(--text-primary)' }}>{fmt(value)}</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{fmt(value)}</span>
       </div>
       {bar && (
         <div style={{ height: 3, background: 'var(--bg-elevated)', borderRadius: 99, overflow: 'hidden' }}>
@@ -375,8 +376,11 @@ export default function GerenciaDashboardPage() {
                 { label: 'Balance neto',   value: formatMoney(data.totalIngresos - data.totalGastoJornadas),              c: (data.totalIngresos - data.totalGastoJornadas) >= 0 ? '#10b981' : '#f0436a' },
                 { label: 'Presupuesto ads',value: formatMoney(data.totalPresupuesto),                                     c: '#f0436a' },
               ].map((item, i) => (
-                <div key={i} style={{ textAlign: 'center', padding: '12px 8px', background: 'var(--bg-elevated)', borderRadius: 10, border: '1px solid var(--border)' }}>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.15rem', fontWeight: 700, color: item.c, marginBottom: 4 }}>{item.value}</div>
+                <div key={i} style={{ textAlign: 'center', padding: '12px 8px', background: 'var(--bg-elevated)', borderRadius: 10, border: '1px solid var(--border)', boxShadow: '0 2px 8px var(--glass-shadow)' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
+                    <span style={{color: item.c, marginRight: 4, fontSize: '0.9rem'}}>●</span>
+                    {item.value}
+                  </div>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{item.label}</div>
                 </div>
               ))}

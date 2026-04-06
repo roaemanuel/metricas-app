@@ -70,17 +70,17 @@ function PinInput({ area, onCancel }) {
     }}>
       <div style={{
         background: 'var(--bg-surface)',
-        border: `1px solid ${area.color}44`,
+        border: '1px solid var(--border)',
         borderRadius: 'var(--radius-xl)',
         padding: '40px 36px',
         width: '100%', maxWidth: 360,
-        boxShadow: `0 0 60px ${area.color}22`,
+        boxShadow: '0 24px 60px rgba(0,0,0,0.2)',
         animation: 'fadeUp 0.3s ease',
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ fontSize: 36, marginBottom: 12 }}>{area.icono}</div>
-          <h2 style={{ fontSize: '1.3rem', fontWeight: 800, letterSpacing: '-0.5px', color: area.color, marginBottom: 4 }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.5px', color: 'var(--text-primary)', marginBottom: 4 }}>
             {area.area_nombre}
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
@@ -107,36 +107,39 @@ function PinInput({ area, onCancel }) {
             <button key={n} onClick={() => handleDigit(String(n))} disabled={loading} style={{
               padding: '16px',
               background: 'var(--bg-elevated)',
-              border: '1px solid var(--border)',
+              border: 'none',
               borderRadius: 'var(--radius-md)',
               color: 'var(--text-primary)',
-              fontSize: '1.2rem', fontWeight: 600,
-              fontFamily: 'var(--font-mono)',
+              fontSize: '1.25rem', fontWeight: 600,
+              fontFamily: 'var(--font-display)',
+              boxShadow: '0 2px 8px var(--glass-shadow)',
               cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'all 0.1s',
+              transition: 'all 0.2s ease',
             }}
-              onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = area.color + '66' }}}
-              onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.borderColor = 'var(--border)' }}
+              onMouseEnter={e => { if (!loading) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 12px var(--glass-shadow)' }}}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px var(--glass-shadow)' }}
             >{n}</button>
           ))}
           {/* Row: cancelar / 0 / borrar */}
           <button onClick={onCancel} style={{
             padding: '16px', background: 'transparent',
-            border: '1px solid var(--border)', borderRadius: 'var(--radius-md)',
+            border: 'none', borderRadius: 'var(--radius-md)',
             color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
           }}>✕</button>
           <button onClick={() => handleDigit('0')} disabled={loading} style={{
             padding: '16px', background: 'var(--bg-elevated)',
-            border: '1px solid var(--border)', borderRadius: 'var(--radius-md)',
-            color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: 600,
-            fontFamily: 'var(--font-mono)', cursor: loading ? 'not-allowed' : 'pointer',
+            border: 'none', borderRadius: 'var(--radius-md)',
+            color: 'var(--text-primary)', fontSize: '1.25rem', fontWeight: 600,
+            fontFamily: 'var(--font-display)', cursor: loading ? 'not-allowed' : 'pointer',
+            boxShadow: '0 2px 8px var(--glass-shadow)',
+            transition: 'all 0.2s ease',
           }}
-            onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.borderColor = area.color + '66' }}}
-            onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.borderColor = 'var(--border)' }}
+            onMouseEnter={e => { if (!loading) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 12px var(--glass-shadow)' }}}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px var(--glass-shadow)' }}
           >0</button>
           <button onClick={handleBackspace} style={{
             padding: '16px', background: 'transparent',
-            border: '1px solid var(--border)', borderRadius: 'var(--radius-md)',
+            border: 'none', borderRadius: 'var(--radius-md)',
             color: 'var(--text-secondary)', fontSize: '1rem', cursor: 'pointer',
           }}>⌫</button>
         </div>
@@ -212,10 +215,11 @@ export default function AreaSelectorPage() {
                 borderRadius: 'var(--radius-lg)', padding: '28px 24px',
                 textAlign: 'left', cursor: 'pointer',
                 position: 'relative', overflow: 'hidden',
-                transition: 'transform 0.2s, border-color 0.2s, box-shadow 0.2s',
+                boxShadow: '0 8px 24px var(--glass-shadow)',
+                transition: 'transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = area.color + '66'; e.currentTarget.style.boxShadow = `0 12px 40px ${area.color}18` }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'none' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.borderColor = area.color + '66'; e.currentTarget.style.boxShadow = `0 24px 40px ${area.color}18` }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = '0 8px 24px var(--glass-shadow)' }}
             >
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: area.color, borderRadius: '99px 99px 0 0' }} />
               <div style={{ fontSize: 32, marginBottom: 14, lineHeight: 1 }}>{area.icono}</div>

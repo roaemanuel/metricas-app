@@ -16,45 +16,45 @@ function formatDateDisplay(iso) {
   return `${d} de ${months[parseInt(m)-1]} ${y}`
 }
 
-function Counter({ value, onChange, color = '#f5c518', label, sublabel }) {
+function Counter({ value, onChange, color, label, sublabel }) {
+  const isSet = value > 0;
   return (
     <div style={{
       display:'flex', alignItems:'center', justifyContent:'space-between',
       padding:'14px 18px',
-      background: value > 0 ? color+'0d' : 'var(--bg-elevated)',
-      border:`1px solid ${value > 0 ? color+'44' : 'var(--border)'}`,
+      background: 'var(--bg-surface)',
+      border: isSet ? `1px solid var(--accent)` : '1px solid var(--border)',
       borderRadius:12, transition:'all 0.15s',
+      boxShadow: '0 2px 8px var(--glass-shadow)',
     }}>
       <div>
-        <div style={{ fontSize:'0.88rem', fontWeight:600, color: value>0 ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{label}</div>
+        <div style={{ fontSize:'0.88rem', fontWeight:600, color: 'var(--text-primary)' }}>{label}</div>
         {sublabel && <div style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:2 }}>{sublabel}</div>}
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
         <button onClick={() => onChange(Math.max(0, value-1))} style={{
           width:34, height:34, borderRadius:9,
-          background:'var(--bg-base)', border:'1px solid var(--border)',
+          background:'var(--bg-elevated)', border:'none',
           color:'var(--text-secondary)', fontSize:'1.2rem', fontWeight:700,
           display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
         }}
-          onMouseEnter={e=>e.currentTarget.style.borderColor=color+'88'}
-          onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}
+          onMouseEnter={e=>e.currentTarget.style.background='var(--bg-hover)'}
+          onMouseLeave={e=>e.currentTarget.style.background={'var(--bg-elevated)'}}
         >−</button>
         <span style={{
           fontFamily:'var(--font-mono)', fontSize:'1.5rem', fontWeight:700,
-          color: value>0 ? color : 'var(--text-muted)',
+          color: 'var(--text-primary)',
           minWidth:40, textAlign:'center', transition:'color 0.15s',
         }}>{value}</span>
         <button onClick={() => onChange(value+1)} style={{
           width:34, height:34, borderRadius:9,
-          background: value>0 ? color+'22' : 'var(--bg-base)',
-          border:`1px solid ${value>0 ? color+'66' : 'var(--border)'}`,
-          color: value>0 ? color : 'var(--text-secondary)',
-          fontSize:'1.2rem', fontWeight:700,
+          background: 'var(--bg-elevated)', border: 'none',
+          color: 'var(--text-secondary)', fontSize:'1.2rem', fontWeight:700,
           display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
           transition:'all 0.15s',
         }}
-          onMouseEnter={e=>{ e.currentTarget.style.background=color+'33'; e.currentTarget.style.borderColor=color }}
-          onMouseLeave={e=>{ e.currentTarget.style.background=value>0?color+'22':'var(--bg-base)'; e.currentTarget.style.borderColor=value>0?color+'66':'var(--border)' }}
+          onMouseEnter={e=>{ e.currentTarget.style.background='var(--bg-hover)' }}
+          onMouseLeave={e=>{ e.currentTarget.style.background='var(--bg-elevated)' }}
         >+</button>
       </div>
     </div>
@@ -71,9 +71,9 @@ function ExistingModal({ date, onEdit, onNew, onCancel }) {
       zIndex:200, animation:'fadeIn 0.2s ease',
     }}>
       <div style={{
-        background:'var(--bg-surface)', border:`1px solid ${color}44`,
-        borderRadius:20, padding:'36px 32px', width:'100%', maxWidth:400,
-        boxShadow:`0 0 60px ${color}18`, animation:'fadeUp 0.3s ease', textAlign:'center',
+        background:'var(--bg-surface)', border:'1px solid var(--border)',
+        borderRadius:24, padding:'36px 32px', width:'100%', maxWidth:400,
+        boxShadow:'0 24px 60px rgba(0,0,0,0.3)', animation:'fadeUp 0.3s ease', textAlign:'center',
       }}>
         <div style={{ fontSize:36, marginBottom:16 }}>🖥️</div>
         <h2 style={{ fontSize:'1.1rem', fontWeight:800, letterSpacing:'-0.3px', marginBottom:8 }}>
@@ -85,9 +85,9 @@ function ExistingModal({ date, onEdit, onNew, onCancel }) {
         </p>
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
           <button onClick={onEdit} style={{
-            padding:'13px', background:color, border:'none', borderRadius:10,
-            color:'#000', fontSize:'0.9rem', fontWeight:700, cursor:'pointer',
-            boxShadow:`0 4px 16px ${color}44`,
+            padding:'13px', background:'var(--accent)', border:'none', borderRadius:10,
+            color:'#fff', fontSize:'0.9rem', fontWeight:700, cursor:'pointer',
+            boxShadow:'0 4px 16px var(--accent-glow)',
           }}>✎ Editar el registro existente</button>
           <button onClick={onNew} style={{
             padding:'13px', background:'var(--bg-elevated)',
@@ -298,7 +298,7 @@ export default function SistemasIngresarPage() {
           {activeTab==='diario' && (mode==='edit'||mode==='new') && (
             <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
 
-              <div style={{ background:'var(--bg-surface)', border:`1px solid ${color}33`, borderRadius:16, padding:'24px' }}>
+              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
                   <span style={{ fontSize:20 }}>🔧</span>
                   <div>
@@ -320,9 +320,9 @@ export default function SistemasIngresarPage() {
                     <div style={{ textAlign:'center' }}>
                       <div style={{
                         fontFamily:'var(--font-mono)', fontSize:'4rem', fontWeight:700, lineHeight:1,
-                        color: form.incidencias_resueltas>0 ? color : 'var(--text-muted)',
+                        color: 'var(--text-primary)',
                         transition:'color 0.15s',
-                        textShadow: form.incidencias_resueltas>0 ? `0 0 40px ${color}66` : 'none',
+                        textShadow: form.incidencias_resueltas>0 ? `0 0 40px var(--accent-glow)` : 'none',
                       }}>{form.incidencias_resueltas}</div>
                       <div style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:4, fontFamily:'var(--font-mono)', letterSpacing:'0.1em' }}>
                         {form.incidencias_resueltas===1 ? 'INCIDENCIA' : 'INCIDENCIAS'}
@@ -349,7 +349,7 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'24px' }}>
+              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
                   <span style={{ fontSize:20 }}>🖼️</span>
                   <div>
@@ -375,7 +375,7 @@ export default function SistemasIngresarPage() {
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px' }}>
+              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
                   <span style={{ fontSize:18 }}>📝</span>
                   <span style={{ fontWeight:700, fontSize:'0.95rem' }}>Notas del día</span>
@@ -389,10 +389,10 @@ export default function SistemasIngresarPage() {
               <div style={{ display:'flex', justifyContent:'flex-end', paddingBottom:8 }}>
                 <button onClick={handleSaveDiario} disabled={saving} style={{
                   padding:'14px 36px',
-                  background: saved ? '#059669' : `linear-gradient(135deg, ${color}, #d97706)`,
-                  border:'none', borderRadius:12, color: saved?'#fff':'#000',
+                  background: saved ? '#059669' : 'var(--accent)',
+                  border:'none', borderRadius:12, color: '#fff',
                   fontSize:'0.95rem', fontWeight:700, cursor:'pointer',
-                  boxShadow: saved?'0 4px 20px #05966944':`0 4px 20px ${color}44`,
+                  boxShadow: saved?'0 4px 20px #05966944':'0 4px 20px var(--accent-glow)',
                   transition:'all 0.2s',
                 }}
                   onMouseEnter={e=>!saving&&(e.currentTarget.style.transform='translateY(-2px)')}
