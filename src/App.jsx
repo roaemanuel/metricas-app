@@ -27,6 +27,7 @@ import SistemasCompararPage  from './pages/sistemas/SistemasCompararPage'
 import GerenciaDashboardPage from './pages/gerencia/GerenciaDashboardPage'
 import GerenciaJornadasPage  from './pages/gerencia/GerenciaJornadasPage'
 import GerenciaGananciasPage from './pages/gerencia/GerenciaGananciasPage'
+import GerenciaCompararPage  from './pages/gerencia/GerenciaCompararPage'
 
 export default function App() {
   return (
@@ -59,7 +60,7 @@ export default function App() {
             <Route path="gerencia"             element={<GerenciaDashboardPage />} />
             <Route path="gerencia/jornadas"    element={<GerenciaJornadasPage />} />
             <Route path="gerencia/ganancias"   element={<GerenciaGananciasPage />} />
-            <Route path="gerencia/comparar"    element={<ComingSoon title="Comparativa ejecutiva" description="Próximamente." />} />
+            <Route path="gerencia/comparar"    element={<GerenciaCompararPage />} />
 
           </Route>
 
