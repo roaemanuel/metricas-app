@@ -28,6 +28,14 @@ const NAV_ITEMS = {
   ],
 }
 
+/* Module accent colours (hex) */
+const MODULE_COLORS = {
+  social:   { hex: '#7DD3FC', rgb: '125,211,252' },
+  diseno:   { hex: '#93C5FD', rgb: '147,197,253' },
+  sistemas: { hex: '#60A5FA', rgb: '96,165,250'  },
+  gerencia: { hex: '#A5B4FC', rgb: '165,180,252' },
+}
+
 export default function DashboardLayout() {
   const { currentArea, exitArea, logout } = useAuth()
   const navigate = useNavigate()
@@ -38,10 +46,11 @@ export default function DashboardLayout() {
     return null
   }
 
-/* Force pure blue UI globally */
-  const areaColor = 'var(--accent)'
-  const areaColorGlow = 'var(--accent-glow)'
-  const navItems = NAV_ITEMS[currentArea.area_key] || []
+  const key   = currentArea.area_key
+  const mod   = MODULE_COLORS[key] || MODULE_COLORS.sistemas
+  const hex   = mod.hex
+  const rgb   = mod.rgb
+  const navItems = NAV_ITEMS[key] || []
 
   const now = new Date()
   const monthLabel = now.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
@@ -52,40 +61,52 @@ export default function DashboardLayout() {
       minHeight: '100vh',
       background: 'transparent',
       position: 'relative',
-      /* overflow:hidden eliminado — permite ver el AnimatedBackground global */
     }}>
-      {/* Sidebar */}
-      <aside className="glass-panel" style={{
+
+      {/* ── Sidebar ────────────────────────────────────────────── */}
+      <aside style={{
         width: 220,
         flexShrink: 0,
-        borderRight: '1px solid var(--border)',
         display: 'flex',
         flexDirection: 'column',
         position: 'sticky',
         top: 0,
         height: '100vh',
         overflow: 'hidden',
+        background: 'rgba(8,12,28,0.65)',
+        backdropFilter: 'blur(28px) saturate(1.6)',
+        WebkitBackdropFilter: 'blur(28px) saturate(1.6)',
+        borderRight: `1px solid rgba(${rgb},0.12)`,
+        boxShadow: `1px 0 0 rgba(${rgb},0.06), inset -1px 0 0 rgba(255,255,255,0.03)`,
+        zIndex: 20,
       }}>
+
+        {/* Top accent line */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: 2,
+          background: `linear-gradient(90deg, transparent, ${hex}, transparent)`,
+          opacity: 0.7,
+        }} />
+
         {/* Logo */}
         <div style={{
-          padding: '24px 20px 20px',
-          borderBottom: '1px solid var(--border)',
+          padding: '28px 20px 18px',
+          borderBottom: `1px solid rgba(${rgb},0.10)`,
         }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            marginBottom: 4,
-          }}>
-            <span style={{ fontSize: 18 }}>▦</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+            <span style={{ fontSize: 18, filter: `drop-shadow(0 0 6px ${hex}88)` }}>▦</span>
             <span style={{
-              fontWeight: 600, fontSize: '1rem',
+              fontWeight: 700, fontSize: '1rem',
               letterSpacing: '-0.5px',
-              color: 'var(--text-primary)',
+              background: `linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))`,
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}>MetricHub</span>
           </div>
           <div style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.65rem',
-            color: 'var(--text-muted)',
+            fontSize: '0.62rem',
+            color: 'rgba(255,255,255,0.3)',
             letterSpacing: '0.08em',
           }}>
             {monthLabel}
@@ -94,38 +115,40 @@ export default function DashboardLayout() {
 
         {/* Area badge */}
         <div style={{
-          margin: '16px 12px',
+          margin: '14px 12px',
           padding: '10px 14px',
-          background: 'var(--accent-glow)',
-          border: `1px solid var(--border-bright)`,
+          background: `rgba(${rgb},0.10)`,
+          border: `1px solid rgba(${rgb},0.22)`,
           borderRadius: 'var(--radius-md)',
           display: 'flex', alignItems: 'center', gap: 10,
+          boxShadow: `0 4px 16px rgba(${rgb},0.08)`,
         }}>
           <span style={{ fontSize: 18 }}>{currentArea.icono}</span>
           <div>
             <div style={{
-              fontSize: '0.78rem', fontWeight: 600,
-              color: areaColor, lineHeight: 1.2,
+              fontSize: '0.78rem', fontWeight: 700,
+              color: hex, lineHeight: 1.2,
+              letterSpacing: '-0.2px',
             }}>{currentArea.area_nombre}</div>
             <div style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.6rem',
-              color: 'var(--text-muted)',
+              fontSize: '0.58rem',
+              color: 'rgba(255,255,255,0.28)',
               marginTop: 2,
             }}>área activa</div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav style={{ flex: 1, padding: '8px 12px', overflowY: 'auto' }}>
+        <nav style={{ flex: 1, padding: '6px 10px', overflowY: 'auto' }}>
           <div style={{
-            fontSize: '0.62rem',
-            letterSpacing: '0.15em',
+            fontSize: '0.58rem',
+            letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: 'var(--text-muted)',
+            color: 'rgba(255,255,255,0.22)',
             fontWeight: 600,
             padding: '0 8px',
-            marginBottom: 8,
+            marginBottom: 6,
           }}>Navegación</div>
 
           {navItems.map(item => {
@@ -136,36 +159,35 @@ export default function DashboardLayout() {
                 onClick={() => navigate(item.path)}
                 style={{
                   width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  padding: '10px 12px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: 'none',
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '9px 12px',
+                  borderRadius: 10,
+                  border: isActive ? `1px solid rgba(${rgb},0.25)` : '1px solid transparent',
                   marginBottom: 2,
-                  background: isActive ? 'var(--accent-glow)' : 'transparent',
-                  color: isActive ? areaColor : 'var(--text-secondary)',
-                  fontSize: '0.85rem',
+                  background: isActive ? `rgba(${rgb},0.12)` : 'transparent',
+                  color: isActive ? '#fff' : 'rgba(255,255,255,0.42)',
+                  fontSize: '0.82rem',
                   fontWeight: isActive ? 600 : 400,
                   textAlign: 'left',
-                  transition: 'all 0.15s',
+                  transition: 'all 0.18s ease',
                   cursor: 'pointer',
-                  borderLeft: isActive ? `2px solid ${areaColor}` : '2px solid transparent',
+                  borderLeft: isActive ? `2px solid ${hex}` : '2px solid transparent',
+                  boxShadow: isActive ? `0 2px 12px rgba(${rgb},0.12)` : 'none',
                 }}
                 onMouseEnter={e => {
                   if (!isActive) {
-                    e.currentTarget.style.background = 'var(--bg-hover)'
-                    e.currentTarget.style.color = 'var(--text-primary)'
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.75)'
                   }
                 }}
                 onMouseLeave={e => {
                   if (!isActive) {
                     e.currentTarget.style.background = 'transparent'
-                    e.currentTarget.style.color = 'var(--text-secondary)'
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.42)'
                   }
                 }}
               >
-                <span style={{ fontSize: '0.9rem', opacity: 0.9 }}>{item.icon}</span>
+                <span style={{ fontSize: '0.85rem', opacity: isActive ? 1 : 0.7 }}>{item.icon}</span>
                 {item.label}
               </button>
             )
@@ -175,10 +197,8 @@ export default function DashboardLayout() {
         {/* Bottom actions */}
         <div style={{
           padding: '12px',
-          borderTop: '1px solid var(--border)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
+          borderTop: `1px solid rgba(${rgb},0.10)`,
+          display: 'flex', flexDirection: 'column', gap: 4,
         }}>
           <button
             onClick={exitArea}
@@ -186,15 +206,25 @@ export default function DashboardLayout() {
               width: '100%',
               padding: '9px 12px',
               background: 'transparent',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-sm)',
-              color: 'var(--text-secondary)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 10,
+              color: 'rgba(255,255,255,0.4)',
               fontSize: '0.78rem',
               textAlign: 'left',
               display: 'flex', alignItems: 'center', gap: 8,
+              transition: 'all 0.18s ease',
+              cursor: 'pointer',
             }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-bright)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = `rgba(${rgb},0.35)`
+              e.currentTarget.style.color = 'rgba(255,255,255,0.75)'
+              e.currentTarget.style.background = `rgba(${rgb},0.07)`
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'
+              e.currentTarget.style.color = 'rgba(255,255,255,0.4)'
+              e.currentTarget.style.background = 'transparent'
+            }}
           >
             ⇦ Cambiar área
           </button>
@@ -205,57 +235,61 @@ export default function DashboardLayout() {
               padding: '9px 12px',
               background: 'transparent',
               border: 'none',
-              color: 'var(--text-muted)',
-              fontSize: '0.75rem',
+              color: 'rgba(255,255,255,0.22)',
+              fontSize: '0.73rem',
               textAlign: 'left',
               fontFamily: 'var(--font-mono)',
+              cursor: 'pointer',
+              transition: 'color 0.18s ease',
             }}
             onMouseEnter={e => e.currentTarget.style.color = '#f0436a'}
-            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.22)'}
           >
             ✕ Cerrar sesión
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* ── Main content ───────────────────────────────────────── */}
       <main style={{
-        flex: 1,
-        minWidth: 0,
+        flex: 1, minWidth: 0,
         overflowY: 'auto',
         background: 'transparent',
       }}>
+
         {/* Top bar */}
-        <div className="glass-panel" style={{
+        <div style={{
           position: 'sticky', top: 0, zIndex: 10,
-          borderBottom: '1px solid var(--border)',
-          padding: '14px 32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          background: 'rgba(8,12,28,0.55)',
+          backdropFilter: 'blur(24px) saturate(1.5)',
+          WebkitBackdropFilter: 'blur(24px) saturate(1.5)',
+          borderBottom: `1px solid rgba(${rgb},0.12)`,
+          padding: '13px 32px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          boxShadow: `0 1px 0 rgba(${rgb},0.06)`,
         }}>
           <div style={{
-            height: 3, width: 3, borderRadius: '50%',
-            background: areaColor,
-            boxShadow: `0 0 8px ${areaColor}`,
-            marginRight: 10,
+            height: 8, width: 8, borderRadius: '50%',
+            background: hex,
+            boxShadow: `0 0 10px ${hex}`,
+            marginRight: 12,
             animation: 'pulse-glow 2s ease infinite',
           }} />
           <div style={{ flex: 1 }}>
             <span style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.7rem',
-              color: 'var(--text-muted)',
-              letterSpacing: '0.1em',
+              fontSize: '0.68rem',
+              color: 'rgba(255,255,255,0.4)',
+              letterSpacing: '0.12em',
             }}>
               {currentArea.icono} {currentArea.area_nombre.toUpperCase()}
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
             <div style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.7rem',
-              color: 'var(--text-muted)',
+              fontSize: '0.68rem',
+              color: 'rgba(255,255,255,0.28)',
             }}>
               {new Date().toLocaleDateString('es-AR', {
                 weekday: 'short', day: '2-digit',

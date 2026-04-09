@@ -3,11 +3,11 @@ import { supabase } from '../../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
+  BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts'
 
-const colorPrimary = 'var(--accent)'
-const trafficColors = ['#60A5FA', '#34D399', '#818CF8', '#A78BFA', '#F472B6']
+const accentColor = '#C084FC' // Purple 400 - Gerencia Theme
+const trafficColors = ['#60A5FA', '#34D399', '#818CF8', '#A78BFA', '#F472B6', '#FDBA74']
 
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
@@ -26,34 +26,76 @@ function fmt(n) {
 
 // --- KPI Card ---
 function KpiCard({ label, value, sub, accent, icon, delay = 0 }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div className="glass-panel animate-fadeUp" style={{
-      animationDelay: `${delay}s`,
-      borderRadius: 'var(--radius-lg)', padding: '24px', position: 'relative', overflow: 'hidden',
-    }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: accent, opacity: 0.9, boxShadow: `0 0 12px ${accent}` }} />
+    <div 
+      className="animate-fadeUp" 
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        animationDelay: `${delay}s`,
+        background: 'rgba(255, 255, 255, 0.07)',
+        backdropFilter: 'blur(28px)',
+        border: hovered ? `1px solid ${accent}66` : '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 24, padding: '24px', position: 'relative', overflow: 'hidden',
+        boxShadow: hovered ? `0 12px 40px ${accent}22` : '0 8px 32px rgba(0, 0, 0, 0.15)',
+        transform: hovered ? 'translateY(-8px) scale(1.01)' : 'translateY(0) scale(1)',
+        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        cursor: 'default'
+      }}
+    >
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: accent, opacity: 0.8 }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{label}</span>
-        <span style={{ fontSize: 22, opacity: 0.6 }}>{icon}</span>
+        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{label}</span>
+        <span style={{ fontSize: 24, filter: `drop-shadow(0 0 10px ${accent}44)` }}>{icon}</span>
       </div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-1.5px', lineHeight: 1, marginBottom: 8 }}>{value}</div>
-      {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>{sub}</div>}
+      <div style={{ 
+        fontFamily: 'var(--font-mono)', fontSize: '2.8rem', fontWeight: 800, 
+        color: '#fff', letterSpacing: '-2px', lineHeight: 1, marginBottom: 8 
+      }}>
+        {value}
+      </div>
+      {sub && <div style={{ fontSize: '0.75rem', color: accent, fontWeight: 700, letterSpacing: '0.02em' }}>{sub}</div>}
     </div>
   )
 }
 
 // --- Area Section ---
 function AreaSection({ title, accent, icon, children, to, navigate }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div className="glass-panel" style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-elevated)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+    <div 
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ 
+        background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)',
+        borderRadius: 32, overflow: 'hidden', display: 'flex', flexDirection: 'column',
+        border: hovered ? `1px solid ${accent}66` : '1px solid rgba(255, 255, 255, 0.08)',
+        transition: 'all 0.3s ease',
+        boxShadow: hovered ? `0 12px 32px ${accent}11` : 'none'
+      }}
+    >
+      <div style={{ 
+        padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)', 
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: 'rgba(255, 255, 255, 0.03)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 20 }}>{icon}</span>
-          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>{title}</span>
+          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#fff', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{title}</span>
         </div>
         {to && (
-          <button onClick={() => navigate(to)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: accent, padding: '5px 12px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}>
-            Explorar
+          <button 
+            onClick={() => navigate(to)} 
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', 
+              color: accent, padding: '6px 16px', borderRadius: 12, fontSize: '0.75rem', 
+              fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = accent; e.currentTarget.style.color = '#080C1C' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.color = accent }}
+          >
+            DETALLES →
           </button>
         )}
       </div>
@@ -62,11 +104,11 @@ function AreaSection({ title, accent, icon, children, to, navigate }) {
   )
 }
 
-function MetricRow({ label, value, color = 'var(--text-secondary)' }) {
+function MetricRow({ label, value, color = 'rgba(255,255,255,0.6)' }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{label}</span>
-      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: color }}>{value}</span>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{label}</span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1rem', fontWeight: 800, color: color }}>{value}</span>
     </div>
   )
 }
@@ -78,7 +120,6 @@ export default function GerenciaDashboardPage() {
   const [month, setMonth] = useState(now.getMonth())
   const [data, setData]   = useState(null)
   const [loading, setLoading] = useState(true)
-  const [lastUpdate, setLastUpdate] = useState(null)
 
   const isCurrentMonth = year === now.getFullYear() && month === now.getMonth()
 
@@ -118,19 +159,16 @@ export default function GerenciaDashboardPage() {
       totalFlyers, totalIncidencias, totalPresupuesto,
       ga4: ga4 || null, social: social || null, campanas: campanas || [],
     })
-    setLastUpdate(new Date())
     setLoading(false)
   }
 
-  // Distribution chart data
   const activityData = data ? [
-    { name: 'Social', value: (data.social?.interacciones || 0) / 100 }, // Scaled down for visual balance
+    { name: 'Social', value: (data.social?.interacciones || 0) / 100 },
     { name: 'Diseño', value: data.totalFlyers },
-    { name: 'Sistemas', value: data.totalIncidencias * 5 }, // Scaled up
+    { name: 'Sistemas', value: data.totalIncidencias * 5 },
     { name: 'Campañas', value: data.campanas.length * 10 }
   ].filter(d => d.value > 0) : []
 
-  // Top strategies bar chart
   const strategiesData = data ? data.ganancias.slice(0, 5).map(g => ({
     name: g.nombre_estrategia?.substring(0, 15),
     ingresos: g.ingresos
@@ -139,96 +177,124 @@ export default function GerenciaDashboardPage() {
   return (
     <div className="animate-fadeIn">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 24, marginBottom: 32 }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-1px', margin: 0 }}>Vista Ejecutiva</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 4 }}>
+            <h1 style={{ 
+              fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-2px', margin: 0,
+              background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}>
+              Vista Ejecutiva
+            </h1>
             {isCurrentMonth && (
-              <span className="glass-panel" style={{
-                background: '#10b98118', border: '1px solid #10b98140',
+              <div style={{
+                background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)',
                 borderRadius: 20, padding: '4px 12px',
-                fontSize: '0.7rem', fontWeight: 600, color: '#10b981', letterSpacing: '0.05em',
-                display: 'flex', alignItems: 'center', gap: 6
+                fontSize: '0.75rem', fontWeight: 800, color: '#10B981', letterSpacing: '0.1em',
+                display: 'flex', alignItems: 'center', gap: 8
               }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', animation: 'pulse 2s infinite' }} />
-                LIVE
-              </span>
+                <span className="animate-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981' }} />
+                EN TIEMPO REAL
+              </div>
             )}
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>
-            Gerencia · Resumen consolidado del mes
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem', fontWeight: 500 }}>
+            Gerencia · Resumen consolidado del rendimiento mensual
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: 4 }}>
-            <button onClick={() => { if (month===0){setYear(y=>y-1);setMonth(11)}else setMonth(m=>m-1) }}
-              style={{ width:40,height:40,borderRadius:12,background:'var(--bg-elevated)',border:'1px solid var(--border)',color:'var(--text-secondary)',fontSize:'1.2rem',cursor:'pointer' }}>‹</button>
-            <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.9rem',color:'var(--text-primary)',minWidth:140,textAlign:'center', display: 'flex', alignItems:'center', justifyContent: 'center', fontWeight: 600 }}>{MONTHS_ES[month]} {year}</span>
-            <button onClick={() => { if(isCurrentMonth)return; if(month===11){setYear(y=>y+1);setMonth(0)}else setMonth(m=>m+1) }}
-              disabled={isCurrentMonth} style={{ width:40,height:40,borderRadius:12,background:'var(--bg-elevated)',border:'1px solid var(--border)',color:isCurrentMonth?'var(--text-muted)':'var(--text-secondary)',fontSize:'1.2rem',cursor:isCurrentMonth?'not-allowed':'pointer' }}>›</button>
+        
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ 
+            background: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 4, 
+            border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center' 
+          }}>
+            <button onClick={() => month===0 ? (setYear(y=>y-1), setMonth(11)) : setMonth(m=>m-1)} 
+              style={{ width: 40, height: 40, borderRadius: 12, background: 'transparent', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' }}>‹</button>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#fff', minWidth: 140, textAlign: 'center', fontWeight: 800 }}>
+              {MONTHS_ES[month].toUpperCase()} {year}
+            </span>
+            <button onClick={() => isCurrentMonth ? null : month===11 ? (setYear(y=>y+1), setMonth(0)) : setMonth(m=>m+1)} 
+              disabled={isCurrentMonth} style={{ 
+                width: 40, height: 40, borderRadius: 12, background: 'transparent', border: 'none', 
+                color: isCurrentMonth ? 'rgba(255,255,255,0.2)' : '#fff', fontSize: '1.2rem', 
+                cursor: isCurrentMonth ? 'not-allowed' : 'pointer' 
+              }}>›</button>
           </div>
-          <button onClick={loadAll} className="glass-panel" style={{ width:40,height:40,borderRadius:12, border:'1px solid var(--border)', color:colorPrimary, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>↻</button>
+          <button onClick={loadAll} style={{ 
+            width: 48, height: 48, borderRadius: 16, background: 'rgba(255,255,255,0.05)', 
+            border: '1px solid rgba(255,255,255,0.1)', color: accentColor, cursor: 'pointer', display: 'flex', 
+            alignItems: 'center', justifyContent: 'center', fontSize: 20, transition: 'all 0.3s' 
+          }} onMouseEnter={e => e.currentTarget.style.transform = 'rotate(180deg)'} onMouseLeave={e => e.currentTarget.style.transform = 'rotate(0deg)'}>↻</button>
         </div>
       </div>
 
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 100 }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '4px solid var(--border-bright)', borderTopColor: colorPrimary, animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 120 }}>
+          <div className="animate-spin" style={{ width: 48, height: 48, borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: accentColor }} />
         </div>
       ) : (
-        <>
+        <div className="animate-fadeUp">
           {/* Main Financial KPIs */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginBottom: 24 }}>
-            <KpiCard label="Ingresos Totales" value={formatMoney(data.totalIngresos)} icon="💵" accent="#10b981" delay={0} />
-            <KpiCard label="Presupuesto Invertido" value={formatMoney(data.totalPresupuesto + data.totalGastoJornadas)} icon="💰" accent="#F472B6" delay={0.05} />
-            <KpiCard label="Balance Neto" value={formatMoney(data.totalIngresos - (data.totalPresupuesto + data.totalGastoJornadas))} 
-                     icon="📊" accent={colorPrimary} delay={0.1} 
-                     sub={`ROI: ${data.totalIngresos > 0 ? (((data.totalIngresos - (data.totalPresupuesto + data.totalGastoJornadas)) / (data.totalPresupuesto + data.totalGastoJornadas)) * 100).toFixed(0) : 0}%`} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginBottom: 32 }}>
+            <KpiCard label="Ingresos Totales (Facturación)" value={formatMoney(data.totalIngresos)} icon="💵" accent="#10B981" delay={0} />
+            <KpiCard label="Presupuesto Ejecutado" value={formatMoney(data.totalPresupuesto + data.totalGastoJornadas)} icon="💰" accent="#F472B6" delay={0.1} />
+            <KpiCard label="Balance Operativo Neto" value={formatMoney(data.totalIngresos - (data.totalPresupuesto + data.totalGastoJornadas))} 
+                     icon="⚖️" accent={accentColor} delay={0.2} 
+                     sub={`ÍNDICE ROI: ${data.totalIngresos > 0 ? (((data.totalIngresos - (data.totalPresupuesto + data.totalGastoJornadas)) / (data.totalPresupuesto + data.totalGastoJornadas)) * 100).toFixed(0) : 0}%`} />
           </div>
 
           {/* Charts Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16, marginBottom: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 2fr)) 1fr', gap: 24, marginBottom: 32 }}>
             {/* Strategies Chart */}
-            <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 24, textTransform: 'uppercase' }}>Top 5 Estrategias por Ingresos</div>
-              <div style={{ width: '100%', height: 300 }}>
+            <div className="glass-panel" style={{ 
+              background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+              padding: '32px', borderRadius: 32, border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+            }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em', marginBottom: 32, textTransform: 'uppercase' }}>TOP 5 ESTRATEGIAS (MÁXIMA RENTABILIDAD)</div>
+              <div style={{ width: '100%', height: 350 }}>
                 <ResponsiveContainer>
                   <BarChart layout="vertical" data={strategiesData} margin={{ left: 20, right: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.05)" />
                     <XAxis type="number" hide />
-                    <YAxis dataKey="name" type="category" stroke="var(--text-primary)" fontSize={12} width={100} tickLine={false} axisLine={false} />
-                    <Tooltip cursor={{fill: 'var(--bg-hover)'}} contentStyle={{background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:8}} />
-                    <Bar dataKey="ingresos" fill={colorPrimary} radius={[0, 4, 4, 0]} />
+                    <YAxis dataKey="name" type="category" stroke="rgba(255,255,255,0.6)" fontSize={11} width={120} tickLine={false} axisLine={false} fontWeight={600} />
+                    <Tooltip cursor={{fill: 'rgba(255,255,255,0.03)'}} contentStyle={{ background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)', borderRadius: 12, boxShadow: '0 4px 24px var(--glass-shadow)' }} itemStyle={{ color: 'var(--text-primary)', fontWeight: 700 }} />
+                    <Bar dataKey="ingresos" fill={accentColor} radius={[0, 8, 8, 0]} barSize={34} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
             {/* Area Activity Donut */}
-            <div className="glass-panel" style={{ padding: '24px', borderRadius: 'var(--radius-xl)', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 20, textTransform: 'uppercase' }}>Actividad por Área</div>
-              <div style={{ flex: 1, position: 'relative' }}>
-                <ResponsiveContainer width="100%" height={200}>
+            <div className="glass-panel" style={{ 
+              background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+              padding: '32px', borderRadius: 32, border: '1px solid rgba(255,255,255,0.1)',
+              display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+            }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em', marginBottom: 24, textTransform: 'uppercase' }}>ACTIVIDAD TRASVERSAL</div>
+              <div style={{ flex: 1, position: 'relative', minHeight: 220 }}>
+                <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={activityData} innerRadius={65} outerRadius={85} paddingAngle={8} dataKey="value" stroke="none">
+                    <Pie data={activityData} innerRadius={75} outerRadius={100} paddingAngle={10} dataKey="value" stroke="none">
                       {activityData.map((entry, index) => <Cell key={`cell-${index}`} fill={trafficColors[index % trafficColors.length]} />)}
                     </Pie>
-                    <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8 }} />
+                    <Tooltip contentStyle={{ background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)', borderRadius: 12, boxShadow: '0 4px 24px var(--glass-shadow)' }} itemStyle={{ color: 'var(--text-primary)', fontWeight: 700 }} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Activos</span>
-                  <span style={{ fontSize: '1.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{data.totalFlyers + data.totalIncidencias}</span>
+                <div style={{ position: 'absolute', inset: 0, transform: 'translateY(-5%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.1em' }}>Hitos</span>
+                  <span style={{ fontSize: '2.8rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{data.totalFlyers + data.totalIncidencias}</span>
                 </div>
               </div>
-              <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {activityData.map((f, i) => (
                   <div key={f.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 12, height: 12, borderRadius: '50%', background: trafficColors[i % trafficColors.length], boxShadow: `0 0 8px ${trafficColors[i % trafficColors.length]}44` }} />
-                      <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{f.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: trafficColors[i % trafficColors.length], boxShadow: `0 0 10px ${trafficColors[i % trafficColors.length]}88` }} />
+                      <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>{f.name}</span>
                     </div>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{f.value.toFixed(0)}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 800, color: '#fff' }}>{f.value.toFixed(0)}</span>
                   </div>
                 ))}
               </div>
@@ -236,54 +302,63 @@ export default function GerenciaDashboardPage() {
           </div>
 
           {/* Area Grids */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: 24, marginBottom: 40 }}>
             
             {/* Social Media Snapshot */}
-            <AreaSection title="Social Media" icon="📱" to="/dashboard/social" navigate={navigate} accent="#60A5FA">
-              {!data.social ? <p style={{color:'var(--text-muted)'}}>Sin datos este mes</p> : (
+            <AreaSection title="Social Media / Presencia" icon="📱" to="/dashboard/social" navigate={navigate} accent="#60A5FA">
+              {!data.social ? <p style={{color:'rgba(255,255,255,0.3)', textAlign: 'center', padding: '20px 0'}}>Sin registros para este periodo</p> : (
                 <>
-                  <MetricRow label="Seguidores Totales" value={fmt(data.social.seguidores_total)} />
-                  <MetricRow label="Nuevos" value={fmt(data.social.nuevos_seguidores)} color="#10b981" />
-                  <MetricRow label="Interacciones" value={fmt(data.social.interacciones)} />
-                  <div style={{ marginTop: 16, height: 8, background: 'var(--bg-elevated)', borderRadius: 4, overflow: 'hidden' }}>
-                    <div style={{ width: '75%', height: '100%', background: '#60A5FA' }} />
+                  <MetricRow label="Audiencia Consolidada" value={fmt(data.social.seguidores_total)} />
+                  <MetricRow label="Crecimiento Mensual" value={fmt(data.social.nuevos_seguidores)} color="#10B981" />
+                  <MetricRow label="Engagement Index" value={fmt(data.social.interacciones)} />
+                  <div style={{ marginTop: 20, height: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ width: '75%', height: '100%', background: 'linear-gradient(90deg, #60A5FA, #3B82F6)', borderRadius: 10 }} />
                   </div>
                 </>
               )}
             </AreaSection>
 
-            {/* DiseñoSnapshot */}
-            <AreaSection title="Diseño Gráfico" icon="🎨" to="/dashboard/diseno" navigate={navigate} accent="#38BDF8">
-              <MetricRow label="Flyers Creados" value={data.totalFlyers} color={colorPrimary} />
-              <MetricRow label="Videos Collab" value={data.jornadas.length} />
-              <MetricRow label="Fotos Subidas" value="84" />
-              <div style={{ marginTop: 16, height: 8, background: 'var(--bg-elevated)', borderRadius: 4, overflow: 'hidden' }}>
-                    <div style={{ width: '60%', height: '100%', background: '#38BDF8' }} />
+            {/* Diseño Snapshot */}
+            <AreaSection title="Identidad / Diseño" icon="🎨" to="/dashboard/diseno" navigate={navigate} accent="#38BDF8">
+              <MetricRow label="Contenido Gráfico Final" value={data.totalFlyers} color="#38BDF8" />
+              <MetricRow label="Cobertura Jornadas" value={data.jornadas.length} />
+              <MetricRow label="Biblioteca de Medios" value="84 activos" />
+              <div style={{ marginTop: 20, height: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ width: '60%', height: '100%', background: 'linear-gradient(90deg, #38BDF8, #0EA5E9)', borderRadius: 10 }} />
               </div>
             </AreaSection>
 
             {/* Sistemas Snapshot */}
-            <AreaSection title="Sistemas / Web" icon="⚙️" to="/dashboard/sistemas" navigate={navigate} accent="#818CF8">
-              <MetricRow label="Incidencias Resueltas" value={data.totalIncidencias} color="#10b981" />
-              <MetricRow label="Sesiones GA4" value={fmt(data.ga4?.sesiones)} />
-              <MetricRow label="Uptime Web" value="99.9%" />
-              <div style={{ marginTop: 16, height: 8, background: 'var(--bg-elevated)', borderRadius: 4, overflow: 'hidden' }}>
-                    <div style={{ width: '99%', height: '100%', background: '#818CF8' }} />
+            <AreaSection title="Ecosistema Digital" icon="⚙️" to="/dashboard/sistemas" navigate={navigate} accent="#818CF8">
+              <MetricRow label="SLA de Respuesta (Fix)" value={data.totalIncidencias} color="#10B981" />
+              <MetricRow label="Métricas de Tráfico (GA4)" value={fmt(data.ga4?.sesiones)} />
+              <MetricRow label="Disponibilidad Crítica" value="99.9% Uptime" />
+              <div style={{ marginTop: 20, height: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ width: '99%', height: '100%', background: 'linear-gradient(90deg, #818CF8, #6366F1)', borderRadius: 10 }} />
               </div>
             </AreaSection>
 
             {/* Jornadas Snapshot */}
-            <AreaSection title="Jornadas Médicas" icon="🏥" to="/dashboard/gerencia/jornadas" navigate={navigate} accent="#A78BFA">
-              <MetricRow label="Jornadas Realizadas" value={data.jornadas.length} />
-              <MetricRow label="Inversión" value={formatMoney(data.totalGastoJornadas)} color="#F472B6" />
-              <div style={{ display: 'flex', gap: 6, marginTop: 16 }}>
-                {data.jornadas.slice(0, 3).map((j, i) => (
-                  <div key={i} title={j.nombre} style={{ width: 32, height: 32, borderRadius: 8, background: trafficColors[i], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>🏥</div>
+            <AreaSection title="Gestión de Jornadas" icon="🏥" to="/dashboard/gerencia/jornadas" navigate={navigate} accent="#A78BFA">
+              <MetricRow label="Operativos Médicos" value={data.jornadas.length} />
+              <MetricRow label="Inversión Social" value={formatMoney(data.totalGastoJornadas)} color="#F472B6" />
+              <div style={{ display: 'flex', gap: 10, marginTop: 24, paddingLeft: 4 }}>
+                {data.jornadas.slice(0, 5).map((j, i) => (
+                  <div key={i} title={j.nombre} style={{ 
+                    width: 40, height: 40, borderRadius: 12, 
+                    background: `rgba(255, 255, 255, 0.05)`, border: '1px solid rgba(255, 255, 255, 0.1)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    fontSize: 20, cursor: 'help',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}>🏥</div>
                 ))}
+                {data.jornadas.length > 5 && (
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13, fontWeight: 800 }}>+{data.jornadas.length - 5}</div>
+                )}
               </div>
             </AreaSection>
           </div>
-        </>
+        </div>
       )}
     </div>
   )

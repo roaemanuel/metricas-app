@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
+const accentColor = '#FDBA74' // Amber 300 / Systems theme
+
 function todayISO() {
   const n = new Date()
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`
@@ -21,40 +23,45 @@ function Counter({ value, onChange, color, label, sublabel }) {
   return (
     <div style={{
       display:'flex', alignItems:'center', justifyContent:'space-between',
-      padding:'14px 18px',
-      background: 'var(--bg-surface)',
-      border: isSet ? `1px solid var(--accent)` : '1px solid var(--border)',
-      borderRadius:12, transition:'all 0.15s',
-      boxShadow: '0 2px 8px var(--glass-shadow)',
+      padding:'20px 24px',
+      background: 'rgba(255, 255, 255, 0.06)',
+      backdropFilter: 'blur(10px)',
+      border: isSet ? `1px solid ${color}88` : '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: 20, transition:'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      boxShadow: isSet ? `0 8px 24px ${color}22` : '0 4px 12px rgba(0,0,0,0.1)',
+      transform: isSet ? 'scale(1.02)' : 'scale(1)'
     }}>
       <div>
-        <div style={{ fontSize:'0.88rem', fontWeight:600, color: 'var(--text-primary)' }}>{label}</div>
-        {sublabel && <div style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:2 }}>{sublabel}</div>}
+        <div style={{ fontSize:'0.95rem', fontWeight:700, color: '#fff' }}>{label}</div>
+        {sublabel && <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', marginTop:4, fontWeight: 500 }}>{sublabel}</div>}
       </div>
-      <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16 }}>
         <button onClick={() => onChange(Math.max(0, value-1))} style={{
-          width:34, height:34, borderRadius:9,
-          background:'var(--bg-elevated)', border:'none',
-          color:'var(--text-secondary)', fontSize:'1.2rem', fontWeight: 600,
+          width:38, height:38, borderRadius:12,
+          background:'rgba(255, 255, 255, 0.05)', border:'1px solid rgba(255, 255, 255, 0.1)',
+          color:'#fff', fontSize:'1.4rem', fontWeight: 600,
           display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
+          transition: 'all 0.2s'
         }}
-          onMouseEnter={e=>e.currentTarget.style.background='var(--bg-hover)'}
-          onMouseLeave={e=>e.currentTarget.style.background='var(--bg-elevated)'}
+          onMouseEnter={e=>e.currentTarget.style.background='rgba(255, 255, 255, 0.1)'}
+          onMouseLeave={e=>e.currentTarget.style.background='rgba(255, 255, 255, 0.05)'}
         >−</button>
         <span style={{
-          fontFamily:'var(--font-mono)', fontSize:'1.5rem', fontWeight: 600,
-          color: 'var(--text-primary)',
-          minWidth:40, textAlign:'center', transition:'color 0.15s',
+          fontFamily:'var(--font-mono)', fontSize:'1.8rem', fontWeight: 800,
+          color: isSet ? color : '#fff',
+          minWidth:44, textAlign:'center', transition:'color 0.2s',
+          textShadow: isSet ? `0 0 15px ${color}44` : 'none'
         }}>{value}</span>
         <button onClick={() => onChange(value+1)} style={{
-          width:34, height:34, borderRadius:9,
-          background: 'var(--bg-elevated)', border: 'none',
-          color: 'var(--text-secondary)', fontSize:'1.2rem', fontWeight: 600,
+          width:38, height:38, borderRadius:12,
+          background: isSet ? `${color}22` : 'rgba(255, 255, 255, 0.05)', 
+          border: isSet ? `1px solid ${color}66` : '1px solid rgba(255, 255, 255, 0.1)',
+          color: isSet ? color : '#fff', fontSize:'1.4rem', fontWeight: 600,
           display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
-          transition:'all 0.15s',
+          transition:'all 0.2s',
         }}
-          onMouseEnter={e=>{ e.currentTarget.style.background='var(--bg-hover)' }}
-          onMouseLeave={e=>{ e.currentTarget.style.background='var(--bg-elevated)' }}
+          onMouseEnter={e=>{ e.currentTarget.style.background=isSet?`${color}33`:'rgba(255, 255, 255, 0.1)' }}
+          onMouseLeave={e=>{ e.currentTarget.style.background=isSet?`${color}22`:'rgba(255, 255, 255, 0.05)' }}
         >+</button>
       </div>
     </div>
@@ -62,42 +69,54 @@ function Counter({ value, onChange, color, label, sublabel }) {
 }
 
 function ExistingModal({ date, onEdit, onNew, onCancel }) {
-  const color = '#f5c518'
   return (
     <div style={{
       position:'fixed', inset:0,
-      background:'rgba(7,8,15,0.88)', backdropFilter:'blur(12px)',
+      background:'rgba(8, 12, 28, 0.45)', backdropFilter:'blur(16px)',
       display:'flex', alignItems:'center', justifyContent:'center',
-      zIndex:200, animation:'fadeIn 0.2s ease',
+      zIndex:2000, animation:'fadeIn 0.3s ease',
     }}>
-      <div style={{
-        background:'var(--bg-surface)', border:'1px solid var(--border)',
-        borderRadius:24, padding:'36px 32px', width:'100%', maxWidth:400,
-        boxShadow:'0 24px 60px rgba(0,0,0,0.3)', animation:'fadeUp 0.3s ease', textAlign:'center',
+      <div className="animate-fadeUp" style={{
+        background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)',
+        border:'1px solid rgba(255, 255, 255, 0.12)',
+        borderRadius:32, padding:'48px 40px', width:'100%', maxWidth:420,
+        boxShadow:'0 24px 60px rgba(0,0,0,0.5)', textAlign:'center',
+        position: 'relative', overflow: 'hidden'
       }}>
-        <div style={{ fontSize:36, marginBottom:16 }}>🖥️</div>
-        <h2 style={{ fontSize:'1.1rem', fontWeight: 600, letterSpacing:'-0.3px', marginBottom:8 }}>
-          Ya hay un registro para hoy
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
+        <div style={{ fontSize:56, marginBottom:24, filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.2))' }}>🖥️</div>
+        <h2 style={{ 
+          fontSize:'1.6rem', fontWeight: 900, marginBottom:12,
+          background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+        }}>
+          Registro duplicado
         </h2>
-        <p style={{ color:'var(--text-secondary)', fontSize:'0.85rem', lineHeight:1.6, marginBottom:28 }}>
-          El <strong style={{color:'var(--text-primary)'}}>{formatDateDisplay(date)}</strong> ya tiene datos.
-          ¿Editás el registro existente o agregás uno nuevo?
+        <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'0.95rem', lineHeight:1.6, marginBottom:32 }}>
+          La jornada del <strong style={{color:'#fff'}}>{formatDateDisplay(date)}</strong> ya fue procesada.
+          ¿Qué deseas hacer?
         </p>
-        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
           <button onClick={onEdit} style={{
-            padding:'13px', background:'var(--accent)', border:'none', borderRadius:10,
-            color:'#fff', fontSize:'0.9rem', fontWeight: 600, cursor:'pointer',
-            boxShadow:'0 4px 16px var(--accent-glow)',
-          }}>✎ Editar el registro existente</button>
+            padding:'16px', background: accentColor, border:'none', borderRadius:16,
+            color:'#080C1C', fontSize:'1rem', fontWeight: 800, cursor:'pointer',
+            boxShadow:`0 8px 20px ${accentColor}44`, transition: 'all 0.3s'
+          }}
+            onMouseEnter={e=>e.currentTarget.style.transform='translateY(-2px)'}
+            onMouseLeave={e=>e.currentTarget.style.transform='none'}
+          >✎ Editar jornada existente</button>
           <button onClick={onNew} style={{
-            padding:'13px', background:'var(--bg-elevated)',
-            border:'1px solid var(--border-bright)', borderRadius:10,
-            color:'var(--text-primary)', fontSize:'0.9rem', fontWeight:600, cursor:'pointer',
-          }}>✚ Agregar registro adicional</button>
+            padding:'15px', background:'rgba(255, 255, 255, 0.05)',
+            border:'1px solid rgba(255, 255, 255, 0.1)', borderRadius:16,
+            color:'#fff', fontSize:'1rem', fontWeight:700, cursor:'pointer', transition: 'all 0.2s'
+          }}
+            onMouseEnter={e=>e.currentTarget.style.background='rgba(255, 255, 255, 0.1)'}
+            onMouseLeave={e=>e.currentTarget.style.background='rgba(255, 255, 255, 0.05)'}
+          >✚ Nueva entrada (Adicional)</button>
           <button onClick={onCancel} style={{
-            padding:'10px', background:'transparent', border:'none',
-            color:'var(--text-muted)', fontSize:'0.8rem', cursor:'pointer', fontFamily:'var(--font-mono)',
-          }}>← Cancelar</button>
+            padding:'12px', background:'transparent', border:'none',
+            color:'rgba(255,255,255,0.3)', fontSize:'0.85rem', cursor:'pointer', fontWeight: 600, marginTop: 8
+          }}>Regresar sin cambios</button>
         </div>
       </div>
     </div>
@@ -108,7 +127,6 @@ const EMPTY_FORM = { incidencias_resueltas:0, imagenes_codigos_actualizadas:0, i
 const EMPTY_GA4  = { sesiones:'', usuarios_activos:'', pageviews:'', tasa_rebote:'', duracion_promedio_seg:'', trafico_organico:'', trafico_directo:'', trafico_social:'', trafico_referido:'', trafico_email:'', seo_keywords:[] }
 
 export default function SistemasIngresarPage() {
-  const color  = '#f5c518'
   const today  = todayISO()
 
   const [selectedDate, setSelectedDate]       = useState(today)
@@ -250,37 +268,61 @@ export default function SistemasIngresarPage() {
     }
   }
 
-  const inputSt = { width:'100%', padding:'9px 12px', fontSize:'0.88rem', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:8, color:'var(--text-primary)', boxSizing:'border-box' }
+  const inputSt = { 
+    width:'100%', padding:'12px 16px', fontSize:'0.95rem', 
+    background:'rgba(255, 255, 255, 0.05)', border:'1px solid rgba(255, 255, 255, 0.1)', 
+    borderRadius:12, color:'#fff', boxSizing:'border-box', outline: 'none',
+    transition: 'all 0.2s focus'
+  }
 
   return (
     <div className="animate-fadeIn">
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:24 }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:24, marginBottom:32 }}>
         <div>
-          <h1 style={{ fontSize:'1.6rem', fontWeight: 600, letterSpacing:'-0.8px', marginBottom:4 }}>Registro diario</h1>
-          <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>
-            Sistemas / Web · {formatDateDisplay(selectedDate)}
-            {mode==='edit' && <span style={{ marginLeft:10, fontSize:'0.72rem', background:color+'20', color, border:`1px solid ${color}44`, borderRadius:99, padding:'2px 10px', fontWeight:600 }}>✎ Editando</span>}
+          <h1 style={{ 
+            fontSize:'2.5rem', fontWeight: 900, letterSpacing:'-2px', marginBottom:4,
+            background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>
+            Ingreso de Métricas
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', fontWeight: 500 }}>
+            Sistemas / Web · <span style={{ color: accentColor, fontWeight: 700 }}>{formatDateDisplay(selectedDate)}</span>
+            {mode==='edit' && <span style={{ marginLeft:12, fontSize:'0.75rem', background:`${accentColor}22`, color: accentColor, border:`1px solid ${accentColor}44`, borderRadius:99, padding:'4px 12px', fontWeight:800, textTransform: 'uppercase' }}>✎ Editando sistema</span>}
           </p>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <span style={{ fontSize:'0.75rem', color:'var(--text-muted)', fontFamily:'var(--font-mono)' }}>Fecha:</span>
+        <div style={{ display:'flex', alignItems:'center', gap:12, background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: 16, border: '1px solid rgba(255,255,255,0.1)' }}>
+          <span style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Jornada:</span>
           <input type="date" value={selectedDate} max={today} onChange={e=>setSelectedDate(e.target.value)}
-            style={{ padding:'8px 12px', fontSize:'0.85rem', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:8, color:'var(--text-primary)', fontFamily:'var(--font-mono)' }} />
+            style={{ 
+              background: 'transparent', border: 'none', color: '#fff', fontSize: '1rem', 
+              fontWeight: 700, fontFamily: 'var(--font-mono)', outline: 'none', cursor: 'pointer' 
+            }} />
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:4, marginBottom:24, background:'var(--bg-elevated)', padding:4, borderRadius:12, width:'fit-content' }}>
-        {[['diario','📋 Registro del día'],['ga4','📈 Google Analytics']].map(([id,lbl]) => (
-          <button key={id} onClick={()=>setActiveTab(id)} style={{
-            padding:'8px 20px', borderRadius:9, border:'none', cursor:'pointer',
-            background: activeTab===id ? 'var(--bg-surface)' : 'transparent',
-            color: activeTab===id ? 'var(--text-primary)' : 'var(--text-muted)',
-            fontSize:'0.85rem', fontWeight: activeTab===id ? 600 : 400,
-            boxShadow: activeTab===id ? '0 1px 4px rgba(0,0,0,0.3)' : 'none',
-            transition:'all 0.15s',
-          }}>{lbl}</button>
+      <div style={{ 
+        display:'flex', gap:6, marginBottom:32, background:'rgba(255, 255, 255, 0.05)', 
+        padding:6, borderRadius:20, width:'fit-content', border: '1px solid rgba(255,255,255,0.1)' 
+      }}>
+        {[
+          {id:'diario', lbl:'📋 Registro Operativo', icon: '🔧'},
+          {id:'ga4', lbl:'📈 Analítica Web', icon: '🌐'}
+        ].map(tab => (
+          <button key={tab.id} onClick={()=>setActiveTab(tab.id)} style={{
+            padding:'12px 24px', borderRadius:14, border:'none', cursor:'pointer',
+            background: activeTab===tab.id ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+            color: activeTab===tab.id ? '#fff' : 'rgba(255,255,255,0.4)',
+            fontSize:'0.9rem', fontWeight: activeTab===tab.id ? 800 : 600,
+            display: 'flex', alignItems: 'center', gap: 8,
+            transition:'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: activeTab===tab.id ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+          }}>
+            <span style={{ fontSize: 16 }}>{tab.icon}</span>
+            {tab.lbl}
+          </button>
         ))}
       </div>
 
@@ -289,116 +331,136 @@ export default function SistemasIngresarPage() {
       )}
 
       {loading ? (
-        <div style={{ display:'flex', justifyContent:'center', padding:60 }}>
-          <div style={{ width:28, height:28, borderRadius:'50%', border:'2px solid var(--border-bright)', borderTopColor:color, animation:'spin 0.8s linear infinite' }} />
+        <div style={{ display:'flex', justifyContent:'center', padding:100 }}>
+          <div className="animate-spin" style={{ width:40, height:40, borderRadius:'50%', border:'4px solid rgba(255,255,255,0.1)', borderTopColor: accentColor }} />
         </div>
       ) : (
-        <>
+        <div className="animate-fadeUp">
           {/* ── TAB: DIARIO ── */}
           {activeTab==='diario' && (mode==='edit'||mode==='new') && (
-            <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+            <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
-                  <span style={{ fontSize:20 }}>🔧</span>
+              {/* Incidencias Panel */}
+              <div style={{ 
+                background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, padding:'32px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)', position: 'relative', overflow: 'hidden' 
+              }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: '#60A5FA' }} />
+                <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(96, 165, 250, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: '#60A5FA' }}>🔧</div>
                   <div>
-                    <div style={{ fontWeight: 600, fontSize:'0.95rem' }}>Incidencias técnicas resueltas</div>
-                    <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', marginTop:2 }}>Cantidad total de incidencias que se resolvieron hoy</div>
+                    <div style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Incidencias técnicas resueltas</div>
+                    <div style={{ fontSize:'0.85rem', color:'rgba(255,255,255,0.4)', marginTop:2, fontWeight: 500 }}>Soporte técnico y mantenimiento evolutivo hoy</div>
                   </div>
                 </div>
-                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:16 }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:20 }}>
+                
+                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:20, padding: '20px 0' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:32 }}>
                     <button onClick={()=>setForm(f=>({...f, incidencias_resueltas:Math.max(0,f.incidencias_resueltas-1)}))} style={{
-                      width:52, height:52, borderRadius:14,
-                      background:'var(--bg-elevated)', border:'1px solid var(--border)',
-                      color:'var(--text-secondary)', fontSize:'1.6rem', fontWeight: 600,
+                      width:64, height:64, borderRadius:20,
+                      background:'rgba(255, 255, 255, 0.05)', border:'1px solid rgba(255, 255, 255, 0.1)',
+                      color:'#fff', fontSize:'2rem', fontWeight: 600,
                       display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
+                      transition: 'all 0.2s'
                     }}
-                      onMouseEnter={e=>e.currentTarget.style.borderColor=color+'88'}
-                      onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}
+                      onMouseEnter={e=>e.currentTarget.style.background='rgba(255, 255, 255, 0.1)'}
+                      onMouseLeave={e=>e.currentTarget.style.background='rgba(255, 255, 255, 0.05)'}
                     >−</button>
                     <div style={{ textAlign:'center' }}>
                       <div style={{
-                        fontFamily:'var(--font-mono)', fontSize:'4rem', fontWeight: 600, lineHeight:1,
-                        color: 'var(--text-primary)',
-                        transition:'color 0.15s',
-                        textShadow: form.incidencias_resueltas>0 ? `0 0 40px var(--accent-glow)` : 'none',
+                        fontFamily:'var(--font-mono)', fontSize:'5.5rem', fontWeight: 900, lineHeight:1,
+                        color: form.incidencias_resueltas > 0 ? '#60A5FA' : '#fff',
+                        transition:'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        textShadow: form.incidencias_resueltas > 0 ? `0 0 40px rgba(96, 165, 250, 0.4)` : 'none',
+                        transform: form.incidencias_resueltas > 0 ? 'scale(1.1)' : 'scale(1)'
                       }}>{form.incidencias_resueltas}</div>
-                      <div style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:4, fontFamily:'var(--font-mono)', letterSpacing:'0.1em' }}>
-                        {form.incidencias_resueltas===1 ? 'INCIDENCIA' : 'INCIDENCIAS'}
+                      <div style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.3)', marginTop:12, fontWeight: 800, letterSpacing:'0.2em', textTransform: 'uppercase' }}>
+                        {form.incidencias_resueltas === 1 ? 'INCIDENCIA' : 'INCIDENCIAS'}
                       </div>
                     </div>
                     <button onClick={()=>setForm(f=>({...f, incidencias_resueltas:f.incidencias_resueltas+1}))} style={{
-                      width:52, height:52, borderRadius:14,
-                      background: form.incidencias_resueltas>0 ? color+'22' : 'var(--bg-elevated)',
-                      border:`1px solid ${form.incidencias_resueltas>0 ? color+'66' : 'var(--border)'}`,
-                      color: form.incidencias_resueltas>0 ? color : 'var(--text-secondary)',
-                      fontSize:'1.6rem', fontWeight: 600,
+                      width:64, height:64, borderRadius:20,
+                      background: form.incidencias_resueltas > 0 ? 'rgba(96, 165, 250, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      border: `1px solid ${form.incidencias_resueltas > 0 ? 'rgba(96, 165, 250, 0.5)' : 'rgba(255, 255, 255, 0.1)'}`,
+                      color: form.incidencias_resueltas > 0 ? '#60A5FA' : '#fff',
+                      fontSize:'2rem', fontWeight: 600,
                       display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
-                      transition:'all 0.15s',
+                      transition:'all 0.3s',
                     }}
-                      onMouseEnter={e=>{ e.currentTarget.style.background=color+'33'; e.currentTarget.style.borderColor=color }}
-                      onMouseLeave={e=>{ e.currentTarget.style.background=form.incidencias_resueltas>0?color+'22':'var(--bg-elevated)'; e.currentTarget.style.borderColor=form.incidencias_resueltas>0?color+'66':'var(--border)' }}
+                      onMouseEnter={e=>{ e.currentTarget.style.background='rgba(96, 165, 250, 0.3)'; e.currentTarget.style.borderColor='#60A5FA' }}
+                      onMouseLeave={e=>{ e.currentTarget.style.background=form.incidencias_resueltas>0?'rgba(96, 165, 250, 0.2)':'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor=form.incidencias_resueltas>0?'rgba(96, 165, 250, 0.5)':'rgba(255, 255, 255, 0.1)' }}
                     >+</button>
                   </div>
-                  {form.incidencias_resueltas===0 && (
-                    <div style={{ fontSize:'0.78rem', color:'var(--text-muted)', fontFamily:'var(--font-mono)' }}>
-                      Sin incidencias hoy — ¡buen día! ✓
+                  {form.incidencias_resueltas === 0 && (
+                    <div className="animate-pulse" style={{ fontSize:'0.85rem', color:'rgba(255,255,255,0.3)', fontWeight: 600 }}>
+                      Sin reporte de errores hoy ✓
                     </div>
                   )}
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
-                  <span style={{ fontSize:20 }}>🖼️</span>
+              {/* Images Optimization Panel */}
+              <div style={{ 
+                background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, padding:'32px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)', position: 'relative', overflow: 'hidden'
+              }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: accentColor }} />
+                <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: `${accentColor}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: accentColor }}>🖼️</div>
                   <div>
-                    <div style={{ fontWeight: 600, fontSize:'0.95rem' }}>Gestión de imágenes de productos</div>
-                    <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', marginTop:2 }}>Cada campo se actualiza de forma independiente durante el día</div>
+                    <div style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Gestión multimedia y procesos</div>
+                    <div style={{ fontSize:'0.85rem', color:'rgba(255,255,255,0.4)', marginTop:2, fontWeight: 500 }}>Actualización de catálogo e imágenes de productos</div>
                   </div>
                 </div>
-                <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                <div style={{ display:'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap:16 }}>
                   <Counter
                     value={form.imagenes_codigos_actualizadas}
                     onChange={v=>setForm(f=>({...f,imagenes_codigos_actualizadas:v}))}
-                    color="#3b82f6"
-                    label="🏷️ Imágenes con código de barra actualizado"
-                    sublabel="Productos con código de barra cargado o actualizado"
+                    color={accentColor}
+                    label="🏷️ Carga de código de barras"
+                    sublabel="Nuevos productos con GTIN/EAN correctamente vinculados"
                   />
                   <Counter
                     value={form.imagenes_peso_optimizado}
                     onChange={v=>setForm(f=>({...f,imagenes_peso_optimizado:v}))}
-                    color="#0eb8d4"
-                    label="⚡ Imágenes con peso optimizado"
-                    sublabel="Imágenes procesadas para reducir tamaño de archivo"
+                    color="#3B82F6"
+                    label="⚡ Optimización de peso visual"
+                    sublabel="Mejora de tiempos de carga mediante webp/compresión"
                   />
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
-                  <span style={{ fontSize:18 }}>📝</span>
-                  <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Notas del día</span>
-                  <span style={{ fontSize:'0.72rem', color:'var(--text-muted)' }}>(opcional)</span>
+              {/* Notes Panel */}
+              <div style={{ 
+                background:'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(20px)', 
+                border:'1px solid rgba(255, 255, 255, 0.1)', borderRadius:24, padding:'28px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
+                  <span style={{ fontSize:20 }}>📝</span>
+                  <span style={{ fontWeight: 800, fontSize:'1rem', color: '#fff' }}>Observaciones técnicas</span>
+                  <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.3)', fontWeight: 600 }}>(Notas internas)</span>
                 </div>
                 <textarea value={form.notas} onChange={e=>setForm(f=>({...f,notas:e.target.value}))}
-                  placeholder="Observaciones técnicas del día…" rows={2}
-                  style={{ ...inputSt, resize:'vertical', lineHeight:1.5 }} />
+                  placeholder="Escribe aquí cualquier observación relevante sobre la infraestructura o problemas detectados…" rows={3}
+                  style={{ ...inputSt, resize:'vertical', lineHeight:1.6, background: 'rgba(255,255,255,0.03)' }} />
               </div>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', paddingBottom:8 }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:12, paddingBottom:40 }}>
                 <button onClick={handleSaveDiario} disabled={saving} style={{
-                  padding:'14px 36px',
-                  background: saved ? '#059669' : 'var(--accent)',
-                  border:'none', borderRadius:12, color: '#fff',
-                  fontSize:'0.95rem', fontWeight: 600, cursor:'pointer',
-                  boxShadow: saved?'0 4px 20px #05966944':'0 4px 20px var(--accent-glow)',
-                  transition:'all 0.2s',
+                  padding:'18px 48px',
+                  background: saved ? 'linear-gradient(135deg, #10B981, #059669)' : accentColor,
+                  border:'none', borderRadius:20, color: saved ? '#fff' : '#080C1C',
+                  fontSize:'1.1rem', fontWeight: 900, cursor:'pointer',
+                  boxShadow: saved ? '0 10px 30px rgba(16, 185, 129, 0.3)' : `0 10px 30px ${accentColor}44`,
+                  transition:'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                 }}
-                  onMouseEnter={e=>!saving&&(e.currentTarget.style.transform='translateY(-2px)')}
-                  onMouseLeave={e=>(e.currentTarget.style.transform='translateY(0)')}
+                  onMouseEnter={e=>!saving&&(e.currentTarget.style.transform='translateY(-6px) scale(1.02)')}
+                  onMouseLeave={e=>(e.currentTarget.style.transform='translateY(0) scale(1)')}
                 >
-                  {saving?'Guardando…':saved?'✓ Guardado':mode==='edit'?'✎ Actualizar registro':'✚ Guardar registro del día'}
+                  {saving ? 'Procesando...' : saved ? '✓ Registro Actualizado' : mode==='edit' ? '✎ Confirmar Cambios' : '✚ Guardar Jornada Técnica'}
                 </button>
               </div>
             </div>
@@ -406,25 +468,27 @@ export default function SistemasIngresarPage() {
 
           {/* ── TAB: GA4 ── */}
           {activeTab==='ga4' && (
-            <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+            <div style={{ display:'flex', flexDirection:'column', gap:24, paddingBottom: 60 }}>
+              {/* Toolbar GA4 */}
               <div style={{
-                background:'var(--bg-elevated)', border:'1px solid var(--border)',
-                borderRadius:10, padding:'12px 16px',
-                display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10,
+                background:'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(10px)',
+                border:'1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius:24, padding:'20px 24px',
+                display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:20,
               }}>
-                <div>
-                  <span style={{ fontSize:'0.8rem', color:'var(--text-secondary)' }}>
-                    📅 Período: <strong style={{color:'var(--text-primary)'}}>
-                      {new Date(getPeriodo(selectedDate)).toLocaleDateString('es-AR',{month:'long',year:'numeric'})}
-                    </strong>
-                  </span>
-                  <span style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginLeft:12, fontFamily:'var(--font-mono)' }}>
-                    · ingreso manual o sincronización automática
-                  </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(66, 133, 244, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Google_Analytics_logo.svg" alt="GA4" style={{ width: 24 }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize:'0.9rem', color:'#fff', fontWeight: 800 }}>Periodo de Análisis</div>
+                    <div style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.4)', fontWeight: 600 }}>{new Date(getPeriodo(selectedDate)).toLocaleDateString('es-AR',{month:'long',year:'numeric'}).toUpperCase()}</div>
+                  </div>
                 </div>
-                <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-                  {existingGa4 && <span style={{ fontSize:'0.72rem', background:'#10b98120', color:'#10b981', border:'1px solid #10b98144', borderRadius:99, padding:'2px 10px', fontWeight:600 }}>✓ Datos existentes</span>}
-                  {syncMsg && <span style={{ fontSize:'0.72rem', color: syncMsg.startsWith('✅')?'#10b981':'#f0436a', fontFamily:'var(--font-mono)' }}>{syncMsg}</span>}
+                
+                <div style={{ display:'flex', gap:12, alignItems:'center', flexWrap:'wrap' }}>
+                  {existingGa4 && <span style={{ fontSize:'0.75rem', background:'rgba(16, 185, 129, 0.15)', color:'#10B981', border:'1px solid rgba(16, 185, 129, 0.3)', borderRadius:99, padding:'6px 14px', fontWeight:800, letterSpacing: '0.02em' }}>✓ DATOS SINCRONIZADOS</span>}
+                  {syncMsg && <span style={{ fontSize:'0.8rem', color: syncMsg.startsWith('✅')?'#10B981':'#F0436A', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{syncMsg}</span>}
                   <button
                     onClick={async () => {
                       setSyncingGa4(true); setSyncMsg('')
@@ -441,136 +505,160 @@ export default function SistemasIngresarPage() {
                         })
                         const data = await res.json()
                         if (data.ok) {
-                          setSyncMsg('✅ Sincronizado correctamente')
+                          setSyncMsg('✅ Sincronizado')
                           await loadGa4(periodo)
                         } else {
-                          setSyncMsg('❌ ' + (data.error || 'Error desconocido'))
+                          setSyncMsg('❌ ' + (data.error || 'Error'))
                         }
                       } catch(e) {
-                        setSyncMsg('❌ ' + e.message)
+                        setSyncMsg('❌ Error')
                       }
                       setSyncingGa4(false)
                     }}
                     disabled={syncingGa4}
                     style={{
-                      fontSize:'0.78rem', fontWeight: 600, cursor: syncingGa4?'wait':'pointer',
-                      background: syncingGa4?'var(--bg-elevated)':'#4285F4',
-                      color: syncingGa4?'var(--text-muted)':'#fff',
-                      border:'none', borderRadius:8, padding:'5px 14px',
-                      opacity: syncingGa4?0.6:1, transition:'all 0.15s',
+                      fontSize:'0.9rem', fontWeight: 800, cursor: syncingGa4?'wait':'pointer',
+                      background: '#4285F4', color: '#fff',
+                      border:'none', borderRadius:14, padding:'10px 24px',
+                      boxShadow: '0 6px 20px rgba(66, 133, 244, 0.3)',
+                      transition:'all 0.3s', display: 'flex', alignItems: 'center', gap: 8
                     }}
-                  >{syncingGa4 ? '⟳ Sincronizando...' : '⚡ Sync GA4'}</button>
-                  <a href="https://analytics.google.com" target="_blank" rel="noreferrer" style={{
-                    fontSize:'0.78rem', color:'#4285F4', textDecoration:'none',
-                    background:'#4285F420', border:'1px solid #4285F444',
-                    borderRadius:8, padding:'5px 12px', fontWeight:600,
-                  }}>Abrir GA4 →</a>
+                    onMouseEnter={e=>!syncingGa4&&(e.currentTarget.style.transform='translateY(-2px)')}
+                    onMouseLeave={e=>(e.currentTarget.style.transform='none')}
+                  >
+                    {syncingGa4 ? '⟳' : '⚡'} 
+                    {syncingGa4 ? 'Sincronizando...' : 'Auto-Sync Google Analytics'}
+                  </button>
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, overflow:'hidden' }}>
-                <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
-                  <span style={{ fontSize:18 }}>📊</span>
-                  <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Métricas del sitio</span>
+              {/* Main Metrics GA4 */}
+              <div style={{ 
+                background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, overflow:'hidden',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)' 
+              }}>
+                <div style={{ padding:'20px 32px', borderBottom:'1px solid rgba(255, 255, 255, 0.1)', display:'flex', alignItems:'center', gap:10 }}>
+                  <span style={{ fontSize:20 }}>📊</span>
+                  <span style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>KPIs de Rendimiento Digital</span>
                 </div>
-                <div style={{ padding:'20px 24px', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(190px, 1fr))', gap:14 }}>
+                <div style={{ padding:'32px', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:20 }}>
                   {[
-                    { key:'sesiones',              label:'Sesiones',              placeholder:'ej: 3200' },
-                    { key:'usuarios_activos',       label:'Usuarios activos',      placeholder:'ej: 2100' },
-                    { key:'pageviews',              label:'Páginas vistas',        placeholder:'ej: 8400' },
-                    { key:'tasa_rebote',            label:'Tasa de rebote (%)',    placeholder:'ej: 42.5' },
-                    { key:'duracion_promedio_seg',  label:'Duración promedio (seg)',placeholder:'ej: 185' },
+                    { key:'sesiones',              label:'Sesiones totales',      placeholder:'0', icon: '🌍' },
+                    { key:'usuarios_activos',       label:'Usuarios únicos',       placeholder:'0', icon: '👤' },
+                    { key:'pageviews',              label:'Páginas vistas',        placeholder:'0', icon: '📄' },
+                    { key:'tasa_rebote',            label:'Bounce Rate (%)',       placeholder:'0.00', icon: '📉' },
+                    { key:'duracion_promedio_seg',  label:'Sesión Prom. (seg)',    placeholder:'0', icon: '⏱️' },
                   ].map(f => (
                     <div key={f.key}>
-                      <label style={{ display:'block', fontSize:'0.73rem', color:'var(--text-muted)', fontWeight:600, marginBottom:6, letterSpacing:'0.05em' }}>{f.label}</label>
+                      <label style={{ display:'flex', alignItems: 'center', gap: 6, fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', fontWeight:800, marginBottom:8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <span>{f.icon}</span> {f.label}
+                      </label>
                       <input type="number" value={ga4[f.key]} onChange={e=>setGa4(g=>({...g,[f.key]:e.target.value}))}
-                        placeholder={f.placeholder} style={{ ...inputSt }} />
+                        placeholder={f.placeholder} style={inputSt} />
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, overflow:'hidden' }}>
-                <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
-                  <span style={{ fontSize:18 }}>🔀</span>
-                  <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Fuentes de tráfico (sesiones por canal)</span>
+              {/* Traffic Sources GA4 */}
+              <div style={{ 
+                background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, overflow:'hidden',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+              }}>
+                <div style={{ padding:'20px 32px', borderBottom:'1px solid rgba(255, 255, 255, 0.1)', display:'flex', alignItems:'center', gap:10 }}>
+                  <span style={{ fontSize:20 }}>🔀</span>
+                  <span style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Canales de Adquisición</span>
                 </div>
-                <div style={{ padding:'20px 24px', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:14 }}>
+                <div style={{ padding:'32px', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:20 }}>
                   {[
-                    { key:'trafico_organico', label:'Orgánico',  color:'#10b981' },
-                    { key:'trafico_directo',  label:'Directo',   color:'#3b82f6' },
-                    { key:'trafico_social',   label:'Social',    color:'#ec4899' },
-                    { key:'trafico_referido', label:'Referido',  color:'#f59e0b' },
-                    { key:'trafico_email',    label:'Email',     color:'#8b5cf6' },
+                    { key:'trafico_organico', label:'Search (Orgánico)',  color:'#10B981', icon: '🔍' },
+                    { key:'trafico_directo',  label:'Directo (URL)',     color:'#3B82F6', icon: '🔗' },
+                    { key:'trafico_social',   label:'Social Media',      color:'#EC4899', icon: '📱' },
+                    { key:'trafico_referido', label:'Referido / Blogs',  color:'#F59E0B', icon: '🤝' },
+                    { key:'trafico_email',    label:'Email Marketing',   color:'#8B5CF6', icon: '📩' },
                   ].map(f => (
                     <div key={f.key}>
-                      <label style={{ display:'block', fontSize:'0.73rem', fontWeight:600, marginBottom:6, color:f.color, letterSpacing:'0.05em' }}>{f.label}</label>
+                      <label style={{ display:'flex', alignItems: 'center', gap: 6, fontSize:'0.75rem', fontWeight:800, marginBottom:10, color:f.color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <span>{f.icon}</span> {f.label}
+                      </label>
                       <input type="number" value={ga4[f.key]} onChange={e=>setGa4(g=>({...g,[f.key]:e.target.value}))}
-                        placeholder="0" style={{ ...inputSt, borderColor: ga4[f.key]?f.color+'44':'var(--border)' }} />
+                        placeholder="0" style={{ ...inputSt, border: ga4[f.key] ? `1px solid ${f.color}44` : '1px solid rgba(255, 255, 255, 0.1)', background: ga4[f.key] ? `${f.color}08` : 'rgba(255, 255, 255, 0.05)' }} />
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, overflow:'hidden' }}>
-                <div style={{ padding:'14px 24px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', gap:10 }}>
-                  <span style={{ fontSize:18 }}>🔍</span>
-                  <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Keywords / Posición SEO</span>
+              {/* SEO Top Keywords */}
+              <div style={{ 
+                background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, overflow:'hidden',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+              }}>
+                <div style={{ padding:'20px 32px', borderBottom:'1px solid rgba(255, 255, 255, 0.1)', display:'flex', alignItems:'center', gap:10 }}>
+                  <span style={{ fontSize:20 }}>🥇</span>
+                  <span style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Search Console Top Keywords</span>
                 </div>
-                <div style={{ padding:'20px 24px' }}>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 80px 80px 80px auto', gap:8, marginBottom:12 }}>
-                    {[{k:'keyword',pl:'Keyword'},{k:'posicion',pl:'Pos.'},{k:'clics',pl:'Clics'},{k:'impresiones',pl:'Impr.'}].map(f => (
+                <div style={{ padding:'32px' }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 100px 100px 100px auto', gap:12, marginBottom:20 }}>
+                    {[{k:'keyword',pl:'Keyword / Frase'},{k:'posicion',pl:'Posición'},{k:'clics',pl:'Clics'},{k:'impresiones',pl:'Impresiones'}].map(f => (
                       <input key={f.k} value={newKw[f.k]} onChange={e=>setNewKw(k=>({...k,[f.k]:e.target.value}))}
                         onKeyDown={e=>e.key==='Enter'&&addKeyword()} placeholder={f.pl}
-                        style={{ ...inputSt, padding:'8px 10px', fontSize:'0.82rem' }} />
+                        style={{ ...inputSt, background: 'rgba(255, 255, 255, 0.03)' }} />
                     ))}
                     <button onClick={addKeyword} disabled={!newKw.keyword.trim()} style={{
-                      padding:'8px 14px', background:newKw.keyword.trim()?color:'var(--bg-elevated)',
-                      border:'none', borderRadius:8, color:newKw.keyword.trim()?'#000':'var(--text-muted)',
-                      fontSize:'0.82rem', fontWeight: 600, cursor:'pointer', whiteSpace:'nowrap',
+                      padding:'12px 24px', background: newKw.keyword.trim() ? accentColor : 'rgba(255, 255, 255, 0.05)',
+                      border:'none', borderRadius:14, color: newKw.keyword.trim() ? '#080C1C' : 'rgba(255, 255, 255, 0.2)',
+                      fontSize:'0.9rem', fontWeight: 800, cursor: newKw.keyword.trim() ? 'pointer' : 'default', transition: 'all 0.3s'
                     }}>+ Agregar</button>
                   </div>
+
                   {ga4.seo_keywords.length > 0 ? (
-                    <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
+                    <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                       {ga4.seo_keywords.map(kw => (
-                        <div key={kw.id} style={{
-                          display:'grid', gridTemplateColumns:'1fr 80px 80px 80px 32px',
-                          gap:8, padding:'8px 10px',
-                          background:'var(--bg-elevated)', border:'1px solid var(--border)',
-                          borderRadius:8, alignItems:'center',
-                        }}>
-                          <span style={{ fontSize:'0.82rem' }}>{kw.keyword}</span>
-                          <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.82rem', textAlign:'center', fontWeight:600, color:parseInt(kw.posicion)<=3?'#10b981':parseInt(kw.posicion)<=10?color:'var(--text-secondary)' }}>#{kw.posicion||'?'}</span>
-                          <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.78rem', textAlign:'center', color:'var(--text-muted)' }}>{kw.clics||'—'}</span>
-                          <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.78rem', textAlign:'center', color:'var(--text-muted)' }}>{kw.impresiones||'—'}</span>
-                          <button onClick={()=>removeKeyword(kw.id)} style={{ background:'none', border:'none', color:'var(--text-muted)', cursor:'pointer', fontSize:'0.8rem' }}>✕</button>
+                        <div key={kw.id} className="animate-fadeUp" style={{
+                          display:'grid', gridTemplateColumns:'1fr 100px 100px 100px 40px',
+                          gap:12, padding:'16px 20px',
+                          background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.06)',
+                          borderRadius:16, alignItems:'center', transition: 'all 0.2s'
+                        }}
+                          onMouseEnter={e=>e.currentTarget.style.background='rgba(255,255,255,0.05)'}
+                          onMouseLeave={e=>e.currentTarget.style.background='rgba(255,255,255,0.03)'}
+                        >
+                          <span style={{ fontSize:'0.95rem', color:'#fff', fontWeight: 700 }}>{kw.keyword}</span>
+                          <span style={{ fontFamily:'var(--font-mono)', fontSize:'1.1rem', textAlign:'center', fontWeight:900, color:parseInt(kw.posicion)<=3?'#10B981':parseInt(kw.posicion)<=10?accentColor:'rgba(255,255,255,0.4)' }}>#{kw.posicion||'?'}</span>
+                          <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.85rem', textAlign:'center', color:'rgba(255,255,255,0.5)', fontWeight: 600 }}>{kw.clics||'0'}</span>
+                          <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.85rem', textAlign:'center', color:'rgba(255,255,255,0.3)', fontWeight: 500 }}>{kw.impresiones||'0'}</span>
+                          <button onClick={()=>removeKeyword(kw.id)} style={{ background:'rgba(240, 67, 106, 0.1)', border:'none', color:'#F0436A', cursor:'pointer', width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div style={{ textAlign:'center', padding:'14px', color:'var(--text-muted)', fontSize:'0.8rem' }}>
-                      Agregá keywords con su posición en Google
+                    <div style={{ textAlign:'center', padding:'40px', color:'rgba(255,255,255,0.25)', fontSize:'1rem', border: '2px dashed rgba(255,255,255,0.05)', borderRadius: 24, fontWeight: 500 }}>
+                      No hay palabras clave registradas para este periodo.
                     </div>
                   )}
                 </div>
               </div>
 
-              <div style={{ display:'flex', justifyContent:'flex-end', paddingBottom:8 }}>
+              <div style={{ display:'flex', justifyContent:'flex-end', paddingTop:12 }}>
                 <button onClick={handleSaveGA4} disabled={saving} style={{
-                  padding:'14px 36px',
-                  background: saved?'#059669':'linear-gradient(135deg, #4285F4, #0f9d58)',
-                  border:'none', borderRadius:12, color:'#fff',
-                  fontSize:'0.95rem', fontWeight: 600, cursor:'pointer', transition:'all 0.2s',
+                  padding:'18px 48px',
+                  background: saved ? 'linear-gradient(135deg, #10B981, #059669)' : 'linear-gradient(135deg, #4285F4, #34A853)',
+                  border:'none', borderRadius:20, color:'#fff',
+                  fontSize:'1.1rem', fontWeight: 900, cursor:'pointer', transition:'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  boxShadow: saved ? '0 10px 30px rgba(16, 185, 129, 0.3)' : '0 10px 30px rgba(66, 133, 244, 0.3)',
                 }}
-                  onMouseEnter={e=>!saving&&(e.currentTarget.style.transform='translateY(-2px)')}
-                  onMouseLeave={e=>(e.currentTarget.style.transform='translateY(0)')}
+                  onMouseEnter={e=>!saving&&(e.currentTarget.style.transform='translateY(-6px) scale(1.02)')}
+                  onMouseLeave={e=>(e.currentTarget.style.transform='none')}
                 >
-                  {saving?'Guardando…':saved?'✓ Guardado':existingGa4?'✎ Actualizar GA4':'✚ Guardar métricas GA4'}
+                  {saving ? 'Guardando...' : saved ? '✓ Analítica Actualizada' : existingGa4 ? '✎ Actualizar Datos GA4' : '✚ Confirmar Métricas GA4'}
                 </button>
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   )

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
+const accentColor = '#FDBA74' // Amber 300 / Systems theme
+
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
@@ -33,15 +35,17 @@ function delta(a, b) {
 }
 
 function DeltaBadge({ value, higherIsBetter=true }) {
-  if (value===null) return <span style={{ color:'var(--text-muted)', fontSize:'0.75rem' }}>—</span>
+  if (value===null) return <span style={{ color: 'rgba(255,255,255,0.3)', fontSize:'0.75rem' }}>—</span>
   const isGood = higherIsBetter ? value>=0 : value<=0
-  const c = isGood ? '#10b981' : '#f0436a'
+  const color = isGood ? '#10B981' : '#F0436A'
+  
   return (
     <span style={{
-      display:'inline-flex', alignItems:'center', gap:3,
-      fontFamily:'var(--font-mono)', fontSize:'0.78rem', fontWeight: 600, color:c,
-      background:c+'18', border:`1px solid ${c}33`,
-      borderRadius:99, padding:'2px 10px',
+      display:'inline-flex', alignItems:'center', gap:6,
+      fontFamily:'var(--font-mono)', fontSize:'0.8rem', fontWeight: 800, color: color,
+      background: `${color}15`, border: `1px solid ${color}33`,
+      borderRadius:12, padding:'4px 12px',
+      boxShadow: `0 4px 12px ${color}11`
     }}>
       {value>=0?'▲':'▼'} {Math.abs(value).toFixed(1)}%
     </span>
@@ -49,18 +53,20 @@ function DeltaBadge({ value, higherIsBetter=true }) {
 }
 
 function MonthSelect({ label, value, onChange, options }) {
-  const color = '#f5c518'
   return (
-    <div style={{ flex:1, minWidth:180 }}>
-      <div style={{ fontSize:'0.7rem', fontWeight: 600, letterSpacing:'0.1em', color:'var(--text-muted)', marginBottom:8, textTransform:'uppercase' }}>{label}</div>
+    <div style={{ flex:1, minWidth:220 }}>
+      <div style={{ fontSize:'0.75rem', fontWeight: 800, letterSpacing:'0.1em', color:'rgba(255,255,255,0.4)', marginBottom:10, textTransform:'uppercase' }}>{label}</div>
       <select value={value} onChange={e=>onChange(e.target.value)} style={{
-        width:'100%', padding:'10px 14px',
-        background:'var(--bg-elevated)',
-        border:`1px solid ${value?color+'66':'var(--border)'}`,
-        borderRadius:10, color:'var(--text-primary)', fontSize:'0.9rem', cursor:'pointer',
+        width:'100%', padding:'12px 18px',
+        background:'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        border: `1px solid ${value ? accentColor + '66' : 'rgba(255, 255, 255, 0.1)'}`,
+        borderRadius:14, color:'#fff', fontSize:'0.95rem', cursor:'pointer',
+        boxShadow: value ? `0 0 15px ${accentColor}11` : 'none',
+        outline: 'none', transition: 'all 0.3s'
       }}>
-        <option value="">— Seleccionar mes —</option>
-        {options.map(m => <option key={m} value={m}>{labelForPeriodo(m)}</option>)}
+        <option value="" style={{ background: '#080C1C' }}>— Seleccionar mes —</option>
+        {options.map(m => <option key={m} value={m} style={{ background: '#080C1C' }}>{labelForPeriodo(m)}</option>)}
       </select>
     </div>
   )
@@ -73,17 +79,16 @@ const METRICS = [
   { key:'optimizadas',  label:'Imágenes optimizadas',     emoji:'⚡', src:'totals', higherIsBetter:true  },
   { key:'dias',         label:'Días con registro',        emoji:'📋', src:'totals', higherIsBetter:true  },
   // GA4
-  { key:'sesiones',           label:'Sesiones',              emoji:'🌐', src:'ga4', higherIsBetter:true  },
+  { key:'sesiones',           label:'Sesiones web',          emoji:'🌐', src:'ga4', higherIsBetter:true  },
   { key:'usuarios_activos',   label:'Usuarios activos',      emoji:'👤', src:'ga4', higherIsBetter:true  },
   { key:'pageviews',          label:'Páginas vistas',        emoji:'👁️', src:'ga4', higherIsBetter:true  },
-  { key:'tasa_rebote',        label:'Tasa de rebote (%)',    emoji:'↩️', src:'ga4', higherIsBetter:false },
+  { key:'tasa_rebote',        label:'Bounce Rate (%)',       emoji:'↩️', src:'ga4', higherIsBetter:false },
   { key:'duracion_promedio_seg', label:'Duración prom. (seg)',emoji:'⏱️', src:'ga4', higherIsBetter:true  },
   { key:'trafico_organico',   label:'Tráfico orgánico',      emoji:'🔍', src:'ga4', higherIsBetter:true  },
   { key:'trafico_social',     label:'Tráfico social',        emoji:'📱', src:'ga4', higherIsBetter:true  },
 ]
 
 export default function SistemasCompararPage() {
-  const color = '#f5c518'
   const [availableMonths, setAvailableMonths] = useState([])
   const [periodoA, setPeriodoA] = useState('')
   const [periodoB, setPeriodoB] = useState('')
@@ -123,93 +128,137 @@ export default function SistemasCompararPage() {
 
   return (
     <div className="animate-fadeIn">
-      <div style={{ marginBottom:28 }}>
-        <h1 style={{ fontSize:'1.6rem', fontWeight: 600, letterSpacing:'-0.8px', marginBottom:4 }}>Comparativa mensual</h1>
-        <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>Sistemas / Web · incidencias, imágenes y GA4 período a período</p>
+      <div style={{ marginBottom:32 }}>
+        <h1 style={{ 
+          fontSize:'2.5rem', fontWeight: 900, letterSpacing:'-2px', marginBottom:4,
+          background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+        }}>
+          Comparativa de Rendimiento
+        </h1>
+        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', fontWeight: 500 }}>
+          Sistemas / Web · Análisis evolutivo de infraestructura y métricas digitales
+        </p>
       </div>
 
-      {/* Selectors */}
-      <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'20px 24px', marginBottom:24, boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-        <div style={{ display:'flex', gap:16, alignItems:'flex-end', flexWrap:'wrap' }}>
-          <MonthSelect label="Mes base"         value={periodoA} onChange={setPeriodoA} options={availableMonths} />
-          <div style={{ fontSize:'1.4rem', color:'var(--text-muted)', paddingBottom:10, flexShrink:0 }}>⇄</div>
-          <MonthSelect label="Mes a comparar"   value={periodoB} onChange={setPeriodoB} options={availableMonths} />
-        </div>
+      {/* Selectors Panel */}
+      <div style={{ 
+        background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+        border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, padding:'28px 32px', 
+        marginBottom:32, boxShadow:'0 8px 32px rgba(0,0,0,0.15)',
+        display:'flex', gap:24, alignItems:'flex-end', flexWrap:'wrap'
+      }}>
+        <MonthSelect label="Periodo actual (A)" value={periodoA} onChange={setPeriodoA} options={availableMonths} />
+        <div style={{ 
+          background: 'rgba(255,255,255,0.05)', borderRadius: '50%', width: 48, height: 48, 
+          display: 'flex', alignItems: 'center', justifyContent: 'center', color: accentColor, 
+          fontSize: '1.2rem', paddingBottom: 2, border: '1px solid rgba(255,255,255,0.1)' 
+        }}>⇄</div>
+        <MonthSelect label="Periodo anterior (B)" value={periodoB} onChange={setPeriodoB} options={availableMonths} />
+        
         {availableMonths.length < 2 && (
-          <p style={{ color:'var(--text-muted)', fontSize:'0.8rem', marginTop:12 }}>⚠️ Necesitás al menos 2 meses con datos para comparar.</p>
+          <div style={{ width: '100%', color: accentColor, fontSize: '0.85rem', fontWeight: 700, background: `${accentColor}11`, padding: '10px 16px', borderRadius: 12, border: `1px solid ${accentColor}33` }}>
+            ⚠️ Se requieren al menos dos periodos con registros para generar la comparativa.
+          </div>
         )}
       </div>
 
-      {loading && <div style={{ display:'flex', justifyContent:'center', padding:40 }}>
-        <div style={{ width:24, height:24, borderRadius:'50%', border:'2px solid var(--border-bright)', borderTopColor:color, animation:'spin 0.8s linear infinite' }} />
-      </div>}
+      {loading && (
+        <div style={{ display:'flex', justifyContent:'center', padding:100 }}>
+          <div className="animate-spin" style={{ width:40, height:40, borderRadius:'50%', border:'4px solid rgba(255,255,255,0.1)', borderTopColor: accentColor }} />
+        </div>
+      )}
 
       {canCompare && !loading && (
-        <>
-          {/* Summary banners */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr auto 1fr', gap:12, marginBottom:20, alignItems:'center' }}>
+        <div className="animate-fadeUp">
+          {/* Hero Comparison Summary */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr auto 1fr', gap:20, marginBottom:32, alignItems:'center' }}>
             {[
-              { label:labelForPeriodo(periodoA), data:dataA, align:'left' },
+              { label: labelForPeriodo(periodoA), data: dataA, accent: accentColor },
               null,
-              { label:labelForPeriodo(periodoB), data:dataB, align:'right' },
-            ].map((item,i) => item===null ? (
-              <div key={i} style={{ textAlign:'center', color:'var(--text-muted)', fontSize:'1.2rem' }}>vs</div>
+              { label: labelForPeriodo(periodoB), data: dataB, accent: '#60A5FA' },
+            ].map((item, i) => item === null ? (
+              <div key={i} style={{ 
+                fontSize:'1.2rem', fontWeight: 900, color: 'rgba(255,255,255,0.2)', 
+                fontFamily: 'var(--font-mono)', letterSpacing: '0.2em' 
+              }}>VS</div>
             ) : (
-              <div key={i} style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 22px', textAlign:item.align, boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-                <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', marginBottom:6, fontFamily:'var(--font-mono)' }}>{item.label}</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'2.2rem', fontWeight: 600, color:'var(--text-primary)', letterSpacing:'-1px' }}>
+              <div key={i} style={{ 
+                background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                border:'1px solid rgba(255, 255, 255, 0.12)', borderRadius:32, padding:'32px', 
+                textAlign: i === 0 ? 'left' : 'right', boxShadow:'0 8px 32px rgba(0,0,0,0.15)',
+                position: 'relative', overflow: 'hidden'
+              }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: item.accent }} />
+                <div style={{ fontSize:'0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>{item.label}</div>
+                <div style={{ 
+                  fontFamily:'var(--font-mono)', fontSize:'3.5rem', fontWeight: 900, 
+                  color:'#fff', letterSpacing:'-3px', lineHeight: 1 
+                }}>
                   {item.data.totals.incidencias}
                 </div>
-                <div style={{ fontSize:'0.75rem', color:'var(--text-secondary)' }}>incidencias resueltas</div>
+                <div style={{ fontSize:'0.85rem', color: 'rgba(255,255,255,0.4)', fontWeight: 600, marginTop: 4 }}>incidencias técnicos resueltas</div>
               </div>
             ))}
           </div>
 
-          {/* Detail table — split into sections */}
+          {/* Metric Groups */}
           {[
-            { title:'📋 Actividad diaria', metrics: METRICS.filter(m=>m.src==='totals') },
-            { title:'📈 Google Analytics', metrics: METRICS.filter(m=>m.src==='ga4') },
+            { title:'📋 Actividad y Operativa Técnica', metrics: METRICS.filter(m=>m.src==='totals') },
+            { title:'📈 Rendimiento Website (GA4)', metrics: METRICS.filter(m=>m.src==='ga4') },
           ].map(section => (
-            <div key={section.title} style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', marginBottom:14, boxShadow:'0 4px 16px var(--glass-shadow)' }}>
+            <div key={section.title} style={{ 
+              background:'rgba(255, 255, 255, 0.05)', border:'1px solid rgba(255, 255, 255, 0.1)', 
+              borderRadius:32, overflow:'hidden', marginBottom:24, boxShadow:'0 4px 20px rgba(0,0,0,0.1)' 
+            }}>
               <div style={{
-                display:'grid', gridTemplateColumns:'1fr repeat(3, auto)',
-                padding:'12px 20px', background:'var(--bg-elevated)',
-                borderBottom:'1px solid var(--border)', gap:12,
+                display:'grid', gridTemplateColumns:'1fr 140px 140px 160px',
+                padding:'18px 32px', background:'rgba(255, 255, 255, 0.03)',
+                borderBottom:'1px solid rgba(255, 255, 255, 0.1)', gap:20, alignItems: 'center'
               }}>
-                <div style={{ fontSize:'0.78rem', fontWeight: 600, color:'var(--text-secondary)' }}>{section.title}</div>
-                {[labelForPeriodo(periodoA), labelForPeriodo(periodoB), 'Variación'].map((h,i) => (
-                  <div key={i} style={{ fontSize:'0.7rem', fontWeight: 600, color:'var(--text-muted)', letterSpacing:'0.08em', textAlign:'right', minWidth:90 }}>{h}</div>
+                <div style={{ fontSize:'0.85rem', fontWeight: 900, color: accentColor, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{section.title}</div>
+                {[labelForPeriodo(periodoA), labelForPeriodo(periodoB), 'Tendencia'].map((h,i) => (
+                  <div key={i} style={{ fontSize:'0.75rem', fontWeight: 800, color:'rgba(255,255,255,0.4)', letterSpacing:'0.05em', textAlign:'right', textTransform: 'uppercase' }}>{h}</div>
                 ))}
               </div>
-              {section.metrics.map((m,i) => {
-                const valA = getVal(dataA, m)
-                const valB = getVal(dataB, m)
-                const d = delta(valB, valA)
-                return (
-                  <div key={m.key} style={{
-                    display:'grid', gridTemplateColumns:'1fr repeat(3, auto)',
-                    padding:'11px 20px', gap:12, alignItems:'center',
-                    borderTop: i===0?'none':'1px solid var(--border)',
-                    background: i%2===0?'transparent':'var(--bg-elevated)',
-                  }}>
-                    <div style={{ fontSize:'0.82rem', color:'var(--text-secondary)', display:'flex', alignItems:'center', gap:8 }}>
-                      <span>{m.emoji}</span>{m.label}
+              
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {section.metrics.map((m, i) => {
+                  const valA = getVal(dataA, m)
+                  const valB = getVal(dataB, m)
+                  const d = delta(valA, valB) // A vs B (Current vs Previous)
+                  
+                  return (
+                    <div key={m.key} style={{
+                      display:'grid', gridTemplateColumns:'1fr 140px 140px 160px',
+                      padding:'20px 32px', gap:20, alignItems:'center',
+                      borderTop: i === 0 ? 'none' : '1px solid rgba(255, 255, 255, 0.05)',
+                      background: i % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.01)',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                    onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.01)'}
+                    >
+                      <div style={{ fontSize:'1rem', color:'#fff', fontWeight: 700, display:'flex', alignItems:'center', gap:12 }}>
+                        <span style={{ fontSize: 20 }}>{m.emoji}</span>
+                        {m.label}
+                      </div>
+                      <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.1rem', textAlign:'right', fontWeight: 800, color: '#fff' }}>
+                        {valA?.toLocaleString('es-AR') ?? '—'}
+                      </div>
+                      <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.1rem', textAlign:'right', fontWeight: 800, color: 'rgba(255,255,255,0.5)' }}>
+                        {valB?.toLocaleString('es-AR') ?? '—'}
+                      </div>
+                      <div style={{ textAlign:'right' }}>
+                        <DeltaBadge value={d} higherIsBetter={m.higherIsBetter} />
+                      </div>
                     </div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:'0.85rem', textAlign:'right', minWidth:90, color:'var(--text-primary)' }}>
-                      {valA != null ? valA : '—'}
-                    </div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:'0.85rem', textAlign:'right', minWidth:90, color:'var(--text-primary)' }}>
-                      {valB != null ? valB : '—'}
-                    </div>
-                    <div style={{ textAlign:'right', minWidth:90 }}>
-                      <DeltaBadge value={d} higherIsBetter={m.higherIsBetter} />
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           ))}
-        </>
+        </div>
       )}
     </div>
   )

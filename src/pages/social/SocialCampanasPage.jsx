@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
-const color = '#f0436a'
+const color = '#7DD3FC' // Social color from user request
+const RED = '#f0436a'
+const GREEN = '#10b981'
+const BLUE = '#3b82f6'
+const AMBER = '#f59e0b'
+const PURPLE = '#A5B4FC'
 
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
 const OBJETIVOS = [
   { key: 'awareness',  label: 'Awareness',  emoji: '👁️',  c: '#8b5cf6' },
-  { key: 'trafico',    label: 'Tráfico',    emoji: '🔗',  c: '#3b82f6' },
-  { key: 'ventas',     label: 'Ventas',     emoji: '💰',  c: '#10b981' },
-  { key: 'engagement', label: 'Engagement', emoji: '❤️', c: '#f0436a' },
-  { key: 'leads',      label: 'Leads',      emoji: '📋',  c: '#f59e0b' },
+  { key: 'trafico',    label: 'Tráfico',    emoji: '🔗',  c: BLUE },
+  { key: 'ventas',     label: 'Ventas',     emoji: '💰',  c: GREEN },
+  { key: 'engagement', label: 'Engagement', emoji: '❤️', c: RED },
+  { key: 'leads',      label: 'Leads',      emoji: '📋',  c: AMBER },
 ]
 
 function getPeriodo(date) {
@@ -74,55 +79,63 @@ function CampanaForm({ initial, onSave, onCancel }) {
     ? (parseFloat(form.presupuesto) / parseFloat(form.clics)).toFixed(2)
     : null
 
-  const inp = {
-    width:'100%', padding:'10px 13px', fontSize:'0.88rem',
-    background:'var(--bg-elevated)', border:'1px solid var(--border)',
-    borderRadius:9, color:'var(--text-primary)', boxSizing:'border-box',
+  const glassInput = {
+    width:'100%', padding:'12px 16px', fontSize:'0.95rem',
+    background:'rgba(255, 255, 255, 0.05)', border:'1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius:12, color:'#fff', boxSizing:'border-box',
+    outline: 'none', transition: 'all 0.2s'
   }
   const lbl = {
-    display:'block', fontSize:'0.72rem', fontWeight: 600,
-    color:'var(--text-muted)', marginBottom:6, letterSpacing:'0.06em', textTransform:'uppercase',
+    display:'block', fontSize:'0.75rem', fontWeight: 700,
+    color:'rgba(255, 255, 255, 0.4)', marginBottom:8, letterSpacing:'0.1em', textTransform:'uppercase',
   }
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
-
+    <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
       {/* Datos básicos */}
-      <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px', boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18 }}>
-          <span style={{ fontSize:18 }}>📣</span>
-          <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Datos de la campaña</span>
+      <div 
+        className="animate-fadeUp"
+        style={{ 
+          background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+          border:'1px solid rgba(255, 255, 255, 0.1)', borderRadius:24, padding:32,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
+        }}
+      >
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:24 }}>
+          <span style={{ fontSize:20 }}>📣</span>
+          <span style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Datos de la campaña</span>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 180px 180px', gap:14, marginBottom:14 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:20, marginBottom:24 }}>
           <div>
             <label style={lbl}>Nombre de la campaña *</label>
             <input value={form.nombre} onChange={e=>setForm(f=>({...f,nombre:e.target.value}))}
-              placeholder="ej: Promo diciembre dental" style={inp} />
+              placeholder="ej: Promo diciembre dental" style={glassInput} />
           </div>
           <div>
             <label style={lbl}>Fecha inicio</label>
-            <input type="date" value={form.fecha_inicio} onChange={e=>setForm(f=>({...f,fecha_inicio:e.target.value}))} style={inp} />
+            <input type="date" value={form.fecha_inicio} onChange={e=>setForm(f=>({...f,fecha_inicio:e.target.value}))} style={{...glassInput, colorScheme: 'dark'}} />
           </div>
           <div>
             <label style={lbl}>Fecha fin</label>
-            <input type="date" value={form.fecha_fin} onChange={e=>setForm(f=>({...f,fecha_fin:e.target.value}))} style={inp} />
+            <input type="date" value={form.fecha_fin} onChange={e=>setForm(f=>({...f,fecha_fin:e.target.value}))} style={{...glassInput, colorScheme: 'dark'}} />
           </div>
         </div>
 
         {/* Objetivo */}
         <div>
-          <label style={lbl}>Objetivo</label>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+          <label style={lbl}>Objetivo estratégico</label>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:10 }}>
             {OBJETIVOS.map(o => {
               const active = form.objetivo === o.key
               return (
                 <button key={o.key} onClick={()=>setForm(f=>({...f,objetivo:o.key}))} style={{
-                  padding:'8px 16px', borderRadius:99, cursor:'pointer',
-                  background: active ? o.c+'22' : 'var(--bg-elevated)',
-                  border: `1px solid ${active ? o.c+'66' : 'var(--border)'}`,
-                  color: active ? o.c : 'var(--text-secondary)',
-                  fontSize:'0.82rem', fontWeight: active ? 700 : 400,
-                  display:'flex', alignItems:'center', gap:6, transition:'all 0.15s',
+                  padding:'10px 20px', borderRadius:14, cursor:'pointer',
+                  background: active ? o.c+'22' : 'rgba(255,255,255,0.05)',
+                  border: `1px solid ${active ? o.c : 'rgba(255,255,255,0.1)'}`,
+                  color: active ? o.c : 'rgba(255,255,255,0.5)',
+                  fontSize:'0.88rem', fontWeight: active ? 700 : 500,
+                  display:'flex', alignItems:'center', gap:8, transition:'all 0.2s',
+                  backdropFilter: 'blur(10px)'
                 }}>
                   {o.emoji} {o.label}
                 </button>
@@ -133,26 +146,35 @@ function CampanaForm({ initial, onSave, onCancel }) {
       </div>
 
       {/* Métricas */}
-      <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px', boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18 }}>
-          <span style={{ fontSize:18 }}>📊</span>
-          <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Resultados de la campaña</span>
+      <div 
+        className="animate-fadeUp"
+        style={{ 
+          animationDelay: '0.1s',
+          background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+          border:'1px solid rgba(255, 255, 255, 0.1)', borderRadius:24, padding:32,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
+        }}
+      >
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:24 }}>
+          <span style={{ fontSize:20 }}>📊</span>
+          <span style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Resultados de rendimiento</span>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))', gap:14 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', gap:20 }}>
           {[
-            { key:'presupuesto', label:'Presupuesto / Gasto',  placeholder:'$ 0',    prefix:'$' },
-            { key:'alcance',     label:'Alcance',              placeholder:'ej: 12000' },
-            { key:'clics',       label:'Clics',                placeholder:'ej: 340' },
-            { key:'conversiones',label:'Conversiones',         placeholder:'ej: 28' },
+            { key:'presupuesto', label:'Gasto / Inversión', placeholder:'$ 0',    prefix:'$', c: AMBER },
+            { key:'alcance',     label:'Alcance total',     placeholder:'ej: 12000', c: BLUE },
+            { key:'clics',       label:'Clics logrados',    placeholder:'ej: 340',   c: color },
+            { key:'conversiones',label:'Conversiones',       placeholder:'ej: 28',    c: GREEN },
           ].map(f => (
             <div key={f.key}>
               <label style={lbl}>{f.label}</label>
               <input type="number" value={form[f.key]}
                 onChange={e=>setForm(prev=>({...prev,[f.key]:e.target.value}))}
                 placeholder={f.placeholder}
-                style={{ ...inp, fontFamily:'var(--font-mono)', fontWeight:600, fontSize:'1rem',
-                  color: form[f.key] ? color : 'var(--text-muted)',
-                  borderColor: form[f.key] ? color+'44' : 'var(--border)',
+                style={{ ...glassInput, fontFamily:'var(--font-mono)', fontWeight:700, fontSize:'1.2rem',
+                  color: form[f.key] ? f.c : '#fff',
+                  borderColor: form[f.key] ? f.c + '66' : 'rgba(255,255,255,0.1)',
+                  background: form[f.key] ? f.c + '0a' : 'rgba(255,255,255,0.05)'
                 }} />
             </div>
           ))}
@@ -160,17 +182,17 @@ function CampanaForm({ initial, onSave, onCancel }) {
 
         {/* Calculated KPIs */}
         {(ctr || cpc) && (
-          <div style={{ marginTop:16, display:'flex', gap:12, flexWrap:'wrap' }}>
+          <div style={{ marginTop:24, display:'flex', gap:16, flexWrap:'wrap' }}>
             {ctr && (
-              <div style={{ background:`${color}12`, border:`1px solid ${color}33`, borderRadius:10, padding:'10px 16px' }}>
-                <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight: 600, letterSpacing:'0.08em', marginBottom:3 }}>CTR</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight: 600, color }}>{ctr}%</div>
+              <div style={{ background:`${color}15`, border:`1px solid ${color}33`, borderRadius:16, padding:'14px 22px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)', fontWeight: 800, letterSpacing:'0.1em', marginBottom:4 }}>CTR ESTIMADO</div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.5rem', fontWeight: 800, color }}>{ctr}%</div>
               </div>
             )}
             {cpc && (
-              <div style={{ background:'#10b98112', border:'1px solid #10b98133', borderRadius:10, padding:'10px 16px' }}>
-                <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight: 600, letterSpacing:'0.08em', marginBottom:3 }}>COSTO POR CLIC</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight: 600, color:'#10b981' }}>${parseFloat(cpc).toLocaleString('es-AR',{minimumFractionDigits:2})}</div>
+              <div style={{ background:`${GREEN}15`, border:`1px solid ${GREEN}33`, borderRadius:16, padding:'14px 22px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)', fontWeight: 800, letterSpacing:'0.1em', marginBottom:4 }}>COSTO POR CLIC</div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.5rem', fontWeight: 800, color:GREEN }}>${parseFloat(cpc).toLocaleString('es-AR',{minimumFractionDigits:2})}</div>
               </div>
             )}
           </div>
@@ -178,30 +200,47 @@ function CampanaForm({ initial, onSave, onCancel }) {
       </div>
 
       {/* Notas */}
-      <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px', boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
-          <span style={{ fontSize:18 }}>📝</span>
-          <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Notas</span>
-          <span style={{ fontSize:'0.72rem', color:'var(--text-muted)' }}>(opcional)</span>
+      <div 
+        className="animate-fadeUp"
+        style={{ 
+          animationDelay: '0.2s',
+          background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+          border:'1px solid rgba(255, 255, 255, 0.1)', borderRadius:24, padding:32,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
+        }}
+      >
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
+          <span style={{ fontSize:20 }}>📝</span>
+          <span style={{ fontWeight: 800, fontSize:'1.1rem', color: '#fff' }}>Notas y observaciones</span>
         </div>
         <textarea value={form.notas} onChange={e=>setForm(f=>({...f,notas:e.target.value}))}
-          placeholder="Observaciones, resultados cualitativos, aprendizajes…" rows={2}
-          style={{ ...inp, resize:'none', lineHeight:1.5 }} />
+          placeholder="Aprendizajes, resultados cualitativos, recomendaciones…" rows={3}
+          style={{ ...glassInput, resize:'none', lineHeight:1.6, fontSize: '0.95rem' }} />
       </div>
 
-      <div style={{ display:'flex', justifyContent:'space-between', paddingBottom:8 }}>
-        <button onClick={onCancel} style={{ padding:'12px 24px', background:'transparent', border:'1px solid var(--border)', borderRadius:10, color:'var(--text-secondary)', fontSize:'0.88rem', cursor:'pointer' }}>← Volver</button>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems: 'center', paddingBottom:20 }}>
+        <button onClick={onCancel} style={{ 
+          padding:'14px 28px', background:'transparent', border:'1px solid rgba(255,255,255,0.1)', 
+          borderRadius:14, color:'rgba(255,255,255,0.6)', fontSize:'0.9rem', fontWeight: 600, cursor:'pointer',
+          transition: 'all 0.2s'
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+        >← Volver al listado</button>
         <button onClick={handleSave} disabled={saving || !form.nombre.trim()} style={{
-          padding:'12px 32px',
-          background: saving || !form.nombre.trim() ? 'var(--bg-elevated)' : 'var(--accent)',
-          border:'none', borderRadius:10,
-          color: saving || !form.nombre.trim() ? 'var(--text-muted)' : '#fff',
-          fontSize:'0.9rem', fontWeight: 600,
+          padding:'16px 40px',
+          background: saving || !form.nombre.trim() ? 'rgba(255,255,255,0.05)' : color,
+          border:'none', borderRadius:16,
+          color: saving || !form.nombre.trim() ? 'rgba(255,255,255,0.2)' : '#080C1C',
+          fontSize:'1rem', fontWeight: 800,
           cursor: saving || !form.nombre.trim() ? 'not-allowed' : 'pointer',
-          boxShadow: !saving && form.nombre.trim() ? '0 4px 20px var(--accent-glow)' : 'none',
-          transition:'all 0.2s',
-        }}>
-          {saving ? 'Guardando…' : initial ? '✎ Actualizar campaña' : '✚ Guardar campaña'}
+          boxShadow: !saving && form.nombre.trim() ? `0 8px 24px ${color}33` : 'none',
+          transition:'all 0.3s',
+        }}
+        onMouseEnter={e => { if (!saving && form.nombre.trim()) e.currentTarget.style.transform = 'translateY(-4px)' }}
+        onMouseLeave={e => { e.currentTarget.style.transform = 'none' }}
+        >
+          {saving ? 'Guardando…' : initial ? '✎ Actualizar Campaña' : '✚ Registrar Campaña'}
         </button>
       </div>
     </div>
@@ -255,11 +294,19 @@ export default function SocialCampanasPage() {
   if (view !== 'list') {
     return (
       <div className="animate-fadeIn">
-        <div style={{ marginBottom:24 }}>
-          <h1 style={{ fontSize:'1.6rem', fontWeight: 600, letterSpacing:'-0.8px', marginBottom:4 }}>
-            {editing ? 'Editar campaña' : 'Nueva campaña'}
+        <div style={{ marginBottom:32 }}>
+          <h1 style={{ 
+            fontSize: '2.4rem', 
+            fontWeight: 800, 
+            letterSpacing: '-1.5px', 
+            marginBottom: 6,
+            background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            {editing ? 'Editar Campaña' : 'Nueva Campaña'}
           </h1>
-          <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>Social Media · {MONTHS_ES[month]} {year}</p>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', fontWeight: 500 }}>Social Media · {MONTHS_ES[month]} {year}</p>
         </div>
         <CampanaForm initial={editing} onSave={handleSave} onCancel={() => { setView('list'); setEditing(null) }} />
       </div>
@@ -268,107 +315,178 @@ export default function SocialCampanasPage() {
 
   return (
     <div className="animate-fadeIn">
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:28 }}>
+      {/* Header */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16, marginBottom:32 }}>
         <div>
-          <h1 style={{ fontSize:'1.6rem', fontWeight: 600, letterSpacing:'-0.8px', marginBottom:4 }}>Campañas publicitarias</h1>
-          <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>Registro y seguimiento de campañas pagas</p>
+          <h1 style={{ 
+            fontSize: '2.4rem', 
+            fontWeight: 800, 
+            letterSpacing: '-1.5px', 
+            marginBottom: 6,
+            background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            Campañas Publicitarias
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.95rem', fontWeight: 500 }}>Registro y seguimiento de inversión en anuncios</p>
         </div>
-        <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-          <button onClick={() => { if(month===0){setYear(y=>y-1);setMonth(11)}else setMonth(m=>m-1) }}
-            style={{ width:34,height:34,borderRadius:8,background:'var(--bg-elevated)',border:'1px solid var(--border)',color:'var(--text-secondary)',fontSize:'1rem',cursor:'pointer' }}>‹</button>
-          <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.82rem',color:'var(--text-primary)',minWidth:130,textAlign:'center' }}>{MONTHS_ES[month]} {year}</span>
-          <button onClick={() => { if(isCurrentMonth)return; if(month===11){setYear(y=>y+1);setMonth(0)}else setMonth(m=>m+1) }}
-            disabled={isCurrentMonth} style={{ width:34,height:34,borderRadius:8,background:'var(--bg-elevated)',border:'1px solid var(--border)',color:isCurrentMonth?'var(--text-muted)':'var(--text-secondary)',fontSize:'1rem',cursor:isCurrentMonth?'not-allowed':'pointer' }}>›</button>
+        <div style={{ display:'flex', gap:12, alignItems:'center' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            background: 'rgba(255,255,255,0.05)', 
+            borderRadius: 14, 
+            padding: '4px',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <button onClick={() => { if(month===0){setYear(y=>y-1);setMonth(11)}else setMonth(m=>m-1) }}
+              style={{ width:36,height:36,borderRadius:10,background:'transparent',border:'none',color:'#fff',fontSize:'1.1rem',cursor:'pointer' }}>‹</button>
+            <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.85rem',color:'rgba(255,255,255,0.8)',minWidth:120,textAlign:'center', fontWeight:600 }}>{MONTHS_ES[month]} {year}</span>
+            <button onClick={() => { if(isCurrentMonth)return; if(month===11){setYear(y=>y+1);setMonth(0)}else setMonth(m=>m+1) }}
+              disabled={isCurrentMonth} style={{ width:36,height:36,borderRadius:10,background:'transparent',border:'none',color:isCurrentMonth?'rgba(255,255,255,0.2)':'#fff',fontSize:'1.1rem',cursor:isCurrentMonth?'not-allowed':'pointer' }}>›</button>
+          </div>
           <button onClick={() => { setEditing(null); setView('new') }} style={{
-            padding:'8px 18px',marginLeft:8,background:'var(--accent)',border:'none',borderRadius:8,
-            color:'#fff',fontSize:'0.82rem',fontWeight: 600,cursor:'pointer',
-            boxShadow:'0 2px 12px var(--accent-glow)',
-          }}>✚ Nueva campaña</button>
+            padding:'10px 24px',background:color,border:'none',borderRadius:12,
+            color:'#080C1C',fontSize:'0.85rem',fontWeight: 800,cursor:'pointer',
+            boxShadow:`0 4px 20px ${color}44`,
+          }}>✚ Nueva Campaña</button>
         </div>
       </div>
 
       {loading ? (
-        <div style={{ display:'flex',justifyContent:'center',padding:60 }}>
-          <div style={{ width:28,height:28,borderRadius:'50%',border:'2px solid var(--border-bright)',borderTopColor:color,animation:'spin 0.8s linear infinite' }} />
+        <div style={{ display:'flex',justifyContent:'center',padding:80 }}>
+          <div className="animate-spin" style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: color }} />
         </div>
       ) : (
         <>
           {campanas.length > 0 && (
-            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(155px,1fr))',gap:12,marginBottom:24 }}>
+            <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:20,marginBottom:32 }}>
               {[
                 { label:'Campañas', value:campanas.length, icon:'📣', c:color },
-                { label:'Gasto total', value:formatMoney(totalGasto), icon:'💰', c:'#f59e0b' },
-                { label:'Alcance total', value:totalAlcance?totalAlcance.toLocaleString('es-AR'):'—', icon:'🌐', c:'#3b82f6' },
-                { label:'Clics totales', value:totalClics?totalClics.toLocaleString('es-AR'):'—', icon:'👆', c:'#10b981' },
+                { label:'Inversión Total', value:formatMoney(totalGasto), icon:'💰', c:AMBER },
+                { label:'Alcance Total', value:totalAlcance?totalAlcance.toLocaleString('es-AR'):'—', icon:'🌐', c:BLUE },
+                { label:'Clics Totales', value:totalClics?totalClics.toLocaleString('es-AR'):'—', icon:'👆', c:GREEN },
               ].map((k,i) => (
                 <div key={i} className="animate-fadeUp" style={{
-                  animationDelay:`${i*0.05}s`,
-                  background:'var(--bg-surface)',border:'1px solid var(--border)',
-                  borderRadius:14,padding:'18px 20px',position:'relative',overflow:'hidden',
-                  boxShadow:'0 4px 20px var(--glass-shadow)',
+                  animationDelay:`${i*0.08}s`,
+                  background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)',
+                  border:'1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius:24,padding:'24px',position:'relative',overflow:'hidden',
+                  boxShadow:'0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 }}>
-                  <div style={{ position:'absolute',top:0,left:0,right:0,height:3,background:k.c,opacity:0.9 }} />
-                  <div style={{ fontSize:20,marginBottom:8 }}>{k.icon}</div>
-                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.5rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-0.5px',lineHeight:1,marginBottom:5 }}>{k.value}</div>
-                  <div style={{ fontSize:'0.78rem',color:'var(--text-secondary)' }}>{k.label}</div>
+                  <div style={{ position:'absolute',top:0,left:0,right:0,height:'2px',background:k.c,opacity:0.8 }} />
+                  <div style={{ fontSize:24,marginBottom:12, filter: `drop-shadow(0 0 10px ${k.c}44)` }}>{k.icon}</div>
+                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.8rem',fontWeight: 800,color:'#fff',letterSpacing:'-1px',lineHeight:1,marginBottom:6 }}>{k.value}</div>
+                  <div style={{ fontSize:'0.75rem',color:'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{k.label}</div>
                 </div>
               ))}
             </div>
           )}
 
           {campanas.length === 0 ? (
-            <div style={{ textAlign:'center',padding:'60px 24px',border:`1px dashed ${color}44`,borderRadius:16,background:'var(--bg-surface)' }}>
-              <div style={{ fontSize:40,marginBottom:14 }}>📣</div>
-              <p style={{ color:'var(--text-secondary)',marginBottom:20 }}>No hay campañas registradas para {MONTHS_ES[month]} {year}</p>
-              <button onClick={() => setView('new')} style={{ padding:'12px 28px',background:'var(--accent)',border:'none',borderRadius:10,color:'#fff',fontWeight: 600,fontSize:'0.88rem',cursor:'pointer',boxShadow:'0 4px 16px var(--accent-glow)' }}>
+            <div 
+              className="animate-fadeUp"
+              style={{ 
+                textAlign:'center',padding:'80px 40px',border:`1px dashed ${color}33`,borderRadius:28,
+                background:'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)'
+              }}
+            >
+              <div style={{ fontSize:56,marginBottom:20 }}>📣</div>
+              <p style={{ color:'rgba(255,255,255,0.5)',marginBottom:28, fontSize: '1.1rem' }}>No hay campañas registradas para {MONTHS_ES[month]} {year}</p>
+              <button 
+                onClick={() => setView('new')} 
+                style={{ 
+                  padding:'16px 40px',background:color,border:'none',borderRadius:16,
+                  color:'#080C1C',fontWeight: 800,fontSize:'1rem',cursor:'pointer',
+                  boxShadow:`0 8px 24px ${color}33`, transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+              >
                 Registrar primera campaña →
               </button>
             </div>
           ) : (
-            <div style={{ display:'flex',flexDirection:'column',gap:10 }}>
+            <div style={{ display:'flex',flexDirection:'column',gap:16 }}>
               {campanas.map((c, i) => {
                 const obj = OBJETIVOS.find(o => o.key === c.objetivo)
                 const ctr = c.clics && c.alcance ? (c.clics/c.alcance*100).toFixed(2) : null
+                const statusColor = obj?.c || color
                 return (
                   <div key={c.id} className="animate-fadeUp" style={{
-                    animationDelay:`${i*0.04}s`,
-                    background:'var(--bg-surface)',border:'1px solid var(--border)',
-                    borderRadius:14,padding:'18px 22px',
-                    borderLeft:`3px solid ${obj?.c || color}88`,
-                    boxShadow:'0 4px 16px var(--glass-shadow)',
-                  }}>
-                    <div style={{ display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:12,flexWrap:'wrap' }}>
+                    animationDelay:`${i*0.05}s`,
+                    background:'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)',
+                    border:'1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius:24,padding:'24px 30px',
+                    position: 'relative', overflow: 'hidden',
+                    boxShadow:'0 8px 32px rgba(0, 0, 0, 0.12)',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.borderColor = statusColor + '66'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'none'
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                  }}
+                  >
+                    <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: statusColor }} />
+                    
+                    <div style={{ display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:20,flexWrap:'wrap' }}>
                       <div style={{ flex:1,minWidth:0 }}>
-                        <div style={{ display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap' }}>
+                        <div style={{ display:'flex',alignItems:'center',gap:10,marginBottom:12,flexWrap:'wrap' }}>
                           {obj && (
-                            <span style={{ fontSize:'0.72rem',background:obj.c+'18',color:obj.c,border:`1px solid ${obj.c}33`,borderRadius:99,padding:'2px 9px',fontWeight:600 }}>
+                            <span style={{ 
+                              fontSize:'0.72rem',background:statusColor+'15',color:statusColor,
+                              border:`1px solid ${statusColor}33`,borderRadius:99,padding:'3px 12px',fontWeight:800,
+                              textTransform: 'uppercase', letterSpacing: '0.05em'
+                            }}>
                               {obj.emoji} {obj.label}
                             </span>
                           )}
-                          <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.72rem',color:'var(--text-muted)' }}>
-                            {formatDate(c.fecha_inicio)} → {formatDate(c.fecha_fin)}
+                          <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.75rem',color:'rgba(255,255,255,0.4)', fontWeight: 600 }}>
+                            {formatDate(c.fecha_inicio)} — {formatDate(c.fecha_fin)}
                           </span>
                         </div>
-                        <h3 style={{ fontSize:'0.95rem',fontWeight: 600,color:'var(--text-primary)',marginBottom:10 }}>{c.nombre}</h3>
-                        <div style={{ display:'flex',flexWrap:'wrap',gap:12 }}>
+                        <h3 style={{ fontSize:'1.2rem',fontWeight: 800,color:'#fff',marginBottom:16, letterSpacing: '-0.5px' }}>{c.nombre}</h3>
+                        
+                        <div style={{ display:'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap:24 }}>
                           {[
-                            { label:'Gasto',       value:formatMoney(c.presupuesto), c:'#f59e0b' },
-                            { label:'Alcance',     value:c.alcance?.toLocaleString('es-AR'), c:'#3b82f6' },
-                            { label:'Clics',       value:c.clics?.toLocaleString('es-AR'),   c:'#10b981' },
-                            { label:'Conversiones',value:c.conversiones,                     c:'#8b5cf6' },
-                            ctr ? { label:'CTR', value:ctr+'%', c:color } : null,
+                            { label:'Gasto Real',      value:formatMoney(c.presupuesto), c:AMBER },
+                            { label:'Alcance total',   value:c.alcance?.toLocaleString('es-AR'), c:BLUE },
+                            { label:'Clics logrados',  value:c.clics?.toLocaleString('es-AR'),   c:color },
+                            { label:'Conversiones',    value:c.conversiones,                     c:GREEN },
+                            ctr ? { label:'CTR (%)', value:ctr+'%', c:PURPLE } : null,
                           ].filter(Boolean).map(m => m.value ? (
-                            <div key={m.label} style={{ display:'flex',flexDirection:'column',gap:2 }}>
-                              <span style={{ fontSize:'0.68rem',color:'var(--text-muted)',fontWeight:600,letterSpacing:'0.05em' }}>{m.label}</span>
-                              <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.88rem',fontWeight: 600,color:m.c }}>{m.value}</span>
+                            <div key={m.label} style={{ display:'flex',flexDirection:'column',gap:4 }}>
+                              <span style={{ fontSize:'0.7rem',color:'rgba(255,255,255,0.4)',fontWeight:800,letterSpacing:'0.05em', textTransform: 'uppercase' }}>{m.label}</span>
+                              <span style={{ fontFamily:'var(--font-mono)',fontSize:'1.1rem',fontWeight: 800,color:m.c }}>{m.value}</span>
                             </div>
                           ) : null)}
                         </div>
-                        {c.notas && <p style={{ marginTop:8,fontSize:'0.78rem',color:'var(--text-muted)',fontStyle:'italic' }}>{c.notas}</p>}
+                        {c.notas && (
+                          <div style={{ marginTop:20, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                            <p style={{ fontSize:'0.85rem',color:'rgba(255,255,255,0.5)',fontStyle:'italic', lineHeight: 1.5 }}>“{c.notas}”</p>
+                          </div>
+                        )}
                       </div>
-                      <div style={{ display:'flex',gap:6,flexShrink:0 }}>
-                        <button onClick={() => { setEditing(c); setView('edit') }} style={{ padding:'6px 11px',background:'var(--bg-elevated)',border:'1px solid var(--border)',borderRadius:7,color:'var(--text-secondary)',fontSize:'0.75rem',cursor:'pointer' }}>✎</button>
-                        <button onClick={() => handleDelete(c.id)} style={{ padding:'6px 11px',background:'#dc262612',border:'1px solid #dc262630',borderRadius:7,color:'#f87171',fontSize:'0.75rem',cursor:'pointer' }}>✕</button>
+                      <div style={{ display:'flex',gap:10,flexShrink:0 }}>
+                        <button onClick={() => { setEditing(c); setView('edit') }} style={{ 
+                          width: 42, height: 42, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', 
+                          borderRadius: 12, color:'rgba(255,255,255,0.6)', fontSize:'1rem', cursor:'pointer', transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)' }}
+                        >✎</button>
+                        <button onClick={() => handleDelete(c.id)} style={{ 
+                          width: 42, height: 42, background: 'rgba(240,67,106,0.1)', border: '1px solid rgba(240,67,106,0.2)', 
+                          borderRadius: 12, color:RED, fontSize:'1rem', cursor:'pointer', transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(240,67,106,0.2)'; e.currentTarget.style.transform = 'scale(1.05)' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(240,67,106,0.1)'; e.currentTarget.style.transform = 'none' }}
+                        >✕</button>
                       </div>
                     </div>
                   </div>

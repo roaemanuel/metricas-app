@@ -6,12 +6,9 @@ import {
   PieChart, Pie, Cell, CartesianGrid
 } from 'recharts'
 
-// Pure Blue Scale Theme Colors
-const colorPrimary = 'var(--accent)'       // Blue 400
-const colorSecondary = 'var(--diseno-color)' // Sky 400
-const colorTertiary = 'var(--gerencia-color)' // Indigo 400
-
-const trafficColors = ['#60A5FA', '#38BDF8', '#818CF8', '#A78BFA', '#34D399']
+// Systems Module Color Theme
+const accentColor = '#FDBA74' // Amber 300
+const trafficColors = ['#FDBA74', '#FB923C', '#F97316', '#EA580C', '#C2410C', '#9A3412', '#7C2D12']
 
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
@@ -23,26 +20,35 @@ function GlassModal({ isOpen, onClose, title, children }) {
     <div style={{
       position: 'fixed', inset: 0, zIndex: 9999,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: 20,
+      padding: 24,
     }}>
       <div onClick={onClose} style={{
-        position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
-        backdropFilter: 'blur(8px)', animation: 'fadeIn 0.2s ease'
+        position: 'absolute', inset: 0, background: 'rgba(8,12,28,0.4)',
+        backdropFilter: 'blur(12px)', animation: 'fadeIn 0.3s ease'
       }} />
-      <div className="glass-panel animate-fadeUp" style={{
-        position: 'relative', width: '100%', maxWidth: 900,
+      <div className="animate-fadeUp" style={{
+        position: 'relative', width: '100%', maxWidth: 1000,
         maxHeight: '85vh', display: 'flex', flexDirection: 'column',
-        borderRadius: 'var(--radius-xl)', overflow: 'hidden',
-        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)',
-        background: 'var(--bg-surface)',
+        borderRadius: 32, overflow: 'hidden',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+        background: 'rgba(255, 255, 255, 0.07)',
+        backdropFilter: 'blur(28px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
       }}>
+        {/* Top Accent Line */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
+        
         <div style={{
-          padding: '24px 32px', borderBottom: '1px solid var(--border)',
+          padding: '24px 32px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
+          <h2 style={{ 
+            fontSize: '1.5rem', fontWeight: 800, margin: 0, 
+            background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>{title}</h2>
           <button onClick={onClose} style={{
-            background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-muted)',
+            background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff',
             width: 36, height: 36, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>✕</button>
         </div>
@@ -55,23 +61,39 @@ function GlassModal({ isOpen, onClose, title, children }) {
 }
 
 // --- KPI Card ---
-function StatCard({ label, value, unit='', icon, c, sub, delay=0 }) {
+function StatCard({ label, value, unit='', icon, color, sub, delay=0 }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div className="animate-fadeUp" style={{
-      animationDelay:`${delay}s`,
-      background:'var(--bg-surface)', border:'1px solid var(--border)',
-      borderRadius: 'var(--radius-lg)', padding:'24px', position:'relative', overflow:'hidden',
-      boxShadow: '0 8px 32px var(--glass-shadow)',
-    }}>
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:4, background:c, opacity:0.9, boxShadow: `0 0 12px ${c}` }} />
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
-        <div style={{ fontSize:'0.9rem', color:'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.02em', textTransform: 'uppercase' }}>{label}</div>
-        <div style={{ fontSize:22, opacity: 0.8 }}>{icon}</div>
+    <div 
+      className="animate-fadeUp" 
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        animationDelay: `${delay}s`,
+        background: 'rgba(255, 255, 255, 0.07)',
+        backdropFilter: 'blur(28px)',
+        border: hovered ? `1px solid ${color}66` : '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 24, padding: '24px', position: 'relative', overflow: 'hidden',
+        boxShadow: hovered ? `0 12px 40px ${color}22` : '0 8px 32px rgba(0,0, 0, 0.15)',
+        transform: hovered ? 'translateY(-8px) scale(1.01)' : 'translateY(0) scale(1)',
+        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        cursor: 'default'
+      }}
+    >
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: color, opacity: 0.8 }} />
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{label}</div>
+        <div style={{ fontSize: 24, filter: `drop-shadow(0 0 10px ${color}44)` }}>{icon}</div>
       </div>
-      <div style={{ fontFamily:'var(--font-display)', fontSize:'3rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing:'-1.5px', lineHeight:1, marginBottom:8 }}>
-        {value}<span style={{ fontSize:'1.2rem', fontWeight: 500, marginLeft:4, color: 'var(--text-muted)' }}>{unit}</span>
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '2.8rem', fontWeight: 800,
+        color: '#fff', letterSpacing: '-2px', lineHeight: 1,
+        marginBottom: 8,
+      }}>
+        {value}<span style={{ fontSize: '1rem', fontWeight: 600, marginLeft: 6, color: 'rgba(255,255,255,0.4)', letterSpacing: 0 }}>{unit}</span>
       </div>
-      {sub && <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', fontWeight: 500 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>{sub}</div>}
     </div>
   )
 }
@@ -80,10 +102,13 @@ function StatCard({ label, value, unit='', icon, c, sub, delay=0 }) {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-panel" style={{ padding: '12px 16px', borderRadius: 8, border: '1px solid var(--border-bright)' }}>
-        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>Día {label}</p>
+      <div style={{ 
+        background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)',
+        padding: '12px 16px', borderRadius: 12, boxShadow: '0 4px 24px var(--glass-shadow)' 
+      }}>
+        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 800, marginBottom: 6 }}>Día {label}</p>
         {payload.map((entry, index) => (
-          <p key={`item-${index}`} style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600, color: entry.color }}>
+          <p key={`item-${index}`} style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: entry.color }}>
             {entry.name}: {entry.value}
           </p>
         ))}
@@ -101,8 +126,6 @@ export default function SistemasDashboardPage() {
   const [records, setRecords] = useState([])
   const [ga4data, setGa4data] = useState(null)
   const [loading, setLoading] = useState(true)
-  
-  // Modal state
   const [showLogsModal, setShowLogsModal] = useState(false)
 
   const periodo = `${year}-${String(month+1).padStart(2,'0')}-01`
@@ -155,83 +178,112 @@ export default function SistemasDashboardPage() {
   return (
     <div className="animate-fadeIn">
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:32 }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:20, marginBottom:32 }}>
         <div>
-          <h1 style={{ fontSize:'2rem', fontWeight: 600, letterSpacing:'-1px', marginBottom:6 }}>Sistemas / Web</h1>
-          <p style={{ color:'var(--text-secondary)', fontSize:'1rem' }}>Métricas Operativas y Analítica de Tráfico</p>
+          <h1 style={{ 
+            fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-2px', marginBottom: 4,
+            background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>
+            Sistemas / Web
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', fontWeight: 500 }}>
+            Infraestructura técnica · Análisis de rendimiento digital
+          </p>
         </div>
-        <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-          <button onClick={() => { if(month===0){setYear(y=>y-1);setMonth(11)}else setMonth(m=>m-1) }}
-            style={{ width:40, height:40, borderRadius:12, background:'var(--bg-elevated)', border:'1px solid var(--border)', color:'var(--text-secondary)', fontSize:'1.2rem', cursor:'pointer', transition: 'all 0.2s' }}>‹</button>
-          <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.9rem', color:'var(--text-primary)', minWidth:140, textAlign:'center', fontWeight: 600 }}>{MONTHS_ES[month]} {year}</span>
-          <button onClick={() => { if(isCurrentMonth)return; if(month===11){setYear(y=>y+1);setMonth(0)}else setMonth(m=>m+1) }}
-            disabled={isCurrentMonth}
-            style={{ width:40, height:40, borderRadius:12, background:'var(--bg-elevated)', border:'1px solid var(--border)', color:isCurrentMonth?'var(--text-muted)':'var(--text-secondary)', fontSize:'1.2rem', cursor:isCurrentMonth?'not-allowed':'pointer', transition: 'all 0.2s' }}>›</button>
-          <button onClick={() => navigate('/dashboard/sistemas/ingresar')} style={{
-            padding:'10px 24px', marginLeft:12, background: 'var(--accent)',
-            border:'none', borderRadius:12, color:'#fff',
-            fontSize:'0.9rem', fontWeight: 600, cursor:'pointer',
-            boxShadow:'0 4px 20px var(--accent-glow)',
-            transition: 'all 0.2s'
-          }}>✚ Registrar hoy</button>
+
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ 
+            background: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 4, 
+            border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center' 
+          }}>
+            <button onClick={() => month === 0 ? (setYear(y=>y-1), setMonth(11)) : setMonth(m=>m-1)} 
+              style={{ width: 40, height: 40, borderRadius: 12, background: 'transparent', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' }}>‹</button>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)', minWidth: 120, textAlign: 'center', fontWeight: 700 }}>
+              {MONTHS_ES[month].toUpperCase()} {year}
+            </span>
+            <button onClick={() => isCurrentMonth ? null : month === 11 ? (setYear(y=>y+1), setMonth(0)) : setMonth(m=>m+1)} 
+              disabled={isCurrentMonth} style={{ 
+                width: 40, height: 40, borderRadius: 12, background: 'transparent', border: 'none', 
+                color: isCurrentMonth ? 'rgba(255,255,255,0.2)' : '#fff', fontSize: '1.2rem', 
+                cursor: isCurrentMonth ? 'not-allowed' : 'pointer' 
+              }}>›</button>
+          </div>
+
+          <button
+            onClick={() => navigate('/dashboard/sistemas/ingresar')}
+            style={{
+              padding: '12px 28px', background: accentColor, border: 'none', borderRadius: 16,
+              color: '#080C1C', fontSize: '0.9rem', fontWeight: 800, cursor: 'pointer',
+              boxShadow: `0 8px 24px ${accentColor}44`, transition: 'all 0.3s'
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+          >✚ Registrar Jornada</button>
         </div>
       </div>
 
       {loading ? (
-        <div style={{ display:'flex', justifyContent:'center', padding:100 }}>
-          <div style={{ width:40, height:40, borderRadius:'50%', border:'3px solid var(--border-bright)', borderTopColor:colorPrimary, animation:'spin 0.8s linear infinite' }} />
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 120 }}>
+          <div className="animate-spin" style={{ width: 48, height: 48, borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: accentColor }} />
         </div>
       ) : records.length === 0 && !ga4data ? (
-        <div style={{ textAlign:'center', padding:'80px 24px', border:`2px dashed var(--border-bright)`, borderRadius:24, background:'var(--glass-bg)' }}>
-          <div style={{ fontSize:48, marginBottom:16 }}>🖥️</div>
-          <p style={{ color:'var(--text-secondary)', marginBottom:24, fontSize: '1.1rem' }}>No hay registros para {MONTHS_ES[month]} {year}</p>
-          <button onClick={() => navigate('/dashboard/sistemas/ingresar')} style={{
-            padding:'14px 32px', background:colorPrimary, border:'none', borderRadius:14,
-            color:'#fff', fontWeight: 600, fontSize:'1rem', cursor:'pointer',
-            boxShadow:'0 4px 20px var(--accent-glow)',
-          }}>Ingresar primer registro →</button>
+        <div className="animate-fadeUp" style={{
+          textAlign: 'center', padding: '100px 40px',
+          border: `1px dashed ${accentColor}66`, borderRadius: 32, background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)'
+        }}>
+          <div style={{ fontSize: 64, marginBottom: 24 }}>🖥️</div>
+          <h2 style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 800, marginBottom: 12 }}>Sin datos técnicos</h2>
+          <p style={{ color: 'rgba(255,255,255,0.4)', marginBottom: 32, fontSize: '1.1rem' }}>No hay registros de sistemas para {MONTHS_ES[month]} {year}</p>
+          <button onClick={() => navigate('/dashboard/sistemas/ingresar')}
+            style={{ padding: '16px 48px', background: accentColor, border: 'none', borderRadius: 16, color: '#080C1C', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: `0 8px 24px ${accentColor}33` }}
+          >Ingresar métricas ahora →</button>
         </div>
       ) : (
         <>
           {/* KPI Cards */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:16, marginBottom:24 }}>
-            {ga4data && <StatCard label="Sesiones web"    value={ga4data.sesiones?.toLocaleString('es-AR') || '—'} icon="🌐" c={colorPrimary} delay={0} />}
-            <StatCard label="Incidencias resueltas" value={totals.incidencias} icon="🔧" c={colorSecondary} delay={0.05} sub={`${totals.dias} días registrados`} />
-            <StatCard label="Imgs. optimizadas"     value={totals.optimizadas} icon="⚡" c={colorTertiary} delay={0.1} />
-            {ga4data && <StatCard label="Usuarios activos" value={ga4data.usuarios_activos?.toLocaleString('es-AR') || '—'} icon="👤" c={trafficColors[3]} delay={0.15} />}
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:20, marginBottom:24 }}>
+            {ga4data && <StatCard label="Sesiones web" value={ga4data.sesiones?.toLocaleString('es-AR') || '—'} icon="🌐" color={accentColor} delay={0} />}
+            <StatCard label="Incidencias resueltas" value={totals.incidencias} icon="🔧" color="#60A5FA" delay={0.1} sub={`${totals.dias} días registrados`} />
+            <StatCard label="Imgs. optimizadas" value={totals.optimizadas} icon="⚡" color="#3B82F6" delay={0.2} />
+            {ga4data && <StatCard label="Usuarios activos" value={ga4data.usuarios_activos?.toLocaleString('es-AR') || '—'} icon="👤" color="#10B981" delay={0.3} />}
           </div>
 
           {/* Main Visualizations Row */}
-          <div style={{ display:'grid', gridTemplateColumns: ga4data ? '2fr 1fr' : '1fr', gap:16, marginBottom:24 }}>
-            {/* Primary Chart - Area Chart */}
+          <div style={{ display:'grid', gridTemplateColumns: ga4data ? '2fr 1fr' : '1fr', gap:24, marginBottom:24 }}>
+            {/* Primary Evolution Chart */}
             {records.length > 0 && (
-              <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 24 }}>
-                  <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', letterSpacing:'0.05em' }}>EVOLUCIÓN DIARIA</div>
+              <div className="animate-fadeUp" style={{ 
+                background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                padding: '32px', borderRadius: 32, border: '1px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+              }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 32 }}>
+                  <div style={{ fontSize:'0.8rem', fontWeight: 800, color:'rgba(255,255,255,0.5)', letterSpacing:'0.1em', textTransform: 'uppercase' }}>ACTIVIDAD TÉCNICA DIARIA</div>
                   <button onClick={() => setShowLogsModal(true)} style={{
-                    background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)',
-                    padding: '6px 14px', borderRadius: 8, fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600
-                  }}>Ver detalles</button>
+                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff',
+                    padding: '8px 20px', borderRadius: 12, fontSize: '0.8rem', cursor: 'pointer', fontWeight: 700
+                  }}>Ver bitácora detallada</button>
                 </div>
-                <div style={{ width: '100%', height: 320 }}>
+                <div style={{ width: '100%', height: 350 }}>
                   <ResponsiveContainer>
                     <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorInc" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={colorSecondary} stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor={colorSecondary} stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#60A5FA" stopOpacity={0.6}/>
+                          <stop offset="95%" stopColor="#60A5FA" stopOpacity={0}/>
                         </linearGradient>
                         <linearGradient id="colorOpt" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={colorTertiary} stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor={colorTertiary} stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4}/>
+                          <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                      <XAxis dataKey="dia" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                      <XAxis dataKey="dia" stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} />
+                      <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Area type="monotone" dataKey="Optimizadas" stroke={colorTertiary} strokeWidth={3} fillOpacity={1} fill="url(#colorOpt)" />
-                      <Area type="monotone" dataKey="Incidencias" stroke={colorSecondary} strokeWidth={3} fillOpacity={1} fill="url(#colorInc)" />
+                      <Area type="monotone" dataKey="Optimizadas" stroke="#3B82F6" strokeWidth={4} fillOpacity={1} fill="url(#colorOpt)" />
+                      <Area type="monotone" dataKey="Incidencias" stroke="#60A5FA" strokeWidth={4} fillOpacity={1} fill="url(#colorInc)" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -240,43 +292,43 @@ export default function SistemasDashboardPage() {
 
             {/* Donut Chart - Traffic Sources */}
             {ga4data && traficoTotal > 0 && (
-              <div className="glass-panel" style={{ padding: '24px', borderRadius: 'var(--radius-xl)', display:'flex', flexDirection:'column' }}>
-                <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', letterSpacing:'0.05em', marginBottom: 16 }}>FUENTES DE TRÁFICO</div>
+              <div className="animate-fadeUp" style={{ 
+                background: 'rgba(255, 255, 255, 0.07)', backdropFilter: 'blur(28px)', 
+                padding: '32px', borderRadius: 32, border: '1px solid rgba(255,255,255,0.1)',
+                display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                animationDelay: '0.1s'
+              }}>
+                <div style={{ fontSize:'0.8rem', fontWeight: 800, color:'rgba(255,255,255,0.5)', letterSpacing:'0.1em', textTransform: 'uppercase', marginBottom: 24 }}>CANALES DE ADQUISICIÓN</div>
                 
-                <div style={{ flex: 1, position: 'relative' }}>
-                  <ResponsiveContainer width="100%" height={200}>
+                <div style={{ flex: 1, position: 'relative', minHeight: 220 }}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie
-                        data={trafficData}
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                        stroke="none"
-                      >
+                      <Pie data={trafficData} innerRadius={70} outerRadius={95} paddingAngle={8} dataKey="value" stroke="none">
                         {trafficData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={trafficColors[index % trafficColors.length]} />
                         ))}
                       </Pie>
-                      <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 8 }} itemStyle={{ color: 'var(--text-primary)' }} />
+                      <Tooltip 
+                        contentStyle={{ background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', border: '1px solid var(--glass-border)', borderRadius: 12, boxShadow: '0 4px 24px var(--glass-shadow)' }} 
+                        itemStyle={{ color: 'var(--text-primary)', fontWeight: 700 }} 
+                      />
                     </PieChart>
                   </ResponsiveContainer>
-                  {/* Center Text */}
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
-                    <span style={{ fontSize: '1.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{ga4data.sesiones?.toLocaleString('es-AR')}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Sesiones</span>
+                  <div style={{ position: 'absolute', inset: 0, transform: 'translateY(-5%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
+                    <span style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>{ga4data.sesiones?.toLocaleString('es-AR')}</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginTop: 4 }}>Sesiones</span>
                   </div>
                 </div>
 
-                <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {trafficData.map((f, i) => (
                     <div key={f.name} style={{ display:'flex', justifyContent:'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ width: 10, height: 10, borderRadius: '50%', background: trafficColors[i % trafficColors.length] }} />
-                        <span style={{ fontSize:'0.85rem', color:'var(--text-secondary)' }}>{f.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 10, height: 10, borderRadius: '50%', background: trafficColors[i % trafficColors.length], boxShadow: `0 0 10px ${trafficColors[i % trafficColors.length]}88` }} />
+                        <span style={{ fontSize:'0.85rem', color:'rgba(255,255,255,0.6)', fontWeight: 600 }}>{f.name}</span>
                       </div>
-                      <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.85rem', fontWeight:600, color:'var(--text-primary)' }}>
-                        {f.value.toLocaleString('es-AR')} <span style={{ color: 'var(--text-muted)', fontSize:'0.75rem', fontWeight: 400 }}>({((f.value / traficoTotal) * 100).toFixed(1)}%)</span>
+                      <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.85rem', fontWeight:800, color:'#fff' }}>
+                        {((f.value / traficoTotal) * 100).toFixed(1)}%
                       </span>
                     </div>
                   ))}
@@ -287,50 +339,53 @@ export default function SistemasDashboardPage() {
 
           {/* Secondary Analytics Row */}
           {ga4data && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-               {/* GA4 Highlights */}
-              <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-                <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', marginBottom:20, letterSpacing:'0.05em' }}>
-                  RENDIMIENTO DEL SITIO
-                </div>
-                <div style={{ display:'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap:16, textAlign: 'center' }}>
-                  <div style={{ background: 'var(--bg-elevated)', padding: '20px 10px', borderRadius: 16, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>Páginas Vistas</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 600, color: colorPrimary }}>{ga4data.pageviews?.toLocaleString('es-AR')}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 24, marginBottom: 40 }}>
+               {/* Website Performance Metrics */}
+              <div className="animate-fadeUp" style={{ 
+                background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(20px)', 
+                padding: '32px', borderRadius: 32, border: '1px solid rgba(255,255,255,0.08)',
+                animationDelay: '0.2s'
+              }}>
+                <div style={{ fontSize:'0.8rem', fontWeight: 800, color:'rgba(255,255,255,0.5)', marginBottom:24, letterSpacing:'0.1em', textTransform: 'uppercase' }}>EFICIENCIA DEL SITIO WEB</div>
+                <div style={{ display:'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap:20 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px 12px', borderRadius: 24, border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginBottom: 12, textTransform: 'uppercase' }}>Páginas Vistas</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff' }}>{ga4data.pageviews?.toLocaleString('es-AR') || '0'}</div>
                   </div>
-                  <div style={{ background: 'var(--bg-elevated)', padding: '20px 10px', borderRadius: 16, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>Tasa de Rebote</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 600, color: trafficColors[3] }}>{ga4data.tasa_rebote ? ga4data.tasa_rebote+'%' : '—'}</div>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px 12px', borderRadius: 24, border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginBottom: 12, textTransform: 'uppercase' }}>Tasa Rebote</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#F0436A' }}>{ga4data.tasa_rebote || '0'}%</div>
                   </div>
-                  <div style={{ background: 'var(--bg-elevated)', padding: '20px 10px', borderRadius: 16, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>T. Promedio</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 600, color: colorSecondary }}>
-                      {ga4data.duracion_promedio_seg ? `${Math.floor(ga4data.duracion_promedio_seg/60)}m` : '—'}
-                    </div>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', padding: '24px 12px', borderRadius: 24, border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: 800, marginBottom: 12, textTransform: 'uppercase' }}>Sesión Prom.</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#10B981' }}>{ga4data.duracion_promedio_seg ? `${Math.floor(ga4data.duracion_promedio_seg/60)}m` : '0m'}</div>
                   </div>
                 </div>
               </div>
 
-              {/* SEO Keywords */}
+              {/* SEO Top Keywords */}
               {ga4data.seo_keywords?.length > 0 && (
-                <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-                  <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', letterSpacing:'0.05em', marginBottom: 20 }}>
-                    SEO — TOP KEYWORDS
-                  </div>
-                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <div className="animate-fadeUp" style={{ 
+                  background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(20px)', 
+                  padding: '32px', borderRadius: 32, border: '1px solid rgba(255,255,255,0.08)',
+                  animationDelay: '0.3s'
+                }}>
+                  <div style={{ fontSize:'0.8rem', fontWeight: 800, color:'rgba(255,255,255,0.5)', marginBottom:24, letterSpacing:'0.1em', textTransform: 'uppercase' }}>RANKING SEO (TOP KEYWORDS)</div>
+                  <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                     {[...ga4data.seo_keywords].sort((a,b) => parseInt(a.posicion||99)-parseInt(b.posicion||99)).slice(0,4).map((kw,i) => (
                       <div key={i} style={{
-                        display:'grid', gridTemplateColumns:'1fr 60px 70px 80px', gap:12,
-                        padding:'12px 16px', background:'var(--bg-elevated)',
-                        border:'1px solid var(--border)', borderRadius:12, alignItems:'center',
+                        display:'grid', gridTemplateColumns:'1fr 60px 80px 90px', gap:16,
+                        padding:'14px 20px', background:'rgba(255,255,255,0.02)',
+                        border:'1px solid rgba(255,255,255,0.05)', borderRadius:16, alignItems:'center',
                       }}>
-                        <span style={{ fontSize:'0.9rem', color:'var(--text-primary)', fontWeight: 500 }}>{kw.keyword}</span>
+                        <span style={{ fontSize:'0.9rem', color:'#fff', fontWeight: 700 }}>{kw.keyword}</span>
                         <span style={{
-                          fontFamily:'var(--font-mono)', fontSize:'0.9rem', fontWeight: 600, textAlign:'center',
-                          color: parseInt(kw.posicion)<=3? trafficColors[4] : parseInt(kw.posicion)<=10 ? colorPrimary : 'var(--text-secondary)',
+                          fontFamily:'var(--font-mono)', fontSize:'1rem', fontWeight: 900, textAlign:'center',
+                          color: parseInt(kw.posicion)<=3? '#10B981' : parseInt(kw.posicion)<=10 ? accentColor : 'rgba(255,255,255,0.4)',
+                          textShadow: parseInt(kw.posicion)<=3 ? '0 0 10px #10B98144' : 'none'
                         }}>#{kw.posicion}</span>
-                        <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.8rem', textAlign:'center', color:'var(--text-secondary)' }}>{kw.clics ? kw.clics+' click' : '—'}</span>
-                        <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.8rem', textAlign:'center', color:'var(--text-muted)' }}>{kw.impresiones ? kw.impresiones+' imp' : '—'}</span>
+                        <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.8rem', textAlign:'right', color:'rgba(255,255,255,0.5)', fontWeight:600 }}>{kw.clics || 0} clicks</span>
+                        <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.8rem', textAlign:'right', color:'rgba(255,255,255,0.3)', fontWeight:500 }}>{kw.impresiones?.toLocaleString('es-AR') || 0} imp</span>
                       </div>
                     ))}
                   </div>
@@ -340,31 +395,29 @@ export default function SistemasDashboardPage() {
           )}
 
           {/* Records Detail Modal */}
-          <GlassModal isOpen={showLogsModal} onClose={() => setShowLogsModal(false)} title={`Registros Diarios - ${MONTHS_ES[month]} ${year}`}>
-            {records.length > 0 ? (
-              <table style={{ width:'100%', borderCollapse:'collapse', fontSize:'0.9rem' }}>
+          <GlassModal isOpen={showLogsModal} onClose={() => setShowLogsModal(false)} title={`Bitácora de Sistemas - ${MONTHS_ES[month]} ${year}`}>
+            <div style={{ overflowX: 'auto', margin: '0 -32px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                 <thead>
-                  <tr style={{ background:'var(--bg-hover)' }}>
-                    {['Fecha','Incidencias','Cód. Barras','Optimizadas','Notas'].map(h => (
-                      <th key={h} style={{ padding:'12px 16px', textAlign:'left', color:'var(--text-muted)', fontWeight:600, fontSize:'0.8rem', letterSpacing:'0.05em', whiteSpace:'nowrap', borderBottom: '1px solid var(--border-bright)' }}>{h}</th>
+                  <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
+                    {['Fecha', 'Incidencias', 'Cód. Barras', 'Optimizadas', 'Notas'].map(h => (
+                      <th key={h} style={{ padding: '16px 20px', textAlign: 'left', color: 'rgba(255,255,255,0.4)', fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {records.map((r, i) => (
-                    <tr key={r.id} style={{ borderBottom:'1px solid var(--border)' }}>
-                      <td style={{ padding:'14px 16px', fontFamily:'var(--font-mono)', color:'var(--text-secondary)', whiteSpace:'nowrap' }}>{r.fecha?.slice(8,10)} / {r.fecha?.slice(5,7)}</td>
-                      <td style={{ padding:'14px 16px', textAlign:'center', fontFamily:'var(--font-mono)', color: r.incidencias_resueltas>0?colorSecondary:'var(--text-muted)', fontWeight: r.incidencias_resueltas>0?800:400, fontSize: '1rem' }}>{r.incidencias_resueltas||0}</td>
-                      <td style={{ padding:'14px 16px', textAlign:'center', fontFamily:'var(--font-mono)', color: r.imagenes_codigos_actualizadas>0?colorPrimary:'var(--text-muted)', fontSize: '1rem' }}>{r.imagenes_codigos_actualizadas||0}</td>
-                      <td style={{ padding:'14px 16px', textAlign:'center', fontFamily:'var(--font-mono)', color: r.imagenes_peso_optimizado>0?colorTertiary:'var(--text-muted)', fontSize: '1rem' }}>{r.imagenes_peso_optimizado||0}</td>
-                      <td style={{ padding:'14px 16px', color:'var(--text-muted)', maxWidth:250, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r.notas||'—'}</td>
+                    <tr key={r.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)' }}>
+                      <td style={{ padding: '16px 20px', fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.8)', fontWeight: 700 }}>{r.fecha?.split('-').reverse().join('/')}</td>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', color: r.incidencias_resueltas ? '#60A5FA' : 'rgba(255,255,255,0.1)', fontWeight: 800 }}>{r.incidencias_resueltas || '—'}</td>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', color: r.imagenes_codigos_actualizadas ? accentColor : 'rgba(255,255,255,0.1)', fontWeight: 800 }}>{r.imagenes_codigos_actualizadas || '—'}</td>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', color: r.imagenes_peso_optimizado ? '#3B82F6' : 'rgba(255,255,255,0.1)', fontWeight: 800 }}>{r.imagenes_peso_optimizado || '—'}</td>
+                      <td style={{ padding: '16px 20px', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.notas || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            ) : (
-              <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No hay datos detallados para este mes.</p>
-            )}
+            </div>
           </GlassModal>
         </>
       )}

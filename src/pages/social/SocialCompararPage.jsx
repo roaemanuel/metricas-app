@@ -1,202 +1,275 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
-const color = '#f0436a'
+const color = '#7DD3FC' // Social color from user request
+const RED = '#f0436a'
+const GREEN = '#10b981'
+
 const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
-function labelPeriodo(p) {
-  if (!p) return '—'
-  const [y,m] = p.split('-')
-  return `${MONTHS_ES[parseInt(m)-1]} ${y}`
-}
 function fmt(n) {
   if (n === null || n === undefined) return '—'
   return Number(n).toLocaleString('es-AR')
 }
-function delta(a, b) {
-  if ((b === null || b === undefined) && (a === null || a === undefined)) return null
-  if (!b || b === 0) return a > 0 ? 100 : null
-  return ((a - b) / b * 100)
-}
 
-function DeltaBadge({ value, higherIsBetter = true }) {
-  if (value === null || value === undefined) return <span style={{ color:'var(--text-muted)',fontSize:'0.75rem' }}>—</span>
-  const good = higherIsBetter ? value >= 0 : value <= 0
-  const c = good ? '#10b981' : '#f0436a'
+function DeltaBadge({ current, previous }) {
+  if (current === null || previous === null || previous === 0) return null
+  const diff = current - previous
+  const pct  = (diff / previous * 100).toFixed(1)
+  const isPos = diff >= 0
+  
   return (
-    <span style={{
-      display:'inline-flex',alignItems:'center',gap:3,
-      fontFamily:'var(--font-mono)',fontSize:'0.78rem',fontWeight: 600,color:c,
-      background:c+'18',border:`1px solid ${c}33`,borderRadius:99,padding:'2px 10px',
+    <div style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 4,
+      padding: '4px 8px',
+      borderRadius: 8,
+      background: isPos ? 'rgba(16, 185, 129, 0.15)' : 'rgba(240, 67, 106, 0.15)',
+      color: isPos ? GREEN : RED,
+      fontSize: '0.72rem',
+      fontWeight: 800,
+      border: `1px solid ${isPos ? GREEN : RED}33`,
+      backdropFilter: 'blur(4px)',
     }}>
-      {value >= 0 ? '▲' : '▼'} {Math.abs(value).toFixed(1)}%
-    </span>
-  )
-}
-
-function MonthSelect({ label, value, onChange, options }) {
-  return (
-    <div style={{ flex:1,minWidth:180 }}>
-      <div style={{ fontSize:'0.7rem',fontWeight: 600,letterSpacing:'0.1em',color:'var(--text-muted)',marginBottom:8,textTransform:'uppercase' }}>{label}</div>
-      <select value={value} onChange={e=>onChange(e.target.value)} style={{
-        width:'100%',padding:'10px 14px',
-        background:'var(--bg-elevated)',
-        border:`1px solid ${value?color+'66':'var(--border)'}`,
-        borderRadius:10,color:'var(--text-primary)',fontSize:'0.9rem',cursor:'pointer',
-      }}>
-        <option value="">— Seleccionar mes —</option>
-        {options.map(m => <option key={m} value={m}>{labelPeriodo(m)}</option>)}
-      </select>
+      {isPos ? '▲' : '▼'} {Math.abs(pct)}%
     </div>
   )
 }
 
-const METRICS = [
-  { key:'seguidores_total',  label:'Seguidores totales',              emoji:'👥', higherIsBetter:true  },
-  { key:'nuevos_seguidores', label:'Nuevos seguidores',               emoji:'📈', higherIsBetter:true  },
-  { key:'alcance',           label:'Alcance',                        emoji:'🌐', higherIsBetter:true  },
-  { key:'interacciones',     label:'Interacciones (likes+comentarios)',emoji:'❤️', higherIsBetter:true  },
-]
-
 export default function SocialCompararPage() {
-  const [available, setAvailable] = useState([])
-  const [periodoA, setPeriodoA]   = useState('')
-  const [periodoB, setPeriodoB]   = useState('')
-  const [dataA, setDataA]         = useState(null)
-  const [dataB, setDataB]         = useState(null)
-  const [loading, setLoading]     = useState(false)
+  const now = new Date()
+  const [loading, setLoading] = useState(true)
+  
+  const [y1, setY1] = useState(now.getFullYear())
+  const [m1, setM1] = useState(now.getMonth())
+  
+  const [y2, setY2] = useState(now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear())
+  const [m2, setM2] = useState(now.getMonth() === 0 ? 11 : now.getMonth() - 1)
 
-  useEffect(() => {
-    supabase.from('social_media_metrics').select('periodo').order('periodo', { ascending: false })
-      .then(({ data }) => {
-        const months = [...new Set((data||[]).map(r=>r.periodo))].sort((a,b)=>b.localeCompare(a))
-        setAvailable(months)
-        if (months.length >= 1) setPeriodoA(months[0])
-        if (months.length >= 2) setPeriodoB(months[1])
-      })
-  }, [])
+  const [d1, setD1] = useState(null)
+  const [d2, setD2] = useState(null)
 
-  useEffect(() => {
-    if (!periodoA) return
+  useEffect(() => { loadData() }, [y1, m1, y2, m2])
+
+  async function loadData() {
     setLoading(true)
-    supabase.from('social_media_metrics').select('*').eq('periodo', periodoA).maybeSingle()
-      .then(({ data }) => { setDataA(data); setLoading(false) })
-  }, [periodoA])
+    const p1 = `${y1}-${String(m1+1).padStart(2,'0')}-01`
+    const p2 = `${y2}-${String(m2+1).padStart(2,'0')}-01`
 
-  useEffect(() => {
-    if (!periodoB) return
-    setLoading(true)
-    supabase.from('social_media_metrics').select('*').eq('periodo', periodoB).maybeSingle()
-      .then(({ data }) => { setDataB(data); setLoading(false) })
-  }, [periodoB])
+    const { data } = await supabase
+      .from('social_media_metrics')
+      .select('*')
+      .in('periodo', [p1, p2])
 
-  const canCompare = dataA && dataB
+    setD1(data?.find(x => x.periodo === p1) || null)
+    setD2(data?.find(x => x.periodo === p2) || null)
+    setLoading(false)
+  }
 
-  // Engagement rates
-  const erA = dataA?.interacciones && dataA?.alcance ? (dataA.interacciones/dataA.alcance*100).toFixed(2) : null
-  const erB = dataB?.interacciones && dataB?.alcance ? (dataB.interacciones/dataB.alcance*100).toFixed(2) : null
+  const ROWS = [
+    { key: 'seguidores_total',  label: 'Seguidores totales', emoji: '👥' },
+    { key: 'nuevos_seguidores', label: 'Nuevos Seguidores',  emoji: '📈' },
+    { key: 'alcance',           label: 'Alcance mensual',    emoji: '🌐' },
+    { key: 'interacciones',     label: 'Interacciones',      emoji: '❤️' },
+  ]
+
+  const years = []
+  for (let i = now.getFullYear(); i >= 2024; i--) years.push(i)
 
   return (
     <div className="animate-fadeIn">
-      <div style={{ marginBottom:28 }}>
-        <h1 style={{ fontSize:'1.6rem',fontWeight: 600,letterSpacing:'-0.8px',marginBottom:4 }}>Comparativa mensual</h1>
-        <p style={{ color:'var(--text-secondary)',fontSize:'0.88rem' }}>Social Media · métricas de Instagram período a período</p>
+      {/* Header */}
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ 
+          fontSize: '2.4rem', 
+          fontWeight: 800, 
+          letterSpacing: '-1.5px', 
+          marginBottom: 6,
+          background: 'linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.55))',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>
+          Comparativa Mensual
+        </h1>
+        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.95rem', fontWeight: 500 }}>
+          Contraste de rendimientos entre periodos seleccionados
+        </p>
       </div>
 
-      {/* Selectors */}
-      <div style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:14,padding:'20px 24px',marginBottom:24,boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-        <div style={{ display:'flex',gap:16,alignItems:'flex-end',flexWrap:'wrap' }}>
-          <MonthSelect label="Mes base"        value={periodoA} onChange={setPeriodoA} options={available} />
-          <div style={{ fontSize:'1.4rem',color:'var(--text-muted)',paddingBottom:10,flexShrink:0 }}>⇄</div>
-          <MonthSelect label="Mes a comparar"  value={periodoB} onChange={setPeriodoB} options={available} />
+      {/* Selectors Panel */}
+      <div 
+        className="animate-fadeUp"
+        style={{
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: 24,
+          padding: '24px 32px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 40,
+          marginBottom: 32,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+          <div style={{ textAlign:'right' }}>
+            <div style={{ fontSize:'0.7rem', fontWeight:800, color:color, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:4 }}>Periodo A</div>
+            <div style={{ display:'flex', gap:8 }}>
+              <select value={m1} onChange={e=>setM1(parseInt(e.target.value))} style={selStyle}>
+                {MONTHS_ES.map((m,i)=><option key={i} value={i}>{m}</option>)}
+              </select>
+              <select value={y1} onChange={e=>setY1(parseInt(e.target.value))} style={selStyle}>
+                {years.map(y=><option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{ fontSize: 24, color: 'rgba(255,255,255,0.2)' }}>⚡</div>
+          <div style={{ textAlign:'left' }}>
+            <div style={{ fontSize:'0.7rem', fontWeight:800, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:4 }}>Periodo B (Referencia)</div>
+            <div style={{ display:'flex', gap:8 }}>
+              <select value={m2} onChange={e=>setM2(parseInt(e.target.value))} style={selStyle}>
+                {MONTHS_ES.map((m,i)=><option key={i} value={i}>{m}</option>)}
+              </select>
+              <select value={y2} onChange={e=>setY2(parseInt(e.target.value))} style={selStyle}>
+                {years.map(y=><option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
+          </div>
         </div>
-        {available.length < 2 && (
-          <p style={{ color:'var(--text-muted)',fontSize:'0.8rem',marginTop:12 }}>⚠️ Necesitás al menos 2 meses con datos para comparar.</p>
-        )}
       </div>
 
-      {loading && (
-        <div style={{ display:'flex',justifyContent:'center',padding:40 }}>
-          <div style={{ width:24,height:24,borderRadius:'50%',border:'2px solid var(--border-bright)',borderTopColor:color,animation:'spin 0.8s linear infinite' }} />
+      {loading ? (
+        <div style={{ display:'flex', justifyContent:'center', padding:80 }}>
+           <div className="animate-spin" style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: color }} />
         </div>
-      )}
+      ) : (
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))', gap:20 }}>
+          {ROWS.map((row, i) => {
+            const v1 = d1?.[row.key]
+            const v2 = d2?.[row.key]
+            return (
+              <div 
+                key={row.key} 
+                className="animate-fadeUp"
+                style={{
+                  animationDelay: `${i * 0.1}s`,
+                  background: 'rgba(255, 255, 255, 0.07)',
+                  backdropFilter: 'blur(28px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: 24,
+                  padding: '32px',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                }}
+              >
+                {/* Glow Accent */}
+                <div style={{ position:'absolute', top:0, left:0, right:0, height:'2px', background: `linear-gradient(90deg, transparent, ${color}, transparent)`, opacity:0.6 }} />
 
-      {canCompare && !loading && (
-        <>
-          {/* Hero banners */}
-          <div style={{ display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:12,marginBottom:20,alignItems:'center' }}>
-            {[
-              { label:labelPeriodo(periodoA), data:dataA, align:'left' },
-              null,
-              { label:labelPeriodo(periodoB), data:dataB, align:'right' },
-            ].map((item,i) => item===null ? (
-              <div key={i} style={{ textAlign:'center',color:'var(--text-muted)',fontSize:'1.2rem' }}>vs</div>
-            ) : (
-              <div key={i} style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:14,padding:'18px 22px',textAlign:item.align, boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-                <div style={{ fontSize:'0.75rem',color:'var(--text-muted)',marginBottom:6,fontFamily:'var(--font-mono)' }}>{item.label}</div>
-                <div style={{ fontFamily:'var(--font-mono)',fontSize:'2.2rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-1px' }}>
-                  {item.data.seguidores_total?.toLocaleString('es-AR') || '—'}
+                <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
+                   <span style={{ fontSize:28, filter: `drop-shadow(0 0 10px ${color}44)` }}>{row.emoji}</span>
+                   <span style={{ fontSize:'0.9rem', fontWeight:800, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.05em' }}>{row.label}</span>
                 </div>
-                <div style={{ fontSize:'0.75rem',color:'var(--text-secondary)' }}>seguidores</div>
-                {item.data.nuevos_seguidores && (
-                  <div style={{ marginTop:4,fontSize:'0.78rem',fontFamily:'var(--font-mono)',color:'#10b981',fontWeight:600 }}>
-                    +{item.data.nuevos_seguidores.toLocaleString('es-AR')} nuevos
+
+                <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:16 }}>
+                  <div>
+                    <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', fontWeight:600, marginBottom:4 }}>Periodo A</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:'2.2rem', fontWeight:800, color:'#fff', lineHeight:1 }}>
+                      {fmt(v1)}
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign:'right' }}>
+                    <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.3)', fontWeight:600, marginBottom:4 }}>Ref. Periodo B</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:8 }}>
+                      {fmt(v2)}
+                    </div>
+                    <DeltaBadge current={v1} previous={v2} />
+                  </div>
+                </div>
+
+                {/* Progress bar comparison visual */}
+                {v1 !== null && v2 !== null && (v1 > 0 || v2 > 0) && (
+                  <div style={{ marginTop:24, height:6, background:'rgba(255,255,255,0.05)', borderRadius:99, overflow:'hidden', display:'flex' }}>
+                    <div style={{ 
+                      width: `${(v1 / (v1 + v2) * 100)}%`, 
+                      background: color, 
+                      height: '100%',
+                      boxShadow: `0 0 10px ${color}66`
+                    }} />
                   </div>
                 )}
               </div>
-            ))}
+            )
+          })}
+        </div>
+      )}
+
+      {/* Engagement Comparison Row (Special Case) */}
+      {!loading && d1 && d2 && d1.alcance > 0 && d2.alcance > 0 && (
+        <div 
+          className="animate-fadeUp"
+          style={{
+            marginTop: 32,
+            background: 'rgba(255, 255, 255, 0.04)',
+            backdropFilter: 'blur(20px)',
+            border: `1px solid ${color}33`,
+            borderRadius: 24,
+            padding: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 40,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <div style={{ position:'absolute', top:0, left:0, bottom:0, width:'4px', background:color }} />
+          
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            <span style={{ fontSize:32 }}>✨</span>
+            <span style={{ fontSize:'1rem', fontWeight:800, color:'#fff' }}>Engagement Rate</span>
           </div>
 
-          {/* Metrics table */}
-          <div style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:14,overflow:'hidden',marginBottom:14,boxShadow:'0 4px 16px var(--glass-shadow)' }}>
-            <div style={{ display:'grid',gridTemplateColumns:'1fr repeat(3,auto)',padding:'12px 20px',background:'var(--bg-elevated)',borderBottom:'1px solid var(--border)',gap:12 }}>
-              <div style={{ fontSize:'0.78rem',fontWeight: 600,color:'var(--text-secondary)' }}>📱 INSTAGRAM</div>
-              {[labelPeriodo(periodoA),labelPeriodo(periodoB),'Variación'].map((h,i) => (
-                <div key={i} style={{ fontSize:'0.7rem',fontWeight: 600,color:'var(--text-muted)',letterSpacing:'0.08em',textAlign:'right',minWidth:100 }}>{h}</div>
-              ))}
-            </div>
-            {METRICS.map((m,i) => {
-              const a = dataA?.[m.key]
-              const b = dataB?.[m.key]
-              const d = delta(b, a)
-              return (
-                <div key={m.key} style={{
-                  display:'grid',gridTemplateColumns:'1fr repeat(3,auto)',
-                  padding:'11px 20px',gap:12,alignItems:'center',
-                  borderTop:i===0?'none':'1px solid var(--border)',
-                  background:i%2===0?'transparent':'var(--bg-elevated)',
-                }}>
-                  <div style={{ fontSize:'0.82rem',color:'var(--text-secondary)',display:'flex',alignItems:'center',gap:8 }}>
-                    <span>{m.emoji}</span>{m.label}
-                  </div>
-                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'0.85rem',textAlign:'right',minWidth:100 }}>{fmt(a)}</div>
-                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'0.85rem',textAlign:'right',minWidth:100 }}>{fmt(b)}</div>
-                  <div style={{ textAlign:'right',minWidth:100 }}><DeltaBadge value={d} higherIsBetter={m.higherIsBetter} /></div>
-                </div>
-              )
-            })}
-            {/* Engagement rate row */}
-            {(erA || erB) && (
-              <div style={{
-                display:'grid',gridTemplateColumns:'1fr repeat(3,auto)',
-                padding:'11px 20px',gap:12,alignItems:'center',
-                borderTop:'1px solid var(--border)',background:'var(--bg-elevated)',
-              }}>
-                <div style={{ fontSize:'0.82rem',color:'var(--text-secondary)',display:'flex',alignItems:'center',gap:8 }}>
-                  <span>✨</span>Engagement rate
-                  <span style={{ fontSize:'0.68rem',color:'var(--text-muted)',fontStyle:'italic' }}>(calculado)</span>
-                </div>
-                <div style={{ fontFamily:'var(--font-mono)',fontSize:'0.85rem',textAlign:'right',minWidth:100,color:color }}>{erA ? erA+'%' : '—'}</div>
-                <div style={{ fontFamily:'var(--font-mono)',fontSize:'0.85rem',textAlign:'right',minWidth:100,color:color }}>{erB ? erB+'%' : '—'}</div>
-                <div style={{ textAlign:'right',minWidth:100 }}>
-                  <DeltaBadge value={erA && erB ? delta(parseFloat(erB), parseFloat(erA)) : null} higherIsBetter={true} />
-                </div>
+          <div style={{ display:'flex', gap:60, flex:1 }}>
+            <div>
+              <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', fontWeight:700, textTransform:'uppercase', marginBottom:8 }}>Periodo A</div>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:'2.4rem', fontWeight:800, color:color, lineHeight:1 }}>
+                {(d1.interacciones/d1.alcance*100).toFixed(2)}%
               </div>
-            )}
+            </div>
+            <div>
+              <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', fontWeight:700, textTransform:'uppercase', marginBottom:8 }}>Periodo B</div>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:'2.4rem', fontWeight:800, color:'rgba(255,255,255,0.4)', lineHeight:1 }}>
+                {(d2.interacciones/d2.alcance*100).toFixed(2)}%
+              </div>
+            </div>
+            <div style={{ display:'flex', alignItems:'center' }}>
+              <DeltaBadge 
+                current={d1.interacciones/d1.alcance} 
+                previous={d2.interacciones/d2.alcance} 
+              />
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   )
+}
+
+const selStyle = {
+  padding: '10px 14px',
+  borderRadius: 12,
+  background: 'rgba(255, 255, 255, 0.07)',
+  border: '1px solid rgba(255, 255, 255, 0.1)',
+  color: '#fff',
+  fontSize: '0.85rem',
+  fontWeight: 700,
+  cursor: 'pointer',
+  outline: 'none',
+  fontFamily: 'inherit'
 }
