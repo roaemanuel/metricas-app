@@ -39,7 +39,7 @@ function Counter({ value, onChange, color, label, sublabel }) {
           display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer',
         }}
           onMouseEnter={e=>e.currentTarget.style.background='var(--bg-hover)'}
-          onMouseLeave={e=>e.currentTarget.style.background={'var(--bg-elevated)'}}
+          onMouseLeave={e=>e.currentTarget.style.background='var(--bg-elevated)'}
         >−</button>
         <span style={{
           fontFamily:'var(--font-mono)', fontSize:'1.5rem', fontWeight:700,
