@@ -49,7 +49,7 @@ function GlassModal({ isOpen, onClose, title, children }) {
           padding: '20px 32px', borderBottom: '1px solid var(--border)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
           <button onClick={onClose} style={{
             background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-muted)',
             width: 32, height: 32, borderRadius: '50%', cursor: 'pointer'
@@ -68,7 +68,7 @@ function DeltaChip({ value, higherIsBetter=true }) {
   const good = higherIsBetter ? value>=0 : value<=0
   const c = good ? '#10b981' : '#f0436a'
   return (
-    <span style={{ fontSize:'0.72rem',fontFamily:'var(--font-mono)',fontWeight:700,color:c,background:c+'18',border:`1px solid ${c}33`,borderRadius:99,padding:'2px 10px',marginLeft:8 }}>
+    <span style={{ fontSize:'0.72rem',fontFamily:'var(--font-mono)',fontWeight: 600,color:c,background:c+'18',border:`1px solid ${c}33`,borderRadius:99,padding:'2px 10px',marginLeft:8 }}>
       {value>=0?'▲':'▼'}{Math.abs(value).toFixed(1)}%
     </span>
   )
@@ -137,7 +137,7 @@ export default function SocialDashboardPage() {
       {/* Header */}
       <div style={{ display:'flex',alignItems:'flex-start',justifyContent:'space-between',flexWrap:'wrap',gap:12,marginBottom:32 }}>
         <div>
-          <h1 style={{ fontSize:'2rem',fontWeight:800,letterSpacing:'-1px',marginBottom:6 }}>Social Media</h1>
+          <h1 style={{ fontSize:'2rem',fontWeight: 600,letterSpacing:'-1px',marginBottom:6 }}>Social Media</h1>
           <p style={{ color:'var(--text-secondary)',fontSize:'1rem' }}>Métricas consolidadas · Community Manager</p>
         </div>
         <div style={{ display:'flex',gap:8,alignItems:'center' }}>
@@ -148,7 +148,7 @@ export default function SocialDashboardPage() {
             disabled={isCurrentMonth} style={{width:40,height:40,borderRadius:12,background:'var(--bg-elevated)',border:'1px solid var(--border)',color:isCurrentMonth?'var(--text-muted)':'var(--text-secondary)',fontSize:'1.2rem',cursor:isCurrentMonth?'not-allowed':'pointer'}}>›</button>
           <button onClick={()=>navigate('/dashboard/social/ingresar')} style={{
             padding:'10px 24px',marginLeft:12,background:'var(--accent)',border:'none',borderRadius:12,
-            color:'#fff',fontSize:'0.9rem',fontWeight:700,cursor:'pointer',
+            color:'#fff',fontSize:'0.9rem',fontWeight: 600,cursor:'pointer',
             boxShadow:'0 4px 20px var(--accent-glow)',
           }}>✚ {metrics ? 'Actualizar' : 'Ingresar métricas'}</button>
         </div>
@@ -163,7 +163,7 @@ export default function SocialDashboardPage() {
           <div style={{fontSize:48,marginBottom:16}}>📱</div>
           <p style={{color:'var(--text-secondary)',marginBottom:24, fontSize: '1.1rem'}}>No hay datos para {MONTHS_ES[month]} {year}</p>
           <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap'}}>
-            <button onClick={()=>navigate('/dashboard/social/ingresar')} style={{padding:'14px 32px',background:colorPrimary,border:'none',borderRadius:14,color:'#fff',fontWeight:700,fontSize:'1rem',cursor:'pointer',boxShadow:'0 4px 20px var(--accent-glow)'}}>
+            <button onClick={()=>navigate('/dashboard/social/ingresar')} style={{padding:'14px 32px',background:colorPrimary,border:'none',borderRadius:14,color:'#fff',fontWeight: 600,fontSize:'1rem',cursor:'pointer',boxShadow:'0 4px 20px var(--accent-glow)'}}>
               Ingresar métricas →
             </button>
             <button onClick={()=>navigate('/dashboard/social/campanas')} style={{padding:'14px 32px',background:'var(--bg-elevated)',border:'1px solid var(--border)',borderRadius:14,color:'var(--text-primary)',fontWeight:600,fontSize:'1rem',cursor:'pointer'}}>
@@ -182,18 +182,16 @@ export default function SocialDashboardPage() {
                 { label:'Alcance Total',      key:'alcance',          icon:'🌐', c:trafficColors[3] },
                 { label:'Interacciones',      key:'interacciones',    icon:'❤️', c:trafficColors[2] },
               ].map((k,i) => (
-                <div key={k.key} className="animate-fadeUp" style={{
+                <div key={k.key} className="glass-panel animate-fadeUp" style={{
                   animationDelay:`${i*0.05}s`,
-                  background:'var(--bg-surface)',border:'1px solid var(--border)',
                   borderRadius:'var(--radius-lg)',padding:'24px',position:'relative',overflow:'hidden',
-                  boxShadow: '0 8px 32px var(--glass-shadow)'
                 }}>
                   <div style={{position:'absolute',top:0,left:0,right:0,height:4,background:k.c,opacity:0.9}}/>
                   <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
-                    <span style={{fontSize:'0.85rem',fontWeight:700,color:'var(--text-muted)',textTransform:'uppercase'}}>{k.label}</span>
+                    <span style={{fontSize:'0.85rem',fontWeight: 600,color:'var(--text-muted)',textTransform:'uppercase'}}>{k.label}</span>
                     <span style={{fontSize:22}}>{k.icon}</span>
                   </div>
-                  <div style={{fontFamily:'var(--font-display)',fontSize:'3rem',fontWeight:800,color:'var(--text-primary)',letterSpacing:'-1.5px',lineHeight:1,marginBottom:8}}>
+                  <div style={{fontFamily:'var(--font-display)',fontSize:'3rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-1.5px',lineHeight:1,marginBottom:8}}>
                     {fmt(metrics[k.key])}
                   </div>
                   <div style={{display:'flex',alignItems:'center'}}>
@@ -209,7 +207,7 @@ export default function SocialDashboardPage() {
           <div style={{display:'grid',gridTemplateColumns:pieData.length>0?'2fr 1fr':'1fr',gap:16,marginBottom:24}}>
              {/* Comparative Chart */}
              <div className="glass-panel" style={{padding:'24px 32px',borderRadius:'var(--radius-xl)'}}>
-                <div style={{fontSize:'0.85rem',fontWeight:700,color:'var(--text-secondary)',letterSpacing:'0.05em',marginBottom:24}}>RENDIMIENTO VS MES ANTERIOR</div>
+                <div style={{fontSize:'0.85rem',fontWeight: 600,color:'var(--text-secondary)',letterSpacing:'0.05em',marginBottom:24}}>RENDIMIENTO VS MES ANTERIOR</div>
                 <div style={{width:'100%',height:320}}>
                   <ResponsiveContainer>
                     <BarChart data={comparisonData}>
@@ -228,7 +226,7 @@ export default function SocialDashboardPage() {
              {/* Donut Chart - Content Distribution */}
              {pieData.length > 0 && (
               <div className="glass-panel" style={{ padding: '24px', borderRadius: 'var(--radius-xl)', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 16 }}>CONTENIDO (VIDEOS)</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 16 }}>CONTENIDO (VIDEOS)</div>
                 <div style={{ flex: 1, position: 'relative' }}>
                   <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
@@ -239,7 +237,7 @@ export default function SocialDashboardPage() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
-                    <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)' }}>{totalVideos}</span>
+                    <span style={{ fontSize: '2rem', fontWeight: 600, color: 'var(--text-primary)' }}>{totalVideos}</span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Videos</span>
                   </div>
                 </div>
@@ -265,8 +263,8 @@ export default function SocialDashboardPage() {
               <div className="glass-panel" style={{padding:'24px', borderRadius:'var(--radius-lg)', display:'flex', alignItems:'center', gap:20, boxShadow:'0 8px 32px var(--glass-shadow)'}}>
                 <div style={{width:64, height:64, borderRadius:'50%', background:'var(--accent-glow)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:32}}>✨</div>
                 <div>
-                  <div style={{fontSize:'0.8rem', fontWeight:700, color:'var(--text-muted)', letterSpacing:'0.05em', marginBottom:4}}>ENGAGEMENT RATE</div>
-                  <div style={{fontFamily:'var(--font-display)', fontSize:'3rem', fontWeight:800, color:colorPrimary, letterSpacing:'-1.5px'}}>{er}%</div>
+                  <div style={{fontSize:'0.8rem', fontWeight: 600, color:'var(--text-muted)', letterSpacing:'0.05em', marginBottom:4}}>ENGAGEMENT RATE</div>
+                  <div style={{fontFamily:'var(--font-display)', fontSize:'3rem', fontWeight: 600, color:colorPrimary, letterSpacing:'-1.5px'}}>{er}%</div>
                 </div>
                 {prevMetrics && (
                   <div style={{marginLeft:'auto'}}>
@@ -280,12 +278,12 @@ export default function SocialDashboardPage() {
             <div className="glass-panel" style={{padding:'24px', borderRadius:'var(--radius-lg)', display:'flex', gap:12}}>
                 <button onClick={()=>setModalType('videos')} style={{flex:1, height: '100%', border: '1px solid var(--border)', background:'var(--bg-elevated)', borderRadius:12, padding:16, cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8}}>
                   <span style={{fontSize:24}}>🎬</span>
-                  <span style={{fontSize:'0.85rem', fontWeight:700, color:'var(--text-primary)'}}>Ver Vídeos</span>
+                  <span style={{fontSize:'0.85rem', fontWeight: 600, color:'var(--text-primary)'}}>Ver Vídeos</span>
                   <span style={{fontSize:'0.75rem', color:'var(--text-muted)'}}>{totalVideos} registros</span>
                 </button>
                 <button onClick={()=>setModalType('campanas')} style={{flex:1, height: '100%', border: '1px solid var(--border)', background:'var(--bg-elevated)', borderRadius:12, padding:16, cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8}}>
                   <span style={{fontSize:24}}>📣</span>
-                  <span style={{fontSize:'0.85rem', fontWeight:700, color:'var(--text-primary)'}}>Ver Campañas</span>
+                  <span style={{fontSize:'0.85rem', fontWeight: 600, color:'var(--text-primary)'}}>Ver Campañas</span>
                   <span style={{fontSize:'0.75rem', color:'var(--text-muted)'}}>{campanas.length} activas</span>
                 </button>
             </div>
@@ -298,14 +296,14 @@ export default function SocialDashboardPage() {
                     const red = REDES.find(r => r.key === v.red_social) || REDES[3]
                     return (
                       <div key={v.id} style={{display:'flex',alignItems:'center',gap:16,padding:'16px',background:'var(--bg-elevated)',borderRadius:12, border:'1px solid var(--border)'}}>
-                        <span style={{fontSize:'0.8rem',fontWeight:700,color:red.color,background:red.color+'15',border:`1px solid ${red.color}33`,borderRadius:8,padding:'6px 12px',flexShrink:0}}>
+                        <span style={{fontSize:'0.8rem',fontWeight: 600,color:red.color,background:red.color+'15',border:`1px solid ${red.color}33`,borderRadius:8,padding:'6px 12px',flexShrink:0}}>
                           {red.emoji} {red.label}
                         </span>
                         <div style={{flex:1}}>
                           <div style={{fontSize:'1rem',fontWeight:600,color:'var(--text-primary)',marginBottom:4}}>{v.etiqueta}</div>
                           <div style={{fontSize:'0.8rem',color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>{v.fecha || 'Sin fecha'}</div>
                         </div>
-                        <div style={{fontSize:'1.2rem', fontWeight:800, color:colorPrimary}}>×{v.cantidad || 1}</div>
+                        <div style={{fontSize:'1.2rem', fontWeight: 600, color:colorPrimary}}>×{v.cantidad || 1}</div>
                       </div>
                     )
                   })}
@@ -318,30 +316,30 @@ export default function SocialDashboardPage() {
                   <div key={c.id} style={{padding:'20px', background:'var(--bg-elevated)', borderRadius:16, border:'1px solid var(--border)'}}>
                     <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:12}}>
                       <div>
-                        <div style={{fontSize:'1.1rem', fontWeight:800, color:'var(--text-primary)', marginBottom:4}}>{c.nombre}</div>
+                        <div style={{fontSize:'1.1rem', fontWeight: 600, color:'var(--text-primary)', marginBottom:4}}>{c.nombre}</div>
                         <div style={{fontSize:'0.8rem', color:'var(--text-muted)', fontFamily:'var(--font-mono)'}}>
                           {c.fecha_inicio} al {c.fecha_fin}
                         </div>
                       </div>
                       <div style={{textAlign:'right'}}>
                         <div style={{fontSize:'0.7rem', color:'var(--text-muted)', textTransform:'uppercase'}}>Presupuesto</div>
-                        <div style={{fontSize:'1.1rem', fontWeight:800, color:'#f59e0b'}}>${c.presupuesto?.toLocaleString('es-AR')}</div>
+                        <div style={{fontSize:'1.1rem', fontWeight: 600, color:'#f59e0b'}}>${c.presupuesto?.toLocaleString('es-AR')}</div>
                       </div>
                     </div>
                     <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:12, paddingTop:12, borderTop:'1px solid var(--border)'}}>
                       <div>
                         <div style={{fontSize:'0.7rem', color:'var(--text-muted)'}}>ALCANCE</div>
-                        <div style={{fontSize:'0.9rem', fontWeight:700, color:trafficColors[0]}}>{fmt(c.alcance)}</div>
+                        <div style={{fontSize:'0.9rem', fontWeight: 600, color:trafficColors[0]}}>{fmt(c.alcance)}</div>
                       </div>
                       <div>
                         <div style={{fontSize:'0.7rem', color:'var(--text-muted)'}}>CLICS (CTR)</div>
-                        <div style={{fontSize:'0.9rem', fontWeight:700, color:colorPrimary}}>
+                        <div style={{fontSize:'0.9rem', fontWeight: 600, color:colorPrimary}}>
                           {fmt(c.clics)} ({c.alcance ? (c.clics/c.alcance*100).toFixed(2) : 0}%)
                         </div>
                       </div>
                       <div>
                         <div style={{fontSize:'0.7rem', color:'var(--text-muted)'}}>CONV.</div>
-                        <div style={{fontSize:'0.9rem', fontWeight:700, color:trafficColors[1]}}>{fmt(c.conversiones)}</div>
+                        <div style={{fontSize:'0.9rem', fontWeight: 600, color:trafficColors[1]}}>{fmt(c.conversiones)}</div>
                       </div>
                     </div>
                   </div>

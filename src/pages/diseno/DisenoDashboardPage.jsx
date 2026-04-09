@@ -49,7 +49,7 @@ function GlassModal({ isOpen, onClose, title, children }) {
           padding: '24px 32px', borderBottom: '1px solid var(--border)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
           <button onClick={onClose} style={{
             background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-muted)',
             width: 36, height: 36, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
@@ -66,11 +66,9 @@ function GlassModal({ isOpen, onClose, title, children }) {
 // --- KPI Card ---
 function StatCard({ label, value, unit = '', icon, color, sub, delay = 0 }) {
   return (
-    <div className="animate-fadeUp" style={{
+    <div className="glass-panel animate-fadeUp" style={{
       animationDelay: `${delay}s`,
-      background: 'var(--bg-surface)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-lg)', padding: '24px', position: 'relative', overflow: 'hidden',
-      boxShadow: '0 8px 32px var(--glass-shadow)',
     }}>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: color, opacity: 0.9, boxShadow: `0 0 12px ${color}` }} />
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -79,7 +77,7 @@ function StatCard({ label, value, unit = '', icon, color, sub, delay = 0 }) {
       </div>
       <div style={{
         fontFamily: 'var(--font-display)',
-        fontSize: '3rem', fontWeight: 800,
+        fontSize: '3rem', fontWeight: 600,
         color: 'var(--text-primary)', letterSpacing: '-1.5px', lineHeight: 1,
         marginBottom: 8,
       }}>
@@ -97,7 +95,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="glass-panel" style={{ padding: '12px 16px', borderRadius: 8, border: '1px solid var(--border-bright)' }}>
         <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>Día {label}</p>
         {payload.map((entry, index) => (
-          <p key={`item-${index}`} style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: entry.color }}>
+          <p key={`item-${index}`} style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600, color: entry.color }}>
             {entry.name}: {entry.value}
           </p>
         ))}
@@ -235,7 +233,7 @@ export default function DisenoDashboardPage() {
     <div className="animate-fadeIn">
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-1px', marginBottom: 6 }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-1px', marginBottom: 6 }}>
             Diseño Gráfico
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
@@ -267,7 +265,7 @@ export default function DisenoDashboardPage() {
             style={{
               padding: '10px 24px', marginLeft: 12,
               background: 'var(--accent)', border: 'none', borderRadius: 12,
-              color: '#fff', fontSize: '0.9rem', fontWeight: 700,
+              color: '#fff', fontSize: '0.9rem', fontWeight: 600,
               boxShadow: '0 4px 20px var(--accent-glow)', cursor: 'pointer',
             }}
           >✚ Registrar hoy</button>
@@ -298,7 +296,7 @@ export default function DisenoDashboardPage() {
             style={{
               padding: '14px 32px', background: colorPrimary,
               border: 'none', borderRadius: 14,
-              color: '#fff', fontWeight: 700, fontSize: '1rem',
+              color: '#fff', fontWeight: 600, fontSize: '1rem',
               boxShadow: '0 4px 20px var(--accent-glow)',
             }}
           >Ingresar primer registro →</button>
@@ -340,7 +338,7 @@ export default function DisenoDashboardPage() {
             {/* Area Chart */}
             <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>PRODUCCIÓN DIARIA</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>PRODUCCIÓN DIARIA</div>
                 <button onClick={() => setShowLogsModal(true)} style={{
                   background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)',
                   padding: '6px 14px', borderRadius: 8, fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600
@@ -368,7 +366,7 @@ export default function DisenoDashboardPage() {
             {/* Donut Chart */}
             {pieData.length > 0 && (
               <div className="glass-panel" style={{ padding: '24px', borderRadius: 'var(--radius-xl)', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 16 }}>DISTRIBUCIÓN</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 16 }}>DISTRIBUCIÓN</div>
                 <div style={{ flex: 1, position: 'relative' }}>
                   <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
@@ -388,7 +386,7 @@ export default function DisenoDashboardPage() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
-                    <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>{totalFlyers}</span>
+                    <span style={{ fontSize: '1.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{totalFlyers}</span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Flyers</span>
                   </div>
                 </div>
@@ -414,7 +412,7 @@ export default function DisenoDashboardPage() {
               padding: '20px 24px',
               marginBottom: 24, borderRadius: 'var(--radius-lg)'
             }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 16, letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 16, letterSpacing: '0.05em' }}>
                 ETIQUETAS RELEVANTES
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>

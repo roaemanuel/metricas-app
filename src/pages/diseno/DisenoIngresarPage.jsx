@@ -50,7 +50,7 @@ function Counter({ value, onChange, color }) {
         style={{
           width: 32, height: 32, borderRadius: 8,
           background: 'var(--bg-elevated)', border: 'none',
-          color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: 700,
+          color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: 600,
           display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
         }}
         onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
@@ -78,7 +78,7 @@ function Counter({ value, onChange, color }) {
           background: 'var(--bg-elevated)',
           border: 'none',
           color: 'var(--text-secondary)',
-          fontSize: '1.1rem', fontWeight: 700,
+          fontSize: '1.1rem', fontWeight: 600,
           display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
           transition: 'all 0.15s',
         }}
@@ -123,7 +123,7 @@ function ExistingRecordModal({ date, existingCount, onEdit, onNew, onCancel }) {
       }}>
         <div style={{ fontSize: 36, marginBottom: 16 }}>📋</div>
 
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.3px', marginBottom: 8 }}>
+        <h2 style={{ fontSize: '1.1rem', fontWeight: 600, letterSpacing: '-0.3px', marginBottom: 8 }}>
           Ya hay registro para ese día
         </h2>
 
@@ -142,7 +142,7 @@ function ExistingRecordModal({ date, existingCount, onEdit, onNew, onCancel }) {
             borderRadius: 10,
             color: '#fff',
             fontSize: '0.9rem',
-            fontWeight: 700,
+            fontWeight: 600,
             cursor: 'pointer',
             boxShadow: '0 4px 16px var(--accent-glow)',
           }}>
@@ -317,7 +317,7 @@ export default function DisenoIngresarPage() {
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 4 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 600, letterSpacing: '-0.8px', marginBottom: 4 }}>
               Registro diario
             </h1>
 
@@ -419,7 +419,7 @@ export default function DisenoIngresarPage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 18 }}>🎨</span>
-                <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Flyers creados hoy</span>
+                <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Flyers creados hoy</span>
               </div>
 
               <div style={{
@@ -553,7 +553,7 @@ export default function DisenoIngresarPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 18 }}>🎬</span>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Colaboración en video</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>Colaboración en video</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>
                     ¿Participaste en creación de contenido de video hoy?
                   </div>
@@ -621,7 +621,7 @@ export default function DisenoIngresarPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 18 }}>📸</span>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Fotos de producto</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>Fotos de producto</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>
                     Fotos tomadas y subidas a la nube hoy
                   </div>
@@ -641,7 +641,7 @@ export default function DisenoIngresarPage() {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
               <span style={{ fontSize: 18 }}>📝</span>
-              <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Notas del día</span>
+              <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Notas del día</span>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>(opcional)</span>
             </div>
 
@@ -676,7 +676,7 @@ export default function DisenoIngresarPage() {
                 borderRadius: 12,
                 color: '#fff',
                 fontSize: '0.95rem',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 boxShadow: saved ? '0 4px 20px #05966944' : '0 4px 20px var(--accent-glow)',
                 transition: 'all 0.2s',

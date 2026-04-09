@@ -41,7 +41,7 @@ function DeltaBadge({ value, higherIsBetter = true }) {
   return (
     <span style={{
       display:'inline-flex',alignItems:'center',gap:3,
-      fontFamily:'var(--font-mono)',fontSize:'0.78rem',fontWeight:700,color:c,
+      fontFamily:'var(--font-mono)',fontSize:'0.78rem',fontWeight: 600,color:c,
       background:c+'18',border:`1px solid ${c}33`,borderRadius:99,padding:'2px 10px',
     }}>
       {value >= 0 ? '▲' : '▼'} {Math.abs(value).toFixed(1)}%
@@ -52,7 +52,7 @@ function DeltaBadge({ value, higherIsBetter = true }) {
 function MonthSelect({ label, value, onChange, options }) {
   return (
     <div style={{ flex:1,minWidth:180 }}>
-      <div style={{ fontSize:'0.7rem',fontWeight:700,letterSpacing:'0.1em',color:'var(--text-muted)',marginBottom:8,textTransform:'uppercase' }}>{label}</div>
+      <div style={{ fontSize:'0.7rem',fontWeight: 600,letterSpacing:'0.1em',color:'var(--text-muted)',marginBottom:8,textTransform:'uppercase' }}>{label}</div>
       <select value={value} onChange={e=>onChange(e.target.value)} style={{
         width:'100%',padding:'10px 14px',
         background:'var(--bg-elevated)',
@@ -213,7 +213,7 @@ export default function GerenciaCompararPage() {
   return (
     <div className="animate-fadeIn">
       <div style={{ marginBottom:28 }}>
-        <h1 style={{ fontSize:'1.6rem',fontWeight:800,letterSpacing:'-0.8px',marginBottom:4 }}>Analítica Comparativa 360°</h1>
+        <h1 style={{ fontSize:'1.6rem',fontWeight: 600,letterSpacing:'-0.8px',marginBottom:4 }}>Analítica Comparativa 360°</h1>
         <p style={{ color:'var(--text-secondary)',fontSize:'0.88rem' }}>Vista ejecutiva · rendimiento integral de todas las áreas operativas</p>
       </div>
 
@@ -242,17 +242,17 @@ export default function GerenciaCompararPage() {
             <div key={groupIdx} style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:16,overflow:'hidden',marginBottom:20,boxShadow:'0 4px 16px var(--glass-shadow)' }}>
               <div style={{ padding:'14px 20px',background:group.color+'08',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:12 }}>
                 <span style={{ fontSize:'1.2rem',opacity:0.8 }}>{group.icon}</span>
-                <span style={{ fontSize:'0.78rem',fontWeight:800,color:group.color,letterSpacing:'0.05em',textTransform:'uppercase' }}>{group.title}</span>
+                <span style={{ fontSize:'0.78rem',fontWeight: 600,color:group.color,letterSpacing:'0.05em',textTransform:'uppercase' }}>{group.title}</span>
               </div>
               
               <div style={{ overflowX:'auto' }}>
                 <table style={{ width:'100%',borderCollapse:'collapse',minWidth:600 }}>
                   <thead>
                     <tr style={{ background:'var(--bg-elevated)' }}>
-                      <th style={{ padding:'12px 20px',textAlign:'left',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight:700,letterSpacing:'0.05em' }}>KPI</th>
-                      <th style={{ padding:'12px 20px',textAlign:'right',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight:700 }}>{labelPeriodo(periodoA).toUpperCase()}</th>
-                      <th style={{ padding:'12px 20px',textAlign:'right',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight:700 }}>{labelPeriodo(periodoB).toUpperCase()}</th>
-                      <th style={{ padding:'12px 20px',textAlign:'right',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight:700 }}>DESVÍO (%)</th>
+                      <th style={{ padding:'12px 20px',textAlign:'left',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight: 600,letterSpacing:'0.05em' }}>KPI</th>
+                      <th style={{ padding:'12px 20px',textAlign:'right',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight: 600 }}>{labelPeriodo(periodoA).toUpperCase()}</th>
+                      <th style={{ padding:'12px 20px',textAlign:'right',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight: 600 }}>{labelPeriodo(periodoB).toUpperCase()}</th>
+                      <th style={{ padding:'12px 20px',textAlign:'right',fontSize:'0.72rem',color:'var(--text-muted)',fontWeight: 600 }}>DESVÍO (%)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -297,7 +297,7 @@ export default function GerenciaCompararPage() {
               <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:20 }}>
                 <div style={{ padding:8, background:AREA_COLORS.gerencia+'18', borderRadius:8 }}>💹</div>
                 <div>
-                  <div style={{ fontSize:'0.9rem',fontWeight:800,color:'var(--text-primary)' }}>Eficiencia de Inversión Publicitaria (ROAS)</div>
+                  <div style={{ fontSize:'0.9rem',fontWeight: 600,color:'var(--text-primary)' }}>Eficiencia de Inversión Publicitaria (ROAS)</div>
                   <div style={{ fontSize:'0.72rem',color:'var(--text-muted)' }}>Proporción de ingresos generados vs presupuesto invertido en Ads</div>
                 </div>
               </div>
@@ -309,11 +309,11 @@ export default function GerenciaCompararPage() {
                 ].map((item, i) => (
                   <div key={i} style={{ padding:'16px', background:'rgba(255,255,255,0.02)', borderRadius:12, border: '1px solid var(--border)' }}>
                     <div style={{ display:'flex', justifyContent:'space-between', marginBottom:12 }}>
-                      <span style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:700 }}>{item.label}</span>
+                      <span style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight: 600 }}>{item.label}</span>
                       <span style={{ fontSize:'0.65rem', color:AREA_COLORS.gerencia, fontFamily:'var(--font-mono)' }}>ROI {item.val.toFixed(2)}x</span>
                     </div>
                     <div style={{ display:'flex',alignItems:'flex-end',gap:4,marginBottom:4 }}>
-                      <span style={{ fontSize:'1.6rem', fontWeight:800, color:'#10b981', fontFamily:'var(--font-mono)', lineHeight:1 }}>{item.val.toFixed(2)}</span>
+                      <span style={{ fontSize:'1.6rem', fontWeight: 600, color:'#10b981', fontFamily:'var(--font-mono)', lineHeight:1 }}>{item.val.toFixed(2)}</span>
                       <span style={{ fontSize:'0.82rem',color:'var(--text-muted)',marginBottom:3 }}>x</span>
                     </div>
                     <div style={{ fontSize:'0.62rem', color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.05em' }}>

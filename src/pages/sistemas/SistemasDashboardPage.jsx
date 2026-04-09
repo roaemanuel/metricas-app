@@ -40,7 +40,7 @@ function GlassModal({ isOpen, onClose, title, children }) {
           padding: '24px 32px', borderBottom: '1px solid var(--border)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>{title}</h2>
           <button onClick={onClose} style={{
             background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-muted)',
             width: 36, height: 36, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
@@ -68,7 +68,7 @@ function StatCard({ label, value, unit='', icon, c, sub, delay=0 }) {
         <div style={{ fontSize:'0.9rem', color:'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.02em', textTransform: 'uppercase' }}>{label}</div>
         <div style={{ fontSize:22, opacity: 0.8 }}>{icon}</div>
       </div>
-      <div style={{ fontFamily:'var(--font-display)', fontSize:'3rem', fontWeight:800, color: 'var(--text-primary)', letterSpacing:'-1.5px', lineHeight:1, marginBottom:8 }}>
+      <div style={{ fontFamily:'var(--font-display)', fontSize:'3rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing:'-1.5px', lineHeight:1, marginBottom:8 }}>
         {value}<span style={{ fontSize:'1.2rem', fontWeight: 500, marginLeft:4, color: 'var(--text-muted)' }}>{unit}</span>
       </div>
       {sub && <div style={{ fontSize:'0.75rem', color:'var(--text-muted)', fontWeight: 500 }}>{sub}</div>}
@@ -83,7 +83,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="glass-panel" style={{ padding: '12px 16px', borderRadius: 8, border: '1px solid var(--border-bright)' }}>
         <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>Día {label}</p>
         {payload.map((entry, index) => (
-          <p key={`item-${index}`} style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: entry.color }}>
+          <p key={`item-${index}`} style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600, color: entry.color }}>
             {entry.name}: {entry.value}
           </p>
         ))}
@@ -157,7 +157,7 @@ export default function SistemasDashboardPage() {
       {/* Header */}
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:32 }}>
         <div>
-          <h1 style={{ fontSize:'2rem', fontWeight:800, letterSpacing:'-1px', marginBottom:6 }}>Sistemas / Web</h1>
+          <h1 style={{ fontSize:'2rem', fontWeight: 600, letterSpacing:'-1px', marginBottom:6 }}>Sistemas / Web</h1>
           <p style={{ color:'var(--text-secondary)', fontSize:'1rem' }}>Métricas Operativas y Analítica de Tráfico</p>
         </div>
         <div style={{ display:'flex', gap:8, alignItems:'center' }}>
@@ -170,7 +170,7 @@ export default function SistemasDashboardPage() {
           <button onClick={() => navigate('/dashboard/sistemas/ingresar')} style={{
             padding:'10px 24px', marginLeft:12, background: 'var(--accent)',
             border:'none', borderRadius:12, color:'#fff',
-            fontSize:'0.9rem', fontWeight:700, cursor:'pointer',
+            fontSize:'0.9rem', fontWeight: 600, cursor:'pointer',
             boxShadow:'0 4px 20px var(--accent-glow)',
             transition: 'all 0.2s'
           }}>✚ Registrar hoy</button>
@@ -187,7 +187,7 @@ export default function SistemasDashboardPage() {
           <p style={{ color:'var(--text-secondary)', marginBottom:24, fontSize: '1.1rem' }}>No hay registros para {MONTHS_ES[month]} {year}</p>
           <button onClick={() => navigate('/dashboard/sistemas/ingresar')} style={{
             padding:'14px 32px', background:colorPrimary, border:'none', borderRadius:14,
-            color:'#fff', fontWeight:700, fontSize:'1rem', cursor:'pointer',
+            color:'#fff', fontWeight: 600, fontSize:'1rem', cursor:'pointer',
             boxShadow:'0 4px 20px var(--accent-glow)',
           }}>Ingresar primer registro →</button>
         </div>
@@ -207,7 +207,7 @@ export default function SistemasDashboardPage() {
             {records.length > 0 && (
               <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 24 }}>
-                  <div style={{ fontSize:'0.85rem', fontWeight:700, color:'var(--text-secondary)', letterSpacing:'0.05em' }}>EVOLUCIÓN DIARIA</div>
+                  <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', letterSpacing:'0.05em' }}>EVOLUCIÓN DIARIA</div>
                   <button onClick={() => setShowLogsModal(true)} style={{
                     background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)',
                     padding: '6px 14px', borderRadius: 8, fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600
@@ -241,7 +241,7 @@ export default function SistemasDashboardPage() {
             {/* Donut Chart - Traffic Sources */}
             {ga4data && traficoTotal > 0 && (
               <div className="glass-panel" style={{ padding: '24px', borderRadius: 'var(--radius-xl)', display:'flex', flexDirection:'column' }}>
-                <div style={{ fontSize:'0.85rem', fontWeight:700, color:'var(--text-secondary)', letterSpacing:'0.05em', marginBottom: 16 }}>FUENTES DE TRÁFICO</div>
+                <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', letterSpacing:'0.05em', marginBottom: 16 }}>FUENTES DE TRÁFICO</div>
                 
                 <div style={{ flex: 1, position: 'relative' }}>
                   <ResponsiveContainer width="100%" height={200}>
@@ -263,7 +263,7 @@ export default function SistemasDashboardPage() {
                   </ResponsiveContainer>
                   {/* Center Text */}
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
-                    <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>{ga4data.sesiones?.toLocaleString('es-AR')}</span>
+                    <span style={{ fontSize: '1.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{ga4data.sesiones?.toLocaleString('es-AR')}</span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Sesiones</span>
                   </div>
                 </div>
@@ -290,21 +290,21 @@ export default function SistemasDashboardPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                {/* GA4 Highlights */}
               <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-                <div style={{ fontSize:'0.85rem', fontWeight:700, color:'var(--text-secondary)', marginBottom:20, letterSpacing:'0.05em' }}>
+                <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', marginBottom:20, letterSpacing:'0.05em' }}>
                   RENDIMIENTO DEL SITIO
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap:16, textAlign: 'center' }}>
                   <div style={{ background: 'var(--bg-elevated)', padding: '20px 10px', borderRadius: 16, border: '1px solid var(--border)' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>Páginas Vistas</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 800, color: colorPrimary }}>{ga4data.pageviews?.toLocaleString('es-AR')}</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 600, color: colorPrimary }}>{ga4data.pageviews?.toLocaleString('es-AR')}</div>
                   </div>
                   <div style={{ background: 'var(--bg-elevated)', padding: '20px 10px', borderRadius: 16, border: '1px solid var(--border)' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>Tasa de Rebote</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 800, color: trafficColors[3] }}>{ga4data.tasa_rebote ? ga4data.tasa_rebote+'%' : '—'}</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 600, color: trafficColors[3] }}>{ga4data.tasa_rebote ? ga4data.tasa_rebote+'%' : '—'}</div>
                   </div>
                   <div style={{ background: 'var(--bg-elevated)', padding: '20px 10px', borderRadius: 16, border: '1px solid var(--border)' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8 }}>T. Promedio</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 800, color: colorSecondary }}>
+                    <div style={{ fontSize: '2rem', fontWeight: 600, color: colorSecondary }}>
                       {ga4data.duracion_promedio_seg ? `${Math.floor(ga4data.duracion_promedio_seg/60)}m` : '—'}
                     </div>
                   </div>
@@ -314,7 +314,7 @@ export default function SistemasDashboardPage() {
               {/* SEO Keywords */}
               {ga4data.seo_keywords?.length > 0 && (
                 <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-                  <div style={{ fontSize:'0.85rem', fontWeight:700, color:'var(--text-secondary)', letterSpacing:'0.05em', marginBottom: 20 }}>
+                  <div style={{ fontSize:'0.85rem', fontWeight: 600, color:'var(--text-secondary)', letterSpacing:'0.05em', marginBottom: 20 }}>
                     SEO — TOP KEYWORDS
                   </div>
                   <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -326,7 +326,7 @@ export default function SistemasDashboardPage() {
                       }}>
                         <span style={{ fontSize:'0.9rem', color:'var(--text-primary)', fontWeight: 500 }}>{kw.keyword}</span>
                         <span style={{
-                          fontFamily:'var(--font-mono)', fontSize:'0.9rem', fontWeight:800, textAlign:'center',
+                          fontFamily:'var(--font-mono)', fontSize:'0.9rem', fontWeight: 600, textAlign:'center',
                           color: parseInt(kw.posicion)<=3? trafficColors[4] : parseInt(kw.posicion)<=10 ? colorPrimary : 'var(--text-secondary)',
                         }}>#{kw.posicion}</span>
                         <span style={{ fontFamily:'var(--font-mono)', fontSize:'0.8rem', textAlign:'center', color:'var(--text-secondary)' }}>{kw.clics ? kw.clics+' click' : '—'}</span>

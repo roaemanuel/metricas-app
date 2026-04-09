@@ -80,7 +80,7 @@ function PinInput({ area, onCancel }) {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ fontSize: 36, marginBottom: 12 }}>{area.icono}</div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.5px', color: 'var(--text-primary)', marginBottom: 4 }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 600, letterSpacing: '-0.5px', color: 'var(--text-primary)', marginBottom: 4 }}>
             {area.area_nombre}
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
@@ -197,7 +197,7 @@ export default function AreaSelectorPage() {
       <div style={{ position: 'relative', width: '100%', maxWidth: 680 }}>
         <div className="animate-fadeUp" style={{ textAlign: 'center', marginBottom: 48 }}>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 12 }}>▦ MetricHub</p>
-          <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-1.5px', color: 'var(--text-primary)', marginBottom: 10, lineHeight: 1.1 }}>
+          <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 600, letterSpacing: '-1.5px', color: 'var(--text-primary)', marginBottom: 10, lineHeight: 1.1 }}>
             Seleccioná tu área
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
@@ -223,7 +223,7 @@ export default function AreaSelectorPage() {
             >
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: area.color, borderRadius: '99px 99px 0 0' }} />
               <div style={{ fontSize: 32, marginBottom: 14, lineHeight: 1 }}>{area.icono}</div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, letterSpacing: '-0.3px' }}>{area.area_nombre}</h3>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4, letterSpacing: '-0.3px' }}>{area.area_nombre}</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 16 }}>
                 {[0,1,2,3].map(d => (
                   <div key={d} style={{ width: 7, height: 7, borderRadius: '50%', border: `1.5px solid ${area.color}88` }} />

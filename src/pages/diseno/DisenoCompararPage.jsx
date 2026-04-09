@@ -72,7 +72,7 @@ function DeltaBadge({ value, higherIsBetter = true }) {
       gap: 3,
       fontFamily: 'var(--font-mono)',
       fontSize: '0.78rem',
-      fontWeight: 700,
+      fontWeight: 600,
       color,
       background: color + '18',
       border: `1px solid ${color}33`,
@@ -91,7 +91,7 @@ function MonthSelect({ label, value, onChange, availableMonths }) {
     <div style={{ flex: 1, minWidth: 180 }}>
       <div style={{
         fontSize: '0.7rem',
-        fontWeight: 700,
+        fontWeight: 600,
         letterSpacing: '0.1em',
         color: 'var(--text-muted)',
         marginBottom: 8,
@@ -183,7 +183,7 @@ export default function DisenoCompararPage() {
   return (
     <div className="animate-fadeIn">
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 4 }}>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 600, letterSpacing: '-0.8px', marginBottom: 4 }}>
           Comparativa mensual
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
@@ -191,13 +191,10 @@ export default function DisenoCompararPage() {
         </p>
       </div>
 
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border)',
+      <div className="glass-panel" style={{
         borderRadius: 14,
         padding: '20px 24px',
         marginBottom: 24,
-        boxShadow: '0 4px 16px var(--glass-shadow)',
       }}>
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', flexWrap: 'wrap' }}>
           <MonthSelect label="Mes base" value={periodoA} onChange={setPeriodoA} availableMonths={availableMonths} />
@@ -248,13 +245,10 @@ export default function DisenoCompararPage() {
               }
 
               return (
-                <div key={i} style={{
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
+                <div key={i} className="glass-panel" style={{
                   borderRadius: 14,
                   padding: '18px 22px',
                   textAlign: item.align,
-                  boxShadow: '0 4px 16px var(--glass-shadow)'
                 }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontFamily: 'var(--font-mono)' }}>
                     {item.label}
@@ -262,7 +256,7 @@ export default function DisenoCompararPage() {
                   <div style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: '2.2rem',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     color: 'var(--text-primary)',
                     letterSpacing: '-1px',
                   }}>
@@ -274,12 +268,9 @@ export default function DisenoCompararPage() {
             })}
           </div>
 
-          <div style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border)',
+          <div className="glass-panel" style={{
             borderRadius: 14,
             overflow: 'hidden',
-            boxShadow: '0 4px 16px var(--glass-shadow)',
           }}>
             <div style={{
               display: 'grid',
@@ -292,7 +283,7 @@ export default function DisenoCompararPage() {
               {['Métrica', labelForPeriodo(periodoA), labelForPeriodo(periodoB), 'Variación'].map((h, i) => (
                 <div key={i} style={{
                   fontSize: '0.7rem',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   color: 'var(--text-muted)',
                   letterSpacing: '0.08em',
                   textAlign: i > 0 ? 'right' : 'left',

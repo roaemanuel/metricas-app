@@ -95,7 +95,7 @@ export default function DashboardLayout() {
           }}>
             <span style={{ fontSize: 18 }}>▦</span>
             <span style={{
-              fontWeight: 800, fontSize: '1rem',
+              fontWeight: 600, fontSize: '1rem',
               letterSpacing: '-0.5px',
               color: 'var(--text-primary)',
             }}>MetricHub</span>
@@ -122,7 +122,7 @@ export default function DashboardLayout() {
           <span style={{ fontSize: 18 }}>{currentArea.icono}</span>
           <div>
             <div style={{
-              fontSize: '0.78rem', fontWeight: 700,
+              fontSize: '0.78rem', fontWeight: 600,
               color: areaColor, lineHeight: 1.2,
             }}>{currentArea.area_nombre}</div>
             <div style={{

@@ -27,7 +27,7 @@ function DeltaBadge({ value, higherIsBetter = true }) {
   return (
     <span style={{
       display:'inline-flex',alignItems:'center',gap:3,
-      fontFamily:'var(--font-mono)',fontSize:'0.78rem',fontWeight:700,color:c,
+      fontFamily:'var(--font-mono)',fontSize:'0.78rem',fontWeight: 600,color:c,
       background:c+'18',border:`1px solid ${c}33`,borderRadius:99,padding:'2px 10px',
     }}>
       {value >= 0 ? '▲' : '▼'} {Math.abs(value).toFixed(1)}%
@@ -38,7 +38,7 @@ function DeltaBadge({ value, higherIsBetter = true }) {
 function MonthSelect({ label, value, onChange, options }) {
   return (
     <div style={{ flex:1,minWidth:180 }}>
-      <div style={{ fontSize:'0.7rem',fontWeight:700,letterSpacing:'0.1em',color:'var(--text-muted)',marginBottom:8,textTransform:'uppercase' }}>{label}</div>
+      <div style={{ fontSize:'0.7rem',fontWeight: 600,letterSpacing:'0.1em',color:'var(--text-muted)',marginBottom:8,textTransform:'uppercase' }}>{label}</div>
       <select value={value} onChange={e=>onChange(e.target.value)} style={{
         width:'100%',padding:'10px 14px',
         background:'var(--bg-elevated)',
@@ -100,7 +100,7 @@ export default function SocialCompararPage() {
   return (
     <div className="animate-fadeIn">
       <div style={{ marginBottom:28 }}>
-        <h1 style={{ fontSize:'1.6rem',fontWeight:800,letterSpacing:'-0.8px',marginBottom:4 }}>Comparativa mensual</h1>
+        <h1 style={{ fontSize:'1.6rem',fontWeight: 600,letterSpacing:'-0.8px',marginBottom:4 }}>Comparativa mensual</h1>
         <p style={{ color:'var(--text-secondary)',fontSize:'0.88rem' }}>Social Media · métricas de Instagram período a período</p>
       </div>
 
@@ -135,7 +135,7 @@ export default function SocialCompararPage() {
             ) : (
               <div key={i} style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:14,padding:'18px 22px',textAlign:item.align, boxShadow:'0 4px 16px var(--glass-shadow)' }}>
                 <div style={{ fontSize:'0.75rem',color:'var(--text-muted)',marginBottom:6,fontFamily:'var(--font-mono)' }}>{item.label}</div>
-                <div style={{ fontFamily:'var(--font-mono)',fontSize:'2.2rem',fontWeight:700,color:'var(--text-primary)',letterSpacing:'-1px' }}>
+                <div style={{ fontFamily:'var(--font-mono)',fontSize:'2.2rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-1px' }}>
                   {item.data.seguidores_total?.toLocaleString('es-AR') || '—'}
                 </div>
                 <div style={{ fontSize:'0.75rem',color:'var(--text-secondary)' }}>seguidores</div>
@@ -151,9 +151,9 @@ export default function SocialCompararPage() {
           {/* Metrics table */}
           <div style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:14,overflow:'hidden',marginBottom:14,boxShadow:'0 4px 16px var(--glass-shadow)' }}>
             <div style={{ display:'grid',gridTemplateColumns:'1fr repeat(3,auto)',padding:'12px 20px',background:'var(--bg-elevated)',borderBottom:'1px solid var(--border)',gap:12 }}>
-              <div style={{ fontSize:'0.78rem',fontWeight:700,color:'var(--text-secondary)' }}>📱 INSTAGRAM</div>
+              <div style={{ fontSize:'0.78rem',fontWeight: 600,color:'var(--text-secondary)' }}>📱 INSTAGRAM</div>
               {[labelPeriodo(periodoA),labelPeriodo(periodoB),'Variación'].map((h,i) => (
-                <div key={i} style={{ fontSize:'0.7rem',fontWeight:700,color:'var(--text-muted)',letterSpacing:'0.08em',textAlign:'right',minWidth:100 }}>{h}</div>
+                <div key={i} style={{ fontSize:'0.7rem',fontWeight: 600,color:'var(--text-muted)',letterSpacing:'0.08em',textAlign:'right',minWidth:100 }}>{h}</div>
               ))}
             </div>
             {METRICS.map((m,i) => {

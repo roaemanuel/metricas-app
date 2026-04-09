@@ -70,7 +70,7 @@ export function SocialDashboard() {
   return (
     <div className="animate-fadeIn">
       <h1 style={{
-        fontSize: '1.6rem', fontWeight: 800,
+        fontSize: '1.6rem', fontWeight: 600,
         letterSpacing: '-0.8px', marginBottom: 6,
         color: 'var(--text-primary)',
       }}>Social Media</h1>
@@ -109,7 +109,7 @@ export function SocialDashboard() {
             borderRadius: 'var(--radius-md)',
             color: '#fff',
             fontSize: '0.88rem',
-            fontWeight: 700,
+            fontWeight: 600,
             boxShadow: `0 4px 20px ${color}44`,
           }}
         >
@@ -129,7 +129,7 @@ export function DisenoDashboard() {
   return (
     <div className="animate-fadeIn">
       <h1 style={{
-        fontSize: '1.6rem', fontWeight: 800,
+        fontSize: '1.6rem', fontWeight: 600,
         letterSpacing: '-0.8px', marginBottom: 6,
       }}>Diseño Gráfico</h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 32 }}>
@@ -167,7 +167,7 @@ export function DisenoDashboard() {
             borderRadius: 'var(--radius-md)',
             color: '#fff',
             fontSize: '0.88rem',
-            fontWeight: 700,
+            fontWeight: 600,
             boxShadow: `0 4px 20px ${color}44`,
           }}
         >
@@ -187,7 +187,7 @@ export function SistemasDashboard() {
   return (
     <div className="animate-fadeIn">
       <h1 style={{
-        fontSize: '1.6rem', fontWeight: 800,
+        fontSize: '1.6rem', fontWeight: 600,
         letterSpacing: '-0.8px', marginBottom: 6,
       }}>Sistemas / Web</h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 32 }}>
@@ -225,7 +225,7 @@ export function SistemasDashboard() {
             borderRadius: 'var(--radius-md)',
             color: '#000',
             fontSize: '0.88rem',
-            fontWeight: 700,
+            fontWeight: 600,
             boxShadow: `0 4px 20px ${color}44`,
           }}
         >
@@ -245,7 +245,7 @@ export function GerenciaDashboard() {
   return (
     <div className="animate-fadeIn">
       <h1 style={{
-        fontSize: '1.6rem', fontWeight: 800,
+        fontSize: '1.6rem', fontWeight: 600,
         letterSpacing: '-0.8px', marginBottom: 6,
       }}>Gerencia / Contabilidad</h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 32 }}>
@@ -288,7 +288,7 @@ export function GerenciaDashboard() {
               borderRadius: 'var(--radius-md)',
               color: '#fff',
               fontSize: '0.82rem',
-              fontWeight: 700,
+              fontWeight: 600,
             }}
           >Nueva jornada →</button>
         </div>
@@ -312,7 +312,7 @@ export function GerenciaDashboard() {
               borderRadius: 'var(--radius-md)',
               color: '#fff',
               fontSize: '0.82rem',
-              fontWeight: 700,
+              fontWeight: 600,
             }}
           >Importar Excel →</button>
         </div>

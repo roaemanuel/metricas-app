@@ -128,7 +128,7 @@ export default function GerenciaGananciasPage() {
       {/* Header */}
       <div style={{ display:'flex',alignItems:'flex-start',justifyContent:'space-between',flexWrap:'wrap',gap:12,marginBottom:28 }}>
         <div>
-          <h1 style={{ fontSize:'1.6rem',fontWeight:800,letterSpacing:'-0.8px',marginBottom:4 }}>Ganancias / Estrategia</h1>
+          <h1 style={{ fontSize:'1.6rem',fontWeight: 600,letterSpacing:'-0.8px',marginBottom:4 }}>Ganancias / Estrategia</h1>
           <p style={{ color:'var(--text-secondary)',fontSize:'0.88rem' }}>Importación mensual desde Excel · ventas por producto o estrategia</p>
         </div>
         <div style={{ display:'flex',gap:8,alignItems:'center' }}>
@@ -141,7 +141,7 @@ export default function GerenciaGananciasPage() {
           <button onClick={() => fileRef.current?.click()} style={{
             padding:'8px 18px',marginLeft:8,background:'var(--accent)',
             border:'none',borderRadius:8,color:'#fff',
-            fontSize:'0.82rem',fontWeight:700,cursor:'pointer',
+            fontSize:'0.82rem',fontWeight: 600,cursor:'pointer',
             boxShadow:'0 2px 12px var(--accent-glow)',
             display:'flex',alignItems:'center',gap:7,
           }}>
@@ -163,14 +163,14 @@ export default function GerenciaGananciasPage() {
             maxHeight:'80vh',overflow:'auto',
             boxShadow:`0 0 60px ${color}20`,
           }}>
-            <h2 style={{ fontSize:'1.1rem',fontWeight:800,letterSpacing:'-0.3px',marginBottom:6 }}>Vista previa de importación</h2>
+            <h2 style={{ fontSize:'1.1rem',fontWeight: 600,letterSpacing:'-0.3px',marginBottom:6 }}>Vista previa de importación</h2>
             <p style={{ color:'var(--text-secondary)',fontSize:'0.82rem',marginBottom:20 }}>
               Se detectaron <strong style={{color:'var(--text-primary)'}}>{rawData.length} filas</strong>. Verificá que las columnas estén bien mapeadas.
             </p>
 
             {/* Column mapping */}
             <div style={{ background:'var(--bg-elevated)',border:'1px solid var(--border)',borderRadius:12,padding:'16px 20px',marginBottom:20 }}>
-              <div style={{ fontSize:'0.72rem',fontWeight:700,color:'var(--text-muted)',letterSpacing:'0.1em',marginBottom:12 }}>MAPEO DE COLUMNAS</div>
+              <div style={{ fontSize:'0.72rem',fontWeight: 600,color:'var(--text-muted)',letterSpacing:'0.1em',marginBottom:12 }}>MAPEO DE COLUMNAS</div>
               <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:10 }}>
                 {[
                   { key:'nombre',   label:'Nombre/Estrategia *' },
@@ -235,7 +235,7 @@ export default function GerenciaGananciasPage() {
                 background: saving || colMap.nombre < 0 ? 'var(--bg-elevated)' : 'var(--accent)',
                 border:'none',borderRadius:10,
                 color: saving || colMap.nombre < 0 ? 'var(--text-muted)' : '#fff',
-                fontSize:'0.9rem',fontWeight:700,cursor: saving || colMap.nombre < 0 ? 'not-allowed':'pointer',
+                fontSize:'0.9rem',fontWeight: 600,cursor: saving || colMap.nombre < 0 ? 'not-allowed':'pointer',
                 boxShadow: !saving && colMap.nombre >= 0 ? '0 4px 20px var(--accent-glow)' : 'none',
               }}>
                 {saving ? 'Importando…' : `✓ Confirmar ${rawData.length} filas`}
@@ -258,7 +258,7 @@ export default function GerenciaGananciasPage() {
           </p>
           <button onClick={() => fileRef.current?.click()} style={{
             padding:'12px 28px',background:'var(--accent)',border:'none',borderRadius:10,
-            color:'#fff',fontWeight:700,fontSize:'0.88rem',cursor:'pointer', boxShadow:'0 4px 16px var(--accent-glow)'
+            color:'#fff',fontWeight: 600,fontSize:'0.88rem',cursor:'pointer', boxShadow:'0 4px 16px var(--accent-glow)'
           }}>📂 Importar Excel →</button>
         </div>
       ) : (
@@ -285,7 +285,7 @@ export default function GerenciaGananciasPage() {
               }}>
                 <div style={{ position:'absolute',top:0,left:0,right:0,height:3,background:k.c,opacity:0.9 }} />
                 <div style={{ fontSize:22,marginBottom:10 }}>{k.icon}</div>
-                <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.7rem',fontWeight:700,color:'var(--text-primary)',letterSpacing:'-1px',lineHeight:1,marginBottom:6 }}>{k.value}</div>
+                <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.7rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-1px',lineHeight:1,marginBottom:6 }}>{k.value}</div>
                 <div style={{ fontSize:'0.8rem',color:'var(--text-secondary)' }}>{k.label}</div>
               </div>
             ))}
@@ -294,7 +294,7 @@ export default function GerenciaGananciasPage() {
           {/* Table */}
           <div style={{ background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:14,overflow:'hidden',boxShadow:'0 4px 16px var(--glass-shadow)' }}>
             <div style={{ padding:'14px 22px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'space-between' }}>
-              <div style={{ fontSize:'0.78rem',fontWeight:700,color:'var(--text-secondary)',letterSpacing:'0.05em' }}>
+              <div style={{ fontSize:'0.78rem',fontWeight: 600,color:'var(--text-secondary)',letterSpacing:'0.05em' }}>
                 DETALLE POR ESTRATEGIA / PRODUCTO ({rows.length})
               </div>
               <button onClick={deleteAll} style={{
@@ -318,7 +318,7 @@ export default function GerenciaGananciasPage() {
                     return (
                       <tr key={r.id} style={{ borderTop:'1px solid var(--border)',background: i%2===0?'transparent':'var(--bg-elevated)' }}>
                         <td style={{ padding:'11px 16px',color:'var(--text-primary)',fontWeight:500 }}>{r.nombre_estrategia}</td>
-                        <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',fontWeight:700,color:'#10b981' }}>{formatMoney(r.ingresos_generados)}</td>
+                        <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',fontWeight: 600,color:'#10b981' }}>{formatMoney(r.ingresos_generados)}</td>
                         <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',color:'var(--text-secondary)' }}>{r.unidades_vendidas ?? '—'}</td>
                         <td style={{ padding:'11px 16px', minWidth:120 }}>
                           <div style={{ display:'flex',alignItems:'center',gap:8 }}>
@@ -340,8 +340,8 @@ export default function GerenciaGananciasPage() {
                 </tbody>
                 <tfoot>
                   <tr style={{ borderTop:'2px solid var(--border)',background:'var(--bg-elevated)' }}>
-                    <td style={{ padding:'11px 16px',fontWeight:700,color:'var(--text-secondary)',fontSize:'0.82rem' }}>TOTAL</td>
-                    <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',fontWeight:700,color:'#10b981',fontSize:'1rem' }}>{formatMoney(totalIngresos)}</td>
+                    <td style={{ padding:'11px 16px',fontWeight: 600,color:'var(--text-secondary)',fontSize:'0.82rem' }}>TOTAL</td>
+                    <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',fontWeight: 600,color:'#10b981',fontSize:'1rem' }}>{formatMoney(totalIngresos)}</td>
                     <td style={{ padding:'11px 16px',fontFamily:'var(--font-mono)',color:'var(--text-secondary)' }}>{totalUnidades || '—'}</td>
                     <td colSpan={2} />
                   </tr>

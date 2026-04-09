@@ -71,7 +71,7 @@ function JornadaForm({ initial, onSave, onCancel }) {
     borderRadius: 9, color: 'var(--text-primary)', boxSizing: 'border-box',
   }
   const lbl = {
-    display: 'block', fontSize: '0.72rem', fontWeight: 700,
+    display: 'block', fontSize: '0.72rem', fontWeight: 600,
     color: 'var(--text-muted)', marginBottom: 6, letterSpacing: '0.06em', textTransform: 'uppercase',
   }
 
@@ -80,7 +80,7 @@ function JornadaForm({ initial, onSave, onCancel }) {
       <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '22px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
           <span style={{ fontSize: 18 }}>🏥</span>
-          <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Datos de la jornada</span>
+          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Datos de la jornada</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 180px', gap: 14 }}>
           <div>
@@ -98,7 +98,7 @@ function JornadaForm({ initial, onSave, onCancel }) {
       <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '22px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
           <span style={{ fontSize: 18 }}>🤝</span>
-          <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Tipo de apoyo brindado</span>
+          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Tipo de apoyo brindado</span>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>(puede ser más de uno)</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8 }}>
@@ -127,7 +127,7 @@ function JornadaForm({ initial, onSave, onCancel }) {
         <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <span style={{ fontSize: 18 }}>💰</span>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Gasto total</span>
+            <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Gasto total</span>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>(opcional)</span>
           </div>
           <input type="number" value={form.gasto_total}
@@ -138,7 +138,7 @@ function JornadaForm({ initial, onSave, onCancel }) {
         <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 24px', boxShadow: '0 4px 16px var(--glass-shadow)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <span style={{ fontSize: 18 }}>📝</span>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Observaciones</span>
+            <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Observaciones</span>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>(opcional)</span>
           </div>
           <textarea value={form.observaciones} onChange={e => setForm(f => ({ ...f, observaciones: e.target.value }))}
@@ -158,7 +158,7 @@ function JornadaForm({ initial, onSave, onCancel }) {
           background: saving || !form.nombre.trim() ? 'var(--bg-elevated)' : 'var(--accent)',
           border: 'none', borderRadius: 10,
           color: saving || !form.nombre.trim() ? 'var(--text-muted)' : '#fff',
-          fontSize: '0.9rem', fontWeight: 700,
+          fontSize: '0.9rem', fontWeight: 600,
           cursor: saving || !form.nombre.trim() ? 'not-allowed' : 'pointer',
           boxShadow: !saving && form.nombre.trim() ? '0 4px 20px var(--accent-glow)' : 'none',
           transition: 'all 0.2s',
@@ -216,7 +216,7 @@ export default function GerenciaJornadasPage() {
     return (
       <div className="animate-fadeIn">
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 4 }}>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 600, letterSpacing: '-0.8px', marginBottom: 4 }}>
             {editing ? 'Editar jornada' : 'Nueva jornada médica'}
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Gerencia · registro de apoyo a jornada médica</p>
@@ -230,7 +230,7 @@ export default function GerenciaJornadasPage() {
     <div className="animate-fadeIn">
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 28 }}>
         <div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 4 }}>Jornadas médicas</h1>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 600, letterSpacing: '-0.8px', marginBottom: 4 }}>Jornadas médicas</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Registro de apoyo y gastos por jornada</p>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -242,7 +242,7 @@ export default function GerenciaJornadasPage() {
           <button onClick={() => { setEditing(null); setView('new') }} style={{
             padding:'8px 18px',marginLeft:8,background:'var(--accent)',
             border:'none',borderRadius:8,color:'#fff',
-            fontSize:'0.82rem',fontWeight:700,cursor:'pointer',
+            fontSize:'0.82rem',fontWeight: 600,cursor:'pointer',
             boxShadow:'0 2px 12px var(--accent-glow)',
           }}>✚ Nueva jornada</button>
         </div>
@@ -269,7 +269,7 @@ export default function GerenciaJornadasPage() {
                 }}>
                   <div style={{ position:'absolute',top:0,left:0,right:0,height:3,background:k.c,opacity:0.9 }} />
                   <div style={{ fontSize:22,marginBottom:10 }}>{k.icon}</div>
-                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.7rem',fontWeight:700,color:'var(--text-primary)',letterSpacing:'-1px',lineHeight:1,marginBottom:6 }}>{k.value}</div>
+                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.7rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-1px',lineHeight:1,marginBottom:6 }}>{k.value}</div>
                   <div style={{ fontSize:'0.8rem',color:'var(--text-secondary)' }}>{k.label}</div>
                 </div>
               ))}
@@ -280,7 +280,7 @@ export default function GerenciaJornadasPage() {
             <div style={{ textAlign:'center',padding:'60px 24px',border:`1px dashed ${color}44`,borderRadius:16,background:'var(--bg-surface)' }}>
               <div style={{ fontSize:40,marginBottom:14 }}>🏥</div>
               <p style={{ color:'var(--text-secondary)',marginBottom:20 }}>No hay jornadas para {MONTHS_ES[month]} {year}</p>
-              <button onClick={() => setView('new')} style={{ padding:'12px 28px',background:'var(--accent)',border:'none',borderRadius:10,color:'#fff',fontWeight:700,fontSize:'0.88rem',cursor:'pointer',boxShadow:'0 4px 16px var(--accent-glow)' }}>
+              <button onClick={() => setView('new')} style={{ padding:'12px 28px',background:'var(--accent)',border:'none',borderRadius:10,color:'#fff',fontWeight: 600,fontSize:'0.88rem',cursor:'pointer',boxShadow:'0 4px 16px var(--accent-glow)' }}>
                 Registrar primera jornada →
               </button>
             </div>
@@ -297,7 +297,7 @@ export default function GerenciaJornadasPage() {
                   <div style={{ display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:12,flexWrap:'wrap' }}>
                     <div style={{ flex:1,minWidth:0 }}>
                       <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.73rem',color:'var(--text-muted)' }}>{formatDate(j.fecha)}</span>
-                      <h3 style={{ fontSize:'0.95rem',fontWeight:700,color:'var(--text-primary)',margin:'5px 0 8px' }}>{j.nombre}</h3>
+                      <h3 style={{ fontSize:'0.95rem',fontWeight: 600,color:'var(--text-primary)',margin:'5px 0 8px' }}>{j.nombre}</h3>
                       {j.tipo_apoyo?.length > 0 && (
                         <div style={{ display:'flex',flexWrap:'wrap',gap:5,marginBottom: j.observaciones ? 8 : 0 }}>
                           {j.tipo_apoyo.map(t => {
@@ -316,7 +316,7 @@ export default function GerenciaJornadasPage() {
                     </div>
                     <div style={{ display:'flex',alignItems:'center',gap:10,flexShrink:0 }}>
                       {j.gasto_total > 0 && (
-                        <span style={{ fontFamily:'var(--font-mono)',fontSize:'1.05rem',fontWeight:700,color:'#10b981' }}>{formatMoney(j.gasto_total)}</span>
+                        <span style={{ fontFamily:'var(--font-mono)',fontSize:'1.05rem',fontWeight: 600,color:'#10b981' }}>{formatMoney(j.gasto_total)}</span>
                       )}
                       <button onClick={() => { setEditing(j); setView('edit') }} style={{ padding:'6px 11px',background:'var(--bg-elevated)',border:'1px solid var(--border)',borderRadius:7,color:'var(--text-secondary)',fontSize:'0.75rem',cursor:'pointer' }}>✎</button>
                       <button onClick={() => handleDelete(j.id)} style={{ padding:'6px 11px',background:'#dc262612',border:'1px solid #dc262630',borderRadius:7,color:'#f87171',fontSize:'0.75rem',cursor:'pointer' }}>✕</button>

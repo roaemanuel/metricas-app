@@ -80,7 +80,7 @@ function CampanaForm({ initial, onSave, onCancel }) {
     borderRadius:9, color:'var(--text-primary)', boxSizing:'border-box',
   }
   const lbl = {
-    display:'block', fontSize:'0.72rem', fontWeight:700,
+    display:'block', fontSize:'0.72rem', fontWeight: 600,
     color:'var(--text-muted)', marginBottom:6, letterSpacing:'0.06em', textTransform:'uppercase',
   }
 
@@ -91,7 +91,7 @@ function CampanaForm({ initial, onSave, onCancel }) {
       <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px', boxShadow:'0 4px 16px var(--glass-shadow)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18 }}>
           <span style={{ fontSize:18 }}>📣</span>
-          <span style={{ fontWeight:700, fontSize:'0.95rem' }}>Datos de la campaña</span>
+          <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Datos de la campaña</span>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 180px 180px', gap:14, marginBottom:14 }}>
           <div>
@@ -136,7 +136,7 @@ function CampanaForm({ initial, onSave, onCancel }) {
       <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px', boxShadow:'0 4px 16px var(--glass-shadow)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18 }}>
           <span style={{ fontSize:18 }}>📊</span>
-          <span style={{ fontWeight:700, fontSize:'0.95rem' }}>Resultados de la campaña</span>
+          <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Resultados de la campaña</span>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))', gap:14 }}>
           {[
@@ -163,14 +163,14 @@ function CampanaForm({ initial, onSave, onCancel }) {
           <div style={{ marginTop:16, display:'flex', gap:12, flexWrap:'wrap' }}>
             {ctr && (
               <div style={{ background:`${color}12`, border:`1px solid ${color}33`, borderRadius:10, padding:'10px 16px' }}>
-                <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:700, letterSpacing:'0.08em', marginBottom:3 }}>CTR</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight:700, color }}>{ctr}%</div>
+                <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight: 600, letterSpacing:'0.08em', marginBottom:3 }}>CTR</div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight: 600, color }}>{ctr}%</div>
               </div>
             )}
             {cpc && (
               <div style={{ background:'#10b98112', border:'1px solid #10b98133', borderRadius:10, padding:'10px 16px' }}>
-                <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:700, letterSpacing:'0.08em', marginBottom:3 }}>COSTO POR CLIC</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight:700, color:'#10b981' }}>${parseFloat(cpc).toLocaleString('es-AR',{minimumFractionDigits:2})}</div>
+                <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight: 600, letterSpacing:'0.08em', marginBottom:3 }}>COSTO POR CLIC</div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:'1.2rem', fontWeight: 600, color:'#10b981' }}>${parseFloat(cpc).toLocaleString('es-AR',{minimumFractionDigits:2})}</div>
               </div>
             )}
           </div>
@@ -181,7 +181,7 @@ function CampanaForm({ initial, onSave, onCancel }) {
       <div style={{ background:'var(--bg-surface)', border:'1px solid var(--border)', borderRadius:16, padding:'20px 24px', boxShadow:'0 4px 16px var(--glass-shadow)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
           <span style={{ fontSize:18 }}>📝</span>
-          <span style={{ fontWeight:700, fontSize:'0.95rem' }}>Notas</span>
+          <span style={{ fontWeight: 600, fontSize:'0.95rem' }}>Notas</span>
           <span style={{ fontSize:'0.72rem', color:'var(--text-muted)' }}>(opcional)</span>
         </div>
         <textarea value={form.notas} onChange={e=>setForm(f=>({...f,notas:e.target.value}))}
@@ -196,7 +196,7 @@ function CampanaForm({ initial, onSave, onCancel }) {
           background: saving || !form.nombre.trim() ? 'var(--bg-elevated)' : 'var(--accent)',
           border:'none', borderRadius:10,
           color: saving || !form.nombre.trim() ? 'var(--text-muted)' : '#fff',
-          fontSize:'0.9rem', fontWeight:700,
+          fontSize:'0.9rem', fontWeight: 600,
           cursor: saving || !form.nombre.trim() ? 'not-allowed' : 'pointer',
           boxShadow: !saving && form.nombre.trim() ? '0 4px 20px var(--accent-glow)' : 'none',
           transition:'all 0.2s',
@@ -256,7 +256,7 @@ export default function SocialCampanasPage() {
     return (
       <div className="animate-fadeIn">
         <div style={{ marginBottom:24 }}>
-          <h1 style={{ fontSize:'1.6rem', fontWeight:800, letterSpacing:'-0.8px', marginBottom:4 }}>
+          <h1 style={{ fontSize:'1.6rem', fontWeight: 600, letterSpacing:'-0.8px', marginBottom:4 }}>
             {editing ? 'Editar campaña' : 'Nueva campaña'}
           </h1>
           <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>Social Media · {MONTHS_ES[month]} {year}</p>
@@ -270,7 +270,7 @@ export default function SocialCampanasPage() {
     <div className="animate-fadeIn">
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:28 }}>
         <div>
-          <h1 style={{ fontSize:'1.6rem', fontWeight:800, letterSpacing:'-0.8px', marginBottom:4 }}>Campañas publicitarias</h1>
+          <h1 style={{ fontSize:'1.6rem', fontWeight: 600, letterSpacing:'-0.8px', marginBottom:4 }}>Campañas publicitarias</h1>
           <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem' }}>Registro y seguimiento de campañas pagas</p>
         </div>
         <div style={{ display:'flex', gap:8, alignItems:'center' }}>
@@ -281,7 +281,7 @@ export default function SocialCampanasPage() {
             disabled={isCurrentMonth} style={{ width:34,height:34,borderRadius:8,background:'var(--bg-elevated)',border:'1px solid var(--border)',color:isCurrentMonth?'var(--text-muted)':'var(--text-secondary)',fontSize:'1rem',cursor:isCurrentMonth?'not-allowed':'pointer' }}>›</button>
           <button onClick={() => { setEditing(null); setView('new') }} style={{
             padding:'8px 18px',marginLeft:8,background:'var(--accent)',border:'none',borderRadius:8,
-            color:'#fff',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',
+            color:'#fff',fontSize:'0.82rem',fontWeight: 600,cursor:'pointer',
             boxShadow:'0 2px 12px var(--accent-glow)',
           }}>✚ Nueva campaña</button>
         </div>
@@ -309,7 +309,7 @@ export default function SocialCampanasPage() {
                 }}>
                   <div style={{ position:'absolute',top:0,left:0,right:0,height:3,background:k.c,opacity:0.9 }} />
                   <div style={{ fontSize:20,marginBottom:8 }}>{k.icon}</div>
-                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.5rem',fontWeight:700,color:'var(--text-primary)',letterSpacing:'-0.5px',lineHeight:1,marginBottom:5 }}>{k.value}</div>
+                  <div style={{ fontFamily:'var(--font-mono)',fontSize:'1.5rem',fontWeight: 600,color:'var(--text-primary)',letterSpacing:'-0.5px',lineHeight:1,marginBottom:5 }}>{k.value}</div>
                   <div style={{ fontSize:'0.78rem',color:'var(--text-secondary)' }}>{k.label}</div>
                 </div>
               ))}
@@ -320,7 +320,7 @@ export default function SocialCampanasPage() {
             <div style={{ textAlign:'center',padding:'60px 24px',border:`1px dashed ${color}44`,borderRadius:16,background:'var(--bg-surface)' }}>
               <div style={{ fontSize:40,marginBottom:14 }}>📣</div>
               <p style={{ color:'var(--text-secondary)',marginBottom:20 }}>No hay campañas registradas para {MONTHS_ES[month]} {year}</p>
-              <button onClick={() => setView('new')} style={{ padding:'12px 28px',background:'var(--accent)',border:'none',borderRadius:10,color:'#fff',fontWeight:700,fontSize:'0.88rem',cursor:'pointer',boxShadow:'0 4px 16px var(--accent-glow)' }}>
+              <button onClick={() => setView('new')} style={{ padding:'12px 28px',background:'var(--accent)',border:'none',borderRadius:10,color:'#fff',fontWeight: 600,fontSize:'0.88rem',cursor:'pointer',boxShadow:'0 4px 16px var(--accent-glow)' }}>
                 Registrar primera campaña →
               </button>
             </div>
@@ -349,7 +349,7 @@ export default function SocialCampanasPage() {
                             {formatDate(c.fecha_inicio)} → {formatDate(c.fecha_fin)}
                           </span>
                         </div>
-                        <h3 style={{ fontSize:'0.95rem',fontWeight:700,color:'var(--text-primary)',marginBottom:10 }}>{c.nombre}</h3>
+                        <h3 style={{ fontSize:'0.95rem',fontWeight: 600,color:'var(--text-primary)',marginBottom:10 }}>{c.nombre}</h3>
                         <div style={{ display:'flex',flexWrap:'wrap',gap:12 }}>
                           {[
                             { label:'Gasto',       value:formatMoney(c.presupuesto), c:'#f59e0b' },
@@ -360,7 +360,7 @@ export default function SocialCampanasPage() {
                           ].filter(Boolean).map(m => m.value ? (
                             <div key={m.label} style={{ display:'flex',flexDirection:'column',gap:2 }}>
                               <span style={{ fontSize:'0.68rem',color:'var(--text-muted)',fontWeight:600,letterSpacing:'0.05em' }}>{m.label}</span>
-                              <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.88rem',fontWeight:700,color:m.c }}>{m.value}</span>
+                              <span style={{ fontFamily:'var(--font-mono)',fontSize:'0.88rem',fontWeight: 600,color:m.c }}>{m.value}</span>
                             </div>
                           ) : null)}
                         </div>

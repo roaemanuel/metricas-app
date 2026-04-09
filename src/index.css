@@ -37,15 +37,15 @@
   --radius-lg: 24px;
   --radius-xl: 32px;
 
-  --font-display: 'Inter', 'Roboto', 'Syne', system-ui, sans-serif;
+  --font-display: 'Open Sans', system-ui, sans-serif;
   --font-mono:    'DM Mono', monospace;
 }
 
 :root[data-theme="light"] {
   /* Pure Blue Scale - Light Palette */
-  --bg-gradient: #F4F7FB;
+  --bg-gradient: linear-gradient(135deg, #F4F7FB 0%, #E2E8F0 100%);
   --bg-base:       #F4F7FB;
-  --bg-surface:    #FFFFFF;
+  --bg-surface:    #fbfbfe;
   --bg-elevated:   #EAF0F8;
   --bg-hover:      #DDE6F3;
   --border:        rgba(37, 99, 235, 0.1);
@@ -59,8 +59,8 @@
   --accent-secondary: #EFF6FF; /* Blue 50 */
   --accent-glow:   rgba(37, 99, 235, 0.15);
 
-  --glass-bg:      rgba(255, 255, 255, 0.70);
-  --glass-border:  rgba(255, 255, 255, 0.8);
+  --glass-bg:      rgba(251, 251, 254, 0.45);
+  --glass-border:  rgba(37, 99, 235, 0.08);
   --glass-shadow:  rgba(37, 99, 235, 0.05);
 }
 
@@ -70,7 +70,8 @@ html, body, #root {
 }
 
 body {
-  background: var(--bg-base);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
@@ -81,10 +82,10 @@ body {
 /* Elegante panel de vidrio esmerilado - Google style */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(28px) saturate(1.2);
-  -webkit-backdrop-filter: blur(28px) saturate(1.2);
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 30px var(--glass-shadow);
+  box-shadow: 0 8px 32px var(--glass-shadow);
   transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
 }
 

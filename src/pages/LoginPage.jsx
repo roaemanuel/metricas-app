@@ -90,7 +90,7 @@ export default function LoginPage() {
           <h1 style={{
             fontFamily: 'var(--font-display)',
             fontSize: '2rem',
-            fontWeight: 800,
+            fontWeight: 600,
             letterSpacing: '-1px',
             color: 'var(--text-primary)',
             marginBottom: 8,
@@ -176,7 +176,7 @@ export default function LoginPage() {
                 borderRadius: 'var(--radius-md)',
                 color: '#fff',
                 fontSize: '0.95rem',
-                fontWeight: 700,
+                fontWeight: 600,
                 letterSpacing: '0.03em',
                 boxShadow: '0 4px 24px var(--accent-glow)',
               }}

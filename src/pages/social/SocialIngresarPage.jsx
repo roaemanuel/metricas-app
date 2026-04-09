@@ -283,7 +283,7 @@ export default function SocialIngresarPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.8px', marginBottom: 4 }}>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 600, letterSpacing: '-0.8px', marginBottom: 4 }}>
             Métricas Social Media
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
@@ -411,7 +411,7 @@ export default function SocialIngresarPage() {
                   borderRadius: 99,
                   padding: '1px 7px',
                   fontSize: '0.72rem',
-                  fontWeight: 700,
+                  fontWeight: 600,
                 }}
               >
                 {totalVideos}
@@ -473,7 +473,7 @@ export default function SocialIngresarPage() {
                       <div
                         style={{
                           fontSize: '0.85rem',
-                          fontWeight: 700,
+                          fontWeight: 600,
                           color: form[f.key] ? 'var(--text-primary)' : 'var(--text-secondary)',
                         }}
                       >
@@ -552,7 +552,7 @@ export default function SocialIngresarPage() {
                       style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: '1.4rem',
-                        fontWeight: 700,
+                        fontWeight: 600,
                         color,
                       }}
                     >
@@ -580,7 +580,7 @@ export default function SocialIngresarPage() {
                     borderRadius: 12,
                     color: saved ? '#fff' : !anyFilled ? 'var(--text-muted)' : '#fff',
                     fontSize: '0.95rem',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: !anyFilled ? 'not-allowed' : 'pointer',
                     boxShadow: anyFilled && !saved ? '0 4px 20px var(--accent-glow)' : 'none',
                     transition: 'all 0.2s',
@@ -618,7 +618,7 @@ export default function SocialIngresarPage() {
                         style={{
                           fontFamily: 'var(--font-mono)',
                           fontSize: '1.6rem',
-                          fontWeight: 700,
+                          fontWeight: 600,
                           color: r.total > 0 ? r.color : 'var(--text-muted)',
                           lineHeight: 1,
                           marginBottom: 4,
@@ -647,7 +647,7 @@ export default function SocialIngresarPage() {
                       style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: '1.6rem',
-                        fontWeight: 700,
+                        fontWeight: 600,
                         color,
                         lineHeight: 1,
                         marginBottom: 4,
@@ -673,7 +673,7 @@ export default function SocialIngresarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
                   <span style={{ fontSize: 20 }}>🎬</span>
-                  <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>Registrar video</span>
+                  <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Registrar video</span>
                 </div>
 
                 <div style={{ marginBottom: 14 }}>
@@ -839,7 +839,7 @@ export default function SocialIngresarPage() {
                     borderRadius: 10,
                     color: !newVideo.etiqueta.trim() || !newVideo.red_social.length ? 'var(--text-muted)' : '#fff',
                     fontSize: '0.9rem',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: !newVideo.etiqueta.trim() || !newVideo.red_social.length ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s',
                   }}
@@ -862,7 +862,7 @@ export default function SocialIngresarPage() {
                       padding: '14px 20px',
                       borderBottom: '1px solid var(--border)',
                       fontSize: '0.75rem',
-                      fontWeight: 700,
+                      fontWeight: 600,
                       color: 'var(--text-secondary)',
                       letterSpacing: '0.08em',
                     }}
@@ -909,7 +909,7 @@ export default function SocialIngresarPage() {
                                   borderRadius: 8,
                                   padding: '4px 10px',
                                   fontSize: '0.75rem',
-                                  fontWeight: 700,
+                                  fontWeight: 600,
                                   color: red.color,
                                   flexShrink: 0,
                                 }}
@@ -952,7 +952,7 @@ export default function SocialIngresarPage() {
                               style={{
                                 fontFamily: 'var(--font-mono)',
                                 fontSize: '0.82rem',
-                                fontWeight: 700,
+                                fontWeight: 600,
                                 color,
                                 background: color + '15',
                                 borderRadius: 8,

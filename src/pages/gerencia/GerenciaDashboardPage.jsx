@@ -27,18 +27,16 @@ function fmt(n) {
 // --- KPI Card ---
 function KpiCard({ label, value, sub, accent, icon, delay = 0 }) {
   return (
-    <div className="animate-fadeUp" style={{
+    <div className="glass-panel animate-fadeUp" style={{
       animationDelay: `${delay}s`,
-      background: 'var(--bg-surface)', border: '1px solid var(--border)',
       borderRadius: 'var(--radius-lg)', padding: '24px', position: 'relative', overflow: 'hidden',
-      boxShadow: '0 8px 32px var(--glass-shadow)',
     }}>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: accent, opacity: 0.9, boxShadow: `0 0 12px ${accent}` }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{label}</span>
+        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{label}</span>
         <span style={{ fontSize: 22, opacity: 0.6 }}>{icon}</span>
       </div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-1.5px', lineHeight: 1, marginBottom: 8 }}>{value}</div>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-1.5px', lineHeight: 1, marginBottom: 8 }}>{value}</div>
       {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>{sub}</div>}
     </div>
   )
@@ -51,10 +49,10 @@ function AreaSection({ title, accent, icon, children, to, navigate }) {
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-elevated)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 20 }}>{icon}</span>
-          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>{title}</span>
+          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>{title}</span>
         </div>
         {to && (
-          <button onClick={() => navigate(to)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: accent, padding: '5px 12px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => navigate(to)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: accent, padding: '5px 12px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}>
             Explorar
           </button>
         )}
@@ -68,7 +66,7 @@ function MetricRow({ label, value, color = 'var(--text-secondary)' }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
       <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{label}</span>
-      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 700, color: color }}>{value}</span>
+      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: color }}>{value}</span>
     </div>
   )
 }
@@ -144,12 +142,12 @@ export default function GerenciaDashboardPage() {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-1px', margin: 0 }}>Vista Ejecutiva</h1>
+            <h1 style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-1px', margin: 0 }}>Vista Ejecutiva</h1>
             {isCurrentMonth && (
               <span className="glass-panel" style={{
                 background: '#10b98118', border: '1px solid #10b98140',
                 borderRadius: 20, padding: '4px 12px',
-                fontSize: '0.7rem', fontWeight: 800, color: '#10b981', letterSpacing: '0.05em',
+                fontSize: '0.7rem', fontWeight: 600, color: '#10b981', letterSpacing: '0.05em',
                 display: 'flex', alignItems: 'center', gap: 6
               }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', animation: 'pulse 2s infinite' }} />
@@ -192,7 +190,7 @@ export default function GerenciaDashboardPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16, marginBottom: 24 }}>
             {/* Strategies Chart */}
             <div className="glass-panel" style={{ padding: '24px 32px', borderRadius: 'var(--radius-xl)' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 24, textTransform: 'uppercase' }}>Top 5 Estrategias por Ingresos</div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 24, textTransform: 'uppercase' }}>Top 5 Estrategias por Ingresos</div>
               <div style={{ width: '100%', height: 300 }}>
                 <ResponsiveContainer>
                   <BarChart layout="vertical" data={strategiesData} margin={{ left: 20, right: 30 }}>
@@ -208,7 +206,7 @@ export default function GerenciaDashboardPage() {
 
             {/* Area Activity Donut */}
             <div className="glass-panel" style={{ padding: '24px', borderRadius: 'var(--radius-xl)', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 20, textTransform: 'uppercase' }}>Actividad por Área</div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 20, textTransform: 'uppercase' }}>Actividad por Área</div>
               <div style={{ flex: 1, position: 'relative' }}>
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
@@ -219,8 +217,8 @@ export default function GerenciaDashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', pointerEvents: 'none' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Activos</span>
-                  <span style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>{data.totalFlyers + data.totalIncidencias}</span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Activos</span>
+                  <span style={{ fontSize: '1.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{data.totalFlyers + data.totalIncidencias}</span>
                 </div>
               </div>
               <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -230,7 +228,7 @@ export default function GerenciaDashboardPage() {
                       <div style={{ width: 12, height: 12, borderRadius: '50%', background: trafficColors[i % trafficColors.length], boxShadow: `0 0 8px ${trafficColors[i % trafficColors.length]}44` }} />
                       <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{f.name}</span>
                     </div>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{f.value.toFixed(0)}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{f.value.toFixed(0)}</span>
                   </div>
                 ))}
               </div>

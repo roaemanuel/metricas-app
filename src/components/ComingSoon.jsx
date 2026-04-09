@@ -22,7 +22,7 @@ export default function ComingSoon({ title, description }) {
       }}>⬡</div>
 
       <h2 style={{
-        fontSize: '1.3rem', fontWeight: 800,
+        fontSize: '1.3rem', fontWeight: 600,
         letterSpacing: '-0.5px', marginBottom: 8,
       }}>{title || 'Módulo en construcción'}</h2>
 
