@@ -137,13 +137,13 @@ body {
    — Light mode: lavender base + pastel indigo/violet orbs
    ═══════════════════════════════════════════════════════════ */
 
-/* Orb base colors ─ dark mode: slate-blue visible pero tenue */
+/* Orb base colors ─ dark mode: vibrant blue-violet for visible glass backdrop */
 :root {
-  --orb1: rgba(30, 80, 140, 0.55);   /* Steel blue         */
-  --orb2: rgba(15, 55, 100, 0.50);   /* Dark steel         */
-  --orb3: rgba(40, 100, 160, 0.35);  /* Sky-steel mid      */
-  --orb4: rgba(20, 70, 120, 0.45);   /* Slate blue         */
-  --orb5: rgba(10, 40, 80, 0.50);    /* Deep night         */
+  --orb1: rgba(56, 120, 220, 0.70);  /* Vivid blue         */
+  --orb2: rgba(110, 58, 200, 0.55);  /* Indigo-violet      */
+  --orb3: rgba(30, 120, 190, 0.50);  /* Sky blue           */
+  --orb4: rgba(80, 40, 180, 0.60);   /* Deep violet        */
+  --orb5: rgba(15, 80, 160, 0.55);   /* Ocean blue         */
 }
 
 /* Orb base colors ─ light mode overrides (pastel sky-blue) */
@@ -338,6 +338,16 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes pinShake {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-8px) rotate(-1deg); }
+  30%  { transform: translateX(8px)  rotate(1deg);  }
+  45%  { transform: translateX(-6px) rotate(-0.5deg); }
+  60%  { transform: translateX(6px)  rotate(0.5deg); }
+  75%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
 }
 
 .animate-fadeUp {
