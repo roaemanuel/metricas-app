@@ -5,64 +5,63 @@
 }
 
 :root {
-  /* Google Material 3 Dark Palette */
-  --bg-gradient: #0f1115; /* Clean solid base */
-  --bg-base:       #0f1115;
-  --bg-surface:    #16191f;
-  --bg-elevated:   #22262d;
-  --bg-hover:      #2b3038;
-  --border:        rgba(255,255,255,0.06);
-  --border-bright: rgba(255,255,255,0.12);
+  /* Pure Blue Scale - Dark Palette */
+  --bg-gradient: #07090E; 
+  --bg-base:       #07090E;  /* Very dark navy */
+  --bg-surface:    #10141D;
+  --bg-elevated:   #1A2131;
+  --bg-hover:      #263147;
+  --border:        rgba(168, 199, 250, 0.06);
+  --border-bright: rgba(168, 199, 250, 0.15);
 
-  --text-primary:  #e3e3e3;
-  --text-secondary:#a0aab5;
-  --text-muted:    #747d88;
+  --text-primary:  #E8EEF5;
+  --text-secondary:#91A4BF;
+  --text-muted:    #62738E;
 
-  --accent:        #A8C7FA; /* Material 3 Primary Dark */
-  --accent-secondary: #004a77;
-  --accent-glow:   rgba(168, 199, 250, 0.15);
+  --accent:        #60A5FA; /* Blue 400 */
+  --accent-secondary: #2563EB; /* Blue 600 */
+  --accent-glow:   rgba(96, 165, 250, 0.2);
 
-  --social-color:  #ff897d; /* Material adjusted */
-  --diseno-color:  #4fd8eb;
-  --sistemas-color:#fbd04e;
-  --gerencia-color:#d0bcff;
+  /* Todo en UI de azules o cianes */
+  --social-color:  #93C5FD; /* Blue 300 */
+  --diseno-color:  #38BDF8; /* Sky 400 */
+  --sistemas-color:#60A5FA; /* Blue 400 */
+  --gerencia-color:#818CF8; /* Indigo 400 */
 
-  --glass-bg:      rgba(22, 25, 31, 0.65);
-  --glass-border:  rgba(255, 255, 255, 0.08);
-  --glass-shadow:  rgba(0, 0, 0, 0.4);
+  --glass-bg:      rgba(16, 20, 29, 0.60);
+  --glass-border:  rgba(168, 199, 250, 0.08);
+  --glass-shadow:  rgba(0, 0, 0, 0.5);
 
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
 
-  /* Switch display font to a clean Geometry/Grotesque like Inter/Roboto. 
-     Using system sans-serif for optimal Google UI feel if custom font fails. */
   --font-display: 'Inter', 'Roboto', 'Syne', system-ui, sans-serif;
   --font-mono:    'DM Mono', monospace;
 }
 
 :root[data-theme="light"] {
-  /* Google Material 3 Light Palette */
-  --bg-gradient: #f3f6fc;
-  --bg-base:       #f3f6fc;
-  --bg-surface:    #ffffff;
-  --bg-elevated:   #e9eef6;
-  --bg-hover:      #dce4ef;
-  --border:        rgba(0,0,0,0.08);
-  --border-bright: rgba(0,0,0,0.15);
+  /* Pure Blue Scale - Light Palette */
+  --bg-gradient: #F4F7FB;
+  --bg-base:       #F4F7FB;
+  --bg-surface:    #FFFFFF;
+  --bg-elevated:   #EAF0F8;
+  --bg-hover:      #DDE6F3;
+  --border:        rgba(37, 99, 235, 0.1);
+  --border-bright: rgba(37, 99, 235, 0.2);
 
-  --text-primary:  #1f1f1f;
-  --text-secondary:#5e6368;
-  --text-muted:    #82888e;
+  --text-primary:  #0F172A;
+  --text-secondary:#475569;
+  --text-muted:    #94A3B8;
 
-  --accent:        #0B57D0; /* Material 3 Primary Light */
-  --accent-secondary: #d3e3fd;
-  --accent-glow:   rgba(11, 87, 208, 0.15);
+  --accent:        #2563EB; /* Blue 600 */
+  --accent-secondary: #EFF6FF; /* Blue 50 */
+  --accent-glow:   rgba(37, 99, 235, 0.15);
 
-  --glass-bg:      rgba(255, 255, 255, 0.75);
-  --glass-border:  rgba(255, 255, 255, 0.6);
-  --glass-shadow:  rgba(0, 0, 0, 0.05);
+  --glass-bg:      rgba(255, 255, 255, 0.70);
+  --glass-border:  rgba(255, 255, 255, 0.8);
+  --glass-shadow:  rgba(37, 99, 235, 0.05);
 }
 
 html, body, #root {

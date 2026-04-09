@@ -38,7 +38,9 @@ export default function DashboardLayout() {
     return null
   }
 
-  const areaColor = currentArea.color
+/* Force pure blue UI globally */
+  const areaColor = 'var(--accent)'
+  const areaColorGlow = 'var(--accent-glow)'
   const navItems = NAV_ITEMS[currentArea.area_key] || []
 
   const now = new Date()
@@ -56,17 +58,17 @@ export default function DashboardLayout() {
       <div style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none' }}>
         <div style={{
           position: 'absolute', top: '-10%', left: '-10%', width: '40vw', height: '40vw',
-          background: 'var(--accent-glow)', filter: 'blur(100px)', borderRadius: '50%',
+          background: 'var(--accent)', opacity: 0.15, filter: 'blur(100px)', borderRadius: '50%',
           animation: 'drift 15s ease-in-out infinite alternate',
         }} />
         <div style={{
           position: 'absolute', bottom: '-20%', right: '-10%', width: '50vw', height: '50vw',
-          background: 'var(--accent)', opacity: 0.08, filter: 'blur(120px)', borderRadius: '50%',
+          background: 'var(--accent-secondary)', opacity: 0.1, filter: 'blur(120px)', borderRadius: '50%',
           animation: 'drift 20s ease-in-out infinite alternate-reverse',
         }} />
         <div style={{
           position: 'absolute', top: '30%', left: '40%', width: '30vw', height: '30vw',
-          background: 'var(--social-color)', opacity: 0.05, filter: 'blur(90px)', borderRadius: '50%',
+          background: 'var(--sistemas-color)', opacity: 0.1, filter: 'blur(90px)', borderRadius: '50%',
           animation: 'drift 18s ease-in-out infinite alternate',
         }} />
       </div>
@@ -112,8 +114,8 @@ export default function DashboardLayout() {
         <div style={{
           margin: '16px 12px',
           padding: '10px 14px',
-          background: areaColor + '14',
-          border: `1px solid ${areaColor}33`,
+          background: 'var(--accent-glow)',
+          border: `1px solid var(--border-bright)`,
           borderRadius: 'var(--radius-md)',
           display: 'flex', alignItems: 'center', gap: 10,
         }}>
@@ -159,7 +161,7 @@ export default function DashboardLayout() {
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
                   marginBottom: 2,
-                  background: isActive ? areaColor + '20' : 'transparent',
+                  background: isActive ? 'var(--accent-glow)' : 'transparent',
                   color: isActive ? areaColor : 'var(--text-secondary)',
                   fontSize: '0.85rem',
                   fontWeight: isActive ? 600 : 400,
